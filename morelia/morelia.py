@@ -26,7 +26,8 @@ class Parser:
             self.rip(ReportVisitor(suite))
 
         def rip(self, v):
-            if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            if self.steps != []:
+                self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 
         def parse_feature(self, lines):    #  TODO  preserve and use line numbers
             for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
@@ -40,7 +41,7 @@ class Parser:
             self.line = self.line.rstrip()
             
             for klass in self.thangs:
-                thang = klass().i_look_like()
+                thang = klass().i_look_like()  #  CONSIDER  now that you have one don't throw it away
                 rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
                 m = re.compile(rx).match(self.line)
 

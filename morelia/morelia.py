@@ -8,9 +8,13 @@ import re
 class Parser:
         def __init__(self):  self.steps = []
                 
-        def evaluate_file(self, filename, suite):
+        def parse_file(self, filename):
             prose = open(filename, 'r').read()
-            self.parse_features(prose).evaluate(suite)
+            self.parse_features(prose)
+            return self
+
+        def evaluate_file(self, filename, suite):  #  TODO  retire me!
+            self.parse_file(filename).evaluate(suite)
 
         def evaluate_features(self, prose, suite):  #  TODO  retire me!
             self.parse_features(prose).evaluate(suite)
@@ -22,7 +26,7 @@ class Parser:
         def evaluate(self, suite):
             self.rip(TestVisitor(suite))
 
-        def report_file(self, filename, suite):
+        def report_file(self, filename, suite):  #  TODO  retire me
             prose = open(filename, 'r').read()
             self.parse_features(prose).report(suite)
             
@@ -53,9 +57,7 @@ class Parser:
                         break
 
                 if not node and 0 < len(self.steps):
-                    #  TODO  if it's the first one, throw a warning
-                    self.steps[-1].predicate += '\n' + line
-                    self.steps[-1].predicate = self.steps[-1].predicate.strip()
+                    self._append_to_previous_node(line)
                     
             return self.steps
 
@@ -65,6 +67,11 @@ class Parser:
             node = eval(groups[0])(predicate, self.steps)
             self.steps.append(node)
             return node
+            
+        def _append_to_previous_node(self, line):
+            #  TODO  if it's the first one, throw a warning
+            self.steps[-1].predicate += '\n' + line
+            self.steps[-1].predicate = self.steps[-1].predicate.strip()
 
 
 class ReportVisitor:

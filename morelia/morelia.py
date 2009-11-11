@@ -9,19 +9,24 @@ class Parser:
         def __init__(self):  self.steps = []
                 
         def evaluate_file(self, filename, suite):
-            f = open(filename, 'r')
-            self.evaluate_features(f.read(), suite)
+            prose = open(filename, 'r').read()
+            self.parse_features(prose).evaluate(suite)
 
-        def evaluate_features(self, prose, suite):
+        def evaluate_features(self, prose, suite):  #  TODO  retire me!
+            self.parse_features(prose).evaluate(suite)
+
+        def parse_features(self, prose):
             self.parse_feature(prose)
+            return self
+
+        def evaluate(self, suite):
             self.rip(TestVisitor(suite))
 
         def report_file(self, filename, suite):
-            f = open(filename, 'r')
-            self.report_features(f.read(), suite)
+            prose = open(filename, 'r').read()
+            self.parse_features(prose).report(suite)
             
-        def report_features(self, prose, suite):
-            self.parse_feature(prose)
+        def report(self, suite):
             self.rip(ReportVisitor(suite))
             
         def rip(self, v):

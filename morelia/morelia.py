@@ -78,12 +78,12 @@ class TestVisitor:
 class Morelia:
         
     def __init__(self, predicate = '', list = []):
+        self._parse(predicate, list)  #  TODO  list -> Parser
+        
+    def _parse(self, predicate, list):
         self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!
         self.predicate = predicate
         self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
-
-        #~ print ['a', 'b', 'c']
-        #~ print ['a', 'b', 'c'][::-1]
 
         for s in list[::-1]:
             if issubclass(s.__class__, self.my_parent_type()):

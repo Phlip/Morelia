@@ -198,7 +198,7 @@ class And(Step):  pass
 
 if __name__ == '__main__':
     import os
-    os.system('python morelia_suite.py')   #  NOTE  this might not return the correct shell value
+    os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value
 
 #  TODO  maximum munch fails - Given must start a line
 

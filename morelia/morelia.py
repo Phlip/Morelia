@@ -7,8 +7,8 @@ import re
 
 class Parser:
         def __init__(self):  
-            self.thangs = ['Feature', 'Scenario',
-                                        'Step', 'Given', 'When', 'Then', 'And']
+            self.thangs = [Feature, Scenario,
+                                        Step, Given, When, Then, And]
             self.steps = []
 
         def parse_file(self, filename):
@@ -38,7 +38,8 @@ class Parser:
             return self.steps
             
         def _parse_line(self):
-            for thang in self.thangs:
+            for klass in self.thangs:
+                thang = klass().i_look_like()
                 rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
                 m = re.compile(rx).match(self.line)
                 

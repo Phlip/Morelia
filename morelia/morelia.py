@@ -6,25 +6,27 @@ import re
  #  TODO  cron order already!
 
 class Parser:
+        def __init__(self):  self.steps = []
+                
         def evaluate_file(self, filename, suite):
             f = open(filename, 'r')
             self.evaluate_features(f.read(), suite)
 
         def evaluate_features(self, prose, suite):
-            steps = self.parse_feature(prose)
+            self.parse_feature(prose)
             v = TestVisitor(suite)
-            if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-            return steps
+            if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            return self.steps  #  TODO  take this out
 
         def report_file(self, filename, suite):
             f = open(filename, 'r')
             self.report_features(f.read(), suite)
             
         def report_features(self, prose, suite):
-            steps = self.parse_feature(prose)
+            self.parse_feature(prose)
             v = ReportVisitor(suite)
-            if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-            return steps
+            if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            return self.steps  #  TODO  take this out
 
         def parse_feature(self, lines):
             thangs = ['Feature', 'Scenario',
@@ -81,7 +83,7 @@ class Morelia:
     def __init__(self, predicate, list = []):
         self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!
         self.predicate = predicate
-        self.steps = []
+        self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
         
         #~ print ['a', 'b', 'c']
         #~ print ['a', 'b', 'c'][::-1]

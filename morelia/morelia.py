@@ -15,62 +15,62 @@ import re
  #  TODO  cron order already!
 
 class Parser:
-        def __init__(self):  
-            self.thangs = [Feature, Scenario,
-                                        Step, Given, When, Then, And] #,
-                                           # Row]
-            self.steps = []
+    def __init__(self):  
+        self.thangs = [Feature, Scenario,
+                                    Step, Given, When, Then, And,
+                                       Row]
+        self.steps = []
 
-        def parse_file(self, filename):
-            prose = open(filename, 'r').read()
-            return self.parse_features(prose)
+    def parse_file(self, filename):
+        prose = open(filename, 'r').read()
+        return self.parse_features(prose)
 
-        def parse_features(self, prose):
-            self.parse_feature(prose)
-            return self
+    def parse_features(self, prose):
+        self.parse_feature(prose)
+        return self
 
-        def evaluate(self, suite):
-            self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
+    def evaluate(self, suite):
+        self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
 
-        def report(self, suite):
-            self.rip(ReportVisitor(suite))
+    def report(self, suite):
+        self.rip(ReportVisitor(suite))
 
-        def rip(self, v):
-            if self.steps != []:
-                self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+    def rip(self, v):
+        if self.steps != []:
+            self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 
-        def parse_feature(self, lines):    #  TODO  preserve and use line numbers
-            for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
-                if not self._parse_line() and \
-                        0 < len(self.steps):
-                    self._append_to_previous_node()
-                
-            return self.steps
+    def parse_feature(self, lines):    #  TODO  preserve and use line numbers
+        for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
+            if not self._parse_line() and \
+                    0 < len(self.steps):
+                self._append_to_previous_node()
             
-        def _parse_line(self):
-            self.line = self.line.rstrip()
-            
-            for klass in self.thangs:
-                self.thang = klass()
-                name = self.thang.i_look_like()
-                rx = '\s*(' + name + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
-                m = re.compile(rx).match(self.line)
+        return self.steps
+        
+    def _parse_line(self):
+        self.line = self.line.rstrip()
+        
+        for klass in self.thangs:
+            self.thang = klass()
+            name = self.thang.i_look_like()
+            rx = '\s*(' + name + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+            m = re.compile(rx).match(self.line)
 
-                if m and len(m.groups()) > 0:
-                    return self._register_line(m.groups())
+            if m and len(m.groups()) > 0:
+                return self._register_line(m.groups())
 
-        def _register_line(self, groups):
-            predicate = ''
-            if len(groups) > 1:  predicate = groups[1]
-            node = self.thang
-            node._parse(predicate, self.steps)
-            self.steps.append(node)
-            return node
-            
-        def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
-            previous = self.steps[-1]
-            previous.predicate += '\n' + self.line
-            previous.predicate = previous.predicate.strip()
+    def _register_line(self, groups):
+        predicate = ''
+        if len(groups) > 1:  predicate = groups[1]
+        node = self.thang
+        node._parse(predicate, self.steps)
+        self.steps.append(node)
+        return node
+        
+    def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
+        previous = self.steps[-1]
+        previous.predicate += '\n' + self.line
+        previous.predicate = previous.predicate.strip()
 
 
 class ReportVisitor:
@@ -116,7 +116,8 @@ class Morelia:
             
 
 class Row(Morelia):
-    def i_look_like(self):  return '|'
+    def i_look_like(self):  return '\\|'
+    def my_parent_type(self):  return Step
 
 #   TODO  prefix me by 2 more
 

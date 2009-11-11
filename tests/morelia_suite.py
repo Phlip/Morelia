@@ -109,7 +109,7 @@ class MoreliaTest(TestCase):
     def test_i_look_like(self):
         self.assertEqual('Step', Step().i_look_like())
         self.assertEqual('Given', Given().i_look_like())
-        self.assertEqual('|', Row().i_look_like())
+        self.assertEqual('\\|', Row().i_look_like())
 
     def test_Row_parse(self):
         sauce = 'umma | gumma |'  #  TODO  better sauce
@@ -117,9 +117,24 @@ class MoreliaTest(TestCase):
         row._parse(sauce, [])
         assert row.predicate == sauce
 
+    def test_parse_feature_Row(self):
+        p = Parser()
+        p.parse_features(''' | piggy | op |''')
+        print p.steps
+
     def test_Rows_find_step_parents(self):
         p = Parser()
-        p = p.parse_features('Given party <zone>\n|beach|hotel|\n')
+        
+        p = p.parse_features('''Given party <zone>
+                                                    | beach | hotel |
+                                              Then hearty <zone>
+                                                    | work | jail |''')
+
+        given, x, then, y = p.steps
+        self.assertEqual(Row, given.steps[0].__class__)
+        self.assertEqual(Row, then.steps[0].__class__)
+        self.assertEqual('beach | hotel |', given.steps[0].predicate)
+        self.assertEqual('work | jail |', then.steps[0].predicate)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'

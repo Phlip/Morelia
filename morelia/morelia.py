@@ -7,17 +7,10 @@ import re
 
 class Parser:
         def __init__(self):  self.steps = []
-                
+
         def parse_file(self, filename):
             prose = open(filename, 'r').read()
-            self.parse_features(prose)
-            return self
-
-        def evaluate_file(self, filename, suite):  #  TODO  retire me!
-            self.parse_file(filename).evaluate(suite)
-
-        def evaluate_features(self, prose, suite):  #  TODO  retire me!
-            self.parse_features(prose).evaluate(suite)
+            return self.parse_features(prose)
 
         def parse_features(self, prose):
             self.parse_feature(prose)
@@ -26,13 +19,9 @@ class Parser:
         def evaluate(self, suite):
             self.rip(TestVisitor(suite))
 
-        def report_file(self, filename, suite):  #  TODO  retire me
-            prose = open(filename, 'r').read()
-            self.parse_features(prose).report(suite)
-            
         def report(self, suite):
             self.rip(ReportVisitor(suite))
-            
+
         def rip(self, v):
             if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 

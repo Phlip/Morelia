@@ -162,11 +162,10 @@ class MoreliaTest(TestCase):
         steps[0].evaluate(self)
 
     def test_evaluate_file(self):
-        Parser().evaluate_file(pwd + '/morelia.feature', self)
-        #  TODO  evaluate_features(self)
+        Parser().parse_file(pwd + '/morelia.feature').evaluate(self)
         
     def toast_report_file(self):
-        Parser().report_file('morelia.features', self)
+        Parser().parse_file('morelia.features').report(self)
         
     def step_a_feature_file_with_contents(self, file_contents):
         "a feature file with \"([^\"]+)\""
@@ -182,7 +181,9 @@ class MoreliaTest(TestCase):
         self.diagnostic = None
         
         try:
-            self.steps = Parser().evaluate_features(self.file_contents, self)
+            p = Parser()
+            p.parse_features(self.file_contents).evaluate(self)
+            self.steps = p.steps
         except AssertionError, e: 
             self.diagnostic = str(e)
 

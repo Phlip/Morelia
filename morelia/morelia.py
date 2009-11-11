@@ -5,28 +5,61 @@ import re
 
  #  TODO  cron order already!
 
-def evaluate_file(filename, suite): # TODO  move from here down into the Visitor
-    f = open(filename, 'r')
-    evaluate_features(f.read(), suite)
-    
-    
-def evaluate_features(prose, suite):
-    steps = parse_feature(prose)
-    v = TestVisitor(suite)
-    if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-    return steps
+class Parser:
+        def evaluate_file(self, filename, suite):
+            f = open(filename, 'r')
+            self.evaluate_features(f.read(), suite)
 
+        def evaluate_features(self, prose, suite):
+            steps = self.parse_feature(prose)
+            v = TestVisitor(suite)
+            if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            return steps
 
-def report_file(filename, suite):
-    f = open(filename, 'r')
-    report_features(f.read(), suite)
-    
-    
-def report_features(prose, suite):
-    steps = parse_feature(prose)
-    v = ReportVisitor(suite)
-    if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-    return steps
+        def report_file(self, filename, suite):
+            f = open(filename, 'r')
+            self.report_features(f.read(), suite)
+            
+        def report_features(self, prose, suite):
+            steps = self.parse_feature(prose)
+            v = ReportVisitor(suite)
+            if steps != []:  steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            return steps
+
+        def parse_feature(self, lines):
+            thangs = ['Feature', 'Scenario',
+                                'Step', 'Given', 'When', 'Then', 'And']
+            lust = []
+            
+            #  TODO  preserve and use line numbers
+
+        #  CONSIDER  reconstitute the Given\n\tpredicate syntax
+
+            for line in lines.split('\n'):  #  TODO  deal with pesky \r
+                node = None
+                line = line.rstrip()
+                
+                for thang in thangs:
+                    rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+                    m = re.compile(rx).match(line)
+                    
+                    if m and len(m.groups()) > 0:
+                        node = self._register_line(m.groups(), lust)
+                        break
+
+                if not node and 0 < len(lust):
+                    #  TODO  if it's the first one, throw a warning
+                    lust[-1].predicate += '\n' + line
+                    lust[-1].predicate = lust[-1].predicate.strip()
+                    
+            return lust 
+
+        def _register_line(self, groups, lust):
+            predicate = ''
+            if len(groups) > 1:  predicate = groups[1]
+            node = eval(groups[0])(predicate, lust)
+            lust.append(node)
+            return node
 
 
 class ReportVisitor:
@@ -42,39 +75,6 @@ class TestVisitor:
     def visit(self, node):
         # print node.concept + ': ' + node.predicate # TODO  if verbose
         node.evaluate_step(self)
-
-
-def parse_feature(lines):
-    thangs = ['Feature', 'Scenario',
-                        'Step', 'Given', 'When', 'Then', 'And']
-    lust = []
-    
-    #  TODO  preserve and use line numbers
-
-#  CONSIDER  reconstitute the Given\n\tpredicate syntax
-
-    for line in lines.split('\n'):  #  TODO  deal with pesky \r
-        node = None
-        line = line.rstrip()
-        
-        for thang in thangs:
-            rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
-            m = re.compile(rx).match(line)
-            
-            if m and len(m.groups()) > 0:
-                concept = ''
-                if len(m.groups()) > 1: concept = m.groups()[1]  #  TODO  rename to predicate
-                node = eval(thang)(concept, lust)
-                lust.append(node)
-                break
-
-        if not node and 0 < len(lust):
-            #  TODO  if it's the first one, throw a warning
-            lust[-1].predicate += '\n' + line
-            lust[-1].predicate = lust[-1].predicate.strip()
-            
-    return lust 
-
 
 class Morelia:
         

@@ -17,7 +17,7 @@ class MoreliaTest(TestCase):
 
     def test_feature(self):
         input = 'Feature: prevent wild animals from eating us'
-        steps = parse_feature(input)
+        steps = Parser().parse_feature(input)
         step = steps[0]
 
         assert step.__class__ == Feature
@@ -26,7 +26,7 @@ class MoreliaTest(TestCase):
 
     def test_scenario(self):
         input = 'Scenario: range free Vegans'
-        steps = parse_feature(input)
+        steps = Parser().parse_feature(input)
         step = steps[0]
         assert step.__class__ == Scenario
         self.assertEqual(step.concept, 'Scenario')
@@ -34,7 +34,7 @@ class MoreliaTest(TestCase):
         
     def test___scenario(self):
         input = '  Scenario: with spacies'
-        steps = parse_feature(input)
+        steps = Parser().parse_feature(input)
         step = steps[0]
         assert step.__class__ == Scenario
         self.assertEqual(step.concept, 'Scenario')
@@ -42,7 +42,7 @@ class MoreliaTest(TestCase):
 
     def test_given_a_string_with_given_in_it(self):
         input = 'Given a string with Given in it\nAnd another string'
-        steps = parse_feature(input)
+        steps = Parser().parse_feature(input)
         step = steps[0]
         #~ print steps[1].concept
         #~ print steps[1].predicate
@@ -53,7 +53,7 @@ class MoreliaTest(TestCase):
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation
                         Scenario: starz upon tharz bucks'''
-        steps = parse_feature(input)
+        steps = Parser().parse_feature(input)
         step = steps[0]
         assert step.__class__ == Feature
         self.assertEqual(step.concept, 'Feature')
@@ -72,7 +72,7 @@ class MoreliaTest(TestCase):
 
     def test_parse_scenario(self):
         scenario = self.pet_scenario()
-        steps = parse_feature(scenario)
+        steps = Parser().parse_feature(scenario)
         step_0, step_1, step_2, step_3, step_4 = steps
         self.assertEqual(step_0.concept, 'Scenario')
         self.assertEqual(step_0.predicate, 'See all vendors')
@@ -86,17 +86,17 @@ class MoreliaTest(TestCase):
         self.assertEqual(step_4.predicate,    'I should see the first 3 vendor names')
 
     def test_strip_predicates(self):
-        step = parse_feature('  Given   gangsta girl   \t     ')[0]
+        step = Parser().parse_feature('  Given   gangsta girl   \t     ')[0]
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'gangsta girl')
 
     def test_bond_predicates(self):
-        step = parse_feature('  Given\n   elf quest   \t     ')[0]
+        step = Parser().parse_feature('  Given\n   elf quest   \t     ')[0]
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'elf quest')
 
     def test_scenarios_link_to_their_steps(self):
-        steps = parse_feature(self.pet_scenario())
+        steps = Parser().parse_feature(self.pet_scenario())
         scenario, step_1, step_2, step_3, step_4 = steps
         self.assertEqual([step_1, step_2, step_3, step_4], scenario.steps)
 
@@ -153,20 +153,20 @@ class MoreliaTest(TestCase):
 
     def step_multiline_predicate(self):
         feature = 'Given umma\ngumma'
-        steps = parse_feature(feature)
+        steps = Parser().parse_feature(feature)
         self.assertEqual('umma\ngumma', steps[0].predicate)
 
     def test_step_multiline_predicate(self):
         feature = 'When multiline predicate'
-        steps = parse_feature(feature)
+        steps = Parser().parse_feature(feature)
         steps[0].evaluate(self)
 
     def test_evaluate_file(self):
-        evaluate_file(pwd + '/morelia.feature', self)
+        Parser().evaluate_file(pwd + '/morelia.feature', self)
         #  TODO  evaluate_features(self)
         
     def toast_report_file(self):
-        report_file('morelia.features', self)
+        Parser().report_file('morelia.features', self)
         
     def step_a_feature_file_with_contents(self, file_contents):
         "a feature file with \"([^\"]+)\""
@@ -182,7 +182,7 @@ class MoreliaTest(TestCase):
         self.diagnostic = None
         
         try:
-            self.steps = evaluate_features(self.file_contents, self)
+            self.steps = Parser().evaluate_features(self.file_contents, self)
         except AssertionError, e: 
             self.diagnostic = str(e)
 

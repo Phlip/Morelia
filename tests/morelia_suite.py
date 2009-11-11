@@ -3,7 +3,8 @@
 import unittest
 from unittest import TestCase
 import re
-from morelia import *
+
+from morelia.morelia import *
 
  #  TODO  cron order already!
 

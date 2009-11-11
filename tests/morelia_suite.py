@@ -125,16 +125,21 @@ class MoreliaTest(TestCase):
     def test_Rows_find_step_parents(self):
         p = Parser()
         
-        p = p.parse_features('''Given party <zone>
-                                                    | beach | hotel |
-                                              Then hearty <zone>
-                                                    | work | jail |''')
+        self.table_scene = p.parse_features('''Scenario: permute tables
+                                                   Given party <zone>
+                                                        | zone  |
+                                                        | beach |
+                                                        | hotel |
+                                                   Then hearty <crunk>
+                                                        | crunk | 
+                                                        | work  | 
+                                                        | jail  |''')
 
-        given, x, then, y = p.steps
+        given, then, = self.table_scene.steps[0].steps
         self.assertEqual(Row, given.steps[0].__class__)
         self.assertEqual(Row, then.steps[0].__class__)
-        self.assertEqual('beach | hotel |', given.steps[0].predicate)
-        self.assertEqual('work | jail |', then.steps[0].predicate)
+        self.assertEqual('zone  |', given.steps[0].predicate)
+        self.assertEqual('crunk |', then.steps[0].predicate)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'

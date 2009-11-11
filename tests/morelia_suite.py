@@ -111,6 +111,12 @@ class MoreliaTest(TestCase):
         self.assertEqual('Given', Given().i_look_like())
         self.assertEqual('|', Row().i_look_like())
 
+    def test_Row_parse(self):
+        sauce = 'umma | gumma |'
+        row = Row()
+        row._parse(sauce, [])
+        assert row.predicate == sauce
+
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'brings all the (boys|girls) to (.*) yard'
         self.youth = youth

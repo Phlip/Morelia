@@ -105,7 +105,7 @@ class Morelia:
     def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
             
 
-class Row:  #  TODO (Morelia)
+class Row(Morelia):
     def i_look_like(self):  return '|'
         
 class Viridis(Morelia):

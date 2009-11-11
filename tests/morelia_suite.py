@@ -100,6 +100,12 @@ class MoreliaTest(TestCase):
         scenario, step_1, step_2, step_3, step_4 = steps
         self.assertEqual([step_1, step_2, step_3, step_4], scenario.steps)
 
+    def test_how_to_identify_trees_from_quite_a_long_distance_away(self):
+        assert Given != Step
+        assert issubclass(Given, Step)
+        assert issubclass(Given, Given)
+        assert not issubclass(Scenario, Given)
+
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'brings all the (boys|girls) to (.*) yard'
         self.youth = youth

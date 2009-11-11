@@ -17,3 +17,4 @@ Scenario: When we challenge Morelia with a Step with no matching
     When Moralia evaluates the file
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
+

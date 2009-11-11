@@ -3,8 +3,12 @@
 import unittest
 from unittest import TestCase
 import re
-
-from morelia.morelia import *
+import sys
+import os
+pwd = os.path.dirname(os.path.realpath(__file__))
+morelia_path = os.path.join(pwd, '../morelia')
+sys.path.insert(0, morelia_path)
+from morelia import *
 
  #  TODO  cron order already!
 
@@ -152,7 +156,7 @@ class MoreliaTest(TestCase):
         steps[0].evaluate(self)
 
     def test_evaluate_file(self):
-        evaluate_file('morelia.features', self)
+        evaluate_file(pwd + '/morelia.feature', self)
         #  TODO  evaluate_features(self)
         
     def toast_report_file(self):

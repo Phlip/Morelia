@@ -112,13 +112,13 @@ class MoreliaTest(TestCase):
         self.assertEqual('|', Row().i_look_like())
 
     def test_Row_parse(self):
-        sauce = 'umma | gumma |'
+        sauce = 'umma | gumma |'  #  TODO  better sauce
         row = Row()
         row._parse(sauce, [])
         assert row.predicate == sauce
 
-    def step_my_milkshake(self, youth = 'boys', article = 'the'):
-        'brings all the (boys|girls) to (.*) yard'
+    def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
+        'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'
         self.youth = youth
     
     def test_find_step_by_name(self):
@@ -128,15 +128,15 @@ class MoreliaTest(TestCase):
         self.assertEqual(expect, method)
 
     def test_find_step_by_doc_string(self):
-        step = Given('brings all the boys to the yard')
+        step = Given('my milkshake brings all the boys to the yard')
         method = step.find_by_doc_string(self)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_with_match(self):
-        step = Given('brings all the girls to the yard')
+        step = Given('my milkshake brings all the girls to the yard')
         step.find_by_doc_string(self)
-        self.assertEqual(('girls', 'the'), step.matches)
+        self.assertEqual(('girls', 'the', ''), step.matches)  #  TODO  the , '' will go away!
 
     def test_step_not_found(self):
         step = Given('not there')
@@ -151,7 +151,7 @@ class MoreliaTest(TestCase):
         assert None == step.find_by_doc_string(self)
         
     def step_evaluate_step_by_doc_string(self):
-        step = Given('brings all the girls to a yard')
+        step = Given('my milkshake brings all the girls to a yard')
         self.youth = 'boys'
         step.evaluate(self)
         self.assertEqual('girls', self.youth)  # Uh...

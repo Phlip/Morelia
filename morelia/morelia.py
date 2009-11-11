@@ -8,7 +8,8 @@ import re
 class Parser:
         def __init__(self):  
             self.thangs = [Feature, Scenario,
-                                        Step, Given, When, Then, And]
+                                        Step, Given, When, Then, And] #,
+                                           # Row]
             self.steps = []
 
         def parse_file(self, filename):
@@ -83,7 +84,7 @@ class Morelia:
         self._parse(predicate, list)  #  TODO  list -> Parser
 
     def _parse(self, predicate, list):
-        self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!
+        self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!, & use i_look_like!
         self.predicate = predicate
         self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
 
@@ -107,7 +108,10 @@ class Morelia:
 
 class Row(Morelia):
     def i_look_like(self):  return '|'
-        
+
+#   TODO  prefix me by 2 more
+
+
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
@@ -145,12 +149,13 @@ class Viridis(Morelia):
             doc = method.__doc__
             
             if doc:
-                doc = re.compile('^' + doc + '$')  #  CONSIDER deal with users who put in the ^$
+                doc = re.compile('^' + doc + '$', re.MULTILINE)  #  CONSIDER deal with users who put in the ^$
                 m = doc.match(self.predicate)
 
                 if m:
                     self.matches = m.groups()
                     return method
+                    
         return None
 
     def find_steps(self, suite, regexp):
@@ -162,7 +167,7 @@ class Viridis(Morelia):
 
         return list
 
-    def evaluate_step(self, v):  pass
+    def evaluate_step(self, v):  pass  #  TODO retire me!
 
     def evaluate(self, suite):  #  TODO  retire me, and quit passing suite around
         self.find_step_name(suite)

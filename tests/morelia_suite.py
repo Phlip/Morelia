@@ -106,6 +106,9 @@ class MoreliaTest(TestCase):
         assert issubclass(Given, Given)
         assert not issubclass(Scenario, Given)
 
+    def test_i_look_like(self):
+        Step().i_look_like()
+
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'brings all the (boys|girls) to (.*) yard'
         self.youth = youth

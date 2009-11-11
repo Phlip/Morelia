@@ -20,7 +20,7 @@ class Parser:
             return self
 
         def evaluate(self, suite):
-            self.rip(TestVisitor(suite))
+            self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
 
         def report(self, suite):
             self.rip(ReportVisitor(suite))
@@ -74,18 +74,18 @@ class TestVisitor:
 
 class Morelia:
         
-    def __init__(self, predicate, list = []):
+    def __init__(self, predicate = '', list = []):
         self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!
         self.predicate = predicate
         self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
-        
+
         #~ print ['a', 'b', 'c']
         #~ print ['a', 'b', 'c'][::-1]
-        
+
         for s in list[::-1]:
             if issubclass(s.__class__, self.my_parent_type()):
                 s.steps.append(self)  #  TODO  squeek if can't find parent
-                break
+                return
 
     def prefix(self):  return ''
     def my_parent_type(self):  None    
@@ -97,6 +97,7 @@ class Morelia:
         for step in self.steps:  step.evaluate_steps(v)
             
     def evaluate_step(self, v):  pass
+    def i_look_like(self):  print str(self.__class__)
             
 
 class Viridis(Morelia):

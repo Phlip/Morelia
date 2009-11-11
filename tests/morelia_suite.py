@@ -108,7 +108,8 @@ class MoreliaTest(TestCase):
 
     def test_i_look_like(self):
         self.assertEqual('Step', Step().i_look_like())
-        assert 'Given' == Given().i_look_like()
+        self.assertEqual('Given', Given().i_look_like())
+        self.assertEqual('|', Row().i_look_like())
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'brings all the (boys|girls) to (.*) yard'

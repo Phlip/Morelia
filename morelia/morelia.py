@@ -87,7 +87,7 @@ class Morelia:
         #~ print ['a', 'b', 'c'][::-1]
         
         for s in list[::-1]:
-            if s.__class__ == self.my_parent_type():
+            if issubclass(s.__class__, self.my_parent_type()):
                 s.steps.append(self)  #  TODO  squeek if can't find parent
                 break
 

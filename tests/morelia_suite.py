@@ -117,6 +117,10 @@ class MoreliaTest(TestCase):
         row._parse(sauce, [])
         assert row.predicate == sauce
 
+    def test_Rows_find_step_parents(self):
+        p = Parser()
+        p = p.parse_features('Given party <zone>\n|beach|hotel|\n')
+
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'
         self.youth = youth

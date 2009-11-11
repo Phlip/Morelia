@@ -122,7 +122,7 @@ class MoreliaTest(TestCase):
         p.parse_features(''' | piggy | op |''')
         print p.steps # TODO
 
-    def test_Rows_find_step_parents(self):
+    def assemble_scene_table(self):
         p = Parser()
         
         self.table_scene = p.parse_features('''Scenario: permute tables
@@ -135,6 +135,8 @@ class MoreliaTest(TestCase):
                                                         | work  | 
                                                         | jail  |''')
 
+    def test_Rows_find_step_parents(self):
+        self.assemble_scene_table()
         given, then, = self.table_scene.steps[0].steps
         self.assertEqual(Row, given.steps[0].__class__)
         self.assertEqual(Row, then.steps[0].__class__)

@@ -29,8 +29,7 @@ class Parser:
             if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 
         def parse_feature(self, lines):    #  TODO  preserve and use line numbers
-            for line in lines.split('\n'):      #  TODO  deal with pesky \r
-                self.line = line.rstrip()
+            for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
                 if not self._parse_line() and \
                         0 < len(self.steps):
                     self._append_to_previous_node()
@@ -38,11 +37,13 @@ class Parser:
             return self.steps
             
         def _parse_line(self):
+            self.line = self.line.rstrip()
+            
             for klass in self.thangs:
                 thang = klass().i_look_like()
                 rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
                 m = re.compile(rx).match(self.line)
-                
+
                 if m and len(m.groups()) > 0:
                     return self._register_line(m.groups())
 

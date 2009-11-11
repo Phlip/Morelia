@@ -41,8 +41,9 @@ class Parser:
             self.line = self.line.rstrip()
             
             for klass in self.thangs:
-                thang = klass().i_look_like()  #  CONSIDER  now that you have one don't throw it away
-                rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+                self.thang = klass()
+                name = self.thang.i_look_like()
+                rx = '\s*(' + name + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
                 m = re.compile(rx).match(self.line)
 
                 if m and len(m.groups()) > 0:
@@ -51,7 +52,8 @@ class Parser:
         def _register_line(self, groups):
             predicate = ''
             if len(groups) > 1:  predicate = groups[1]
-            node = eval(groups[0])(predicate, self.steps)
+            node = self.thang
+            node._parse(predicate, self.steps)
             self.steps.append(node)
             return node
             
@@ -79,7 +81,7 @@ class Morelia:
         
     def __init__(self, predicate = '', list = []):
         self._parse(predicate, list)  #  TODO  list -> Parser
-        
+
     def _parse(self, predicate, list):
         self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!
         self.predicate = predicate

@@ -115,13 +115,6 @@ class Morelia:
     def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
             
 
-class Row(Morelia):
-    def i_look_like(self):  return '\\|'
-    def my_parent_type(self):  return Step
-
-#   TODO  prefix me by 2 more
-
-
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
@@ -212,8 +205,12 @@ class Given(Step):   pass  #  TODO  distinguish these by fault signatures!
 class When(Step):   pass
 class Then(Step):  pass
 class And(Step):  pass
-    
- # hey! Where did the complexity go??
+
+class Row(Morelia):
+    def i_look_like(self):  return '\\|'
+    def my_parent_type(self):  return Step
+
+#   TODO  prefix me by 2 more
 
 
 if __name__ == '__main__':

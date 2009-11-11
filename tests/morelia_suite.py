@@ -120,7 +120,7 @@ class MoreliaTest(TestCase):
     def test_parse_feature_Row(self):
         p = Parser()
         p.parse_features(''' | piggy | op |''')
-        print p.steps
+        print p.steps # TODO
 
     def test_Rows_find_step_parents(self):
         p = Parser()

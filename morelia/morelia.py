@@ -97,7 +97,7 @@ class Morelia:
         for step in self.steps:  step.evaluate_steps(v)
             
     def evaluate_step(self, v):  pass
-    def i_look_like(self):  print str(self.__class__)
+    def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
             
 
 class Viridis(Morelia):

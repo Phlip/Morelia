@@ -14,9 +14,7 @@ class Parser:
 
         def evaluate_features(self, prose, suite):
             self.parse_feature(prose)
-            v = TestVisitor(suite)
-            if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-            return self.steps  #  TODO  take this out
+            self.rip(TestVisitor(suite))
 
         def report_file(self, filename, suite):
             f = open(filename, 'r')
@@ -24,14 +22,15 @@ class Parser:
             
         def report_features(self, prose, suite):
             self.parse_feature(prose)
-            v = ReportVisitor(suite)
+            self.rip(ReportVisitor(suite))
+            
+        def rip(self, v):
             if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-            return self.steps  #  TODO  take this out
 
         def parse_feature(self, lines):
             thangs = ['Feature', 'Scenario',
                                 'Step', 'Given', 'When', 'Then', 'And']
-            lust = []
+            lust = []  #  TODO  become self.steps
             
             #  TODO  preserve and use line numbers
 

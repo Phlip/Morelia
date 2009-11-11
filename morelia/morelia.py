@@ -30,8 +30,7 @@ class Parser:
         def parse_feature(self, lines):
             thangs = ['Feature', 'Scenario',
                                 'Step', 'Given', 'When', 'Then', 'And']
-            lust = []  #  TODO  become self.steps
-            
+                        
             #  TODO  preserve and use line numbers
 
         #  CONSIDER  reconstitute the Given\n\tpredicate syntax
@@ -45,21 +44,21 @@ class Parser:
                     m = re.compile(rx).match(line)
                     
                     if m and len(m.groups()) > 0:
-                        node = self._register_line(m.groups(), lust)
+                        node = self._register_line(m.groups())
                         break
 
-                if not node and 0 < len(lust):
+                if not node and 0 < len(self.steps):
                     #  TODO  if it's the first one, throw a warning
-                    lust[-1].predicate += '\n' + line
-                    lust[-1].predicate = lust[-1].predicate.strip()
+                    self.steps[-1].predicate += '\n' + line
+                    self.steps[-1].predicate = self.steps[-1].predicate.strip()
                     
-            return lust 
+            return self.steps
 
-        def _register_line(self, groups, lust):
+        def _register_line(self, groups):
             predicate = ''
             if len(groups) > 1:  predicate = groups[1]
-            node = eval(groups[0])(predicate, lust)
-            lust.append(node)
+            node = eval(groups[0])(predicate, self.steps)
+            self.steps.append(node)
             return node
 
 

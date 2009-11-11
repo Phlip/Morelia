@@ -6,7 +6,10 @@ import re
  #  TODO  cron order already!
 
 class Parser:
-        def __init__(self):  self.steps = []
+        def __init__(self):  
+            self.thangs = ['Feature', 'Scenario',
+                                        'Step', 'Given', 'When', 'Then', 'And']
+            self.steps = []
 
         def parse_file(self, filename):
             prose = open(filename, 'r').read()
@@ -25,30 +28,22 @@ class Parser:
         def rip(self, v):
             if self.steps != []:  self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 
-        def parse_feature(self, lines):
-            thangs = ['Feature', 'Scenario',
-                                'Step', 'Given', 'When', 'Then', 'And']
-                        
-            #  TODO  preserve and use line numbers
-
-        #  CONSIDER  reconstitute the Given\n\tpredicate syntax
-
-            for line in lines.split('\n'):  #  TODO  deal with pesky \r
-                node = None
-                line = line.rstrip()
+        def parse_feature(self, lines):    #  TODO  preserve and use line numbers
+            for line in lines.split('\n'):      #  TODO  deal with pesky \r
+                self.line = line.rstrip()
+                if not self._parse_line() and \
+                        0 < len(self.steps):
+                    self._append_to_previous_node()
                 
-                for thang in thangs:
-                    rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
-                    m = re.compile(rx).match(line)
-                    
-                    if m and len(m.groups()) > 0:
-                        node = self._register_line(m.groups())
-                        break
-
-                if not node and 0 < len(self.steps):
-                    self._append_to_previous_node(line)
-                    
             return self.steps
+            
+        def _parse_line(self):
+            for thang in self.thangs:
+                rx = '\s*(' + thang + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+                m = re.compile(rx).match(self.line)
+                
+                if m and len(m.groups()) > 0:
+                    return self._register_line(m.groups())
 
         def _register_line(self, groups):
             predicate = ''
@@ -57,10 +52,10 @@ class Parser:
             self.steps.append(node)
             return node
             
-        def _append_to_previous_node(self, line):
-            #  TODO  if it's the first one, throw a warning
-            self.steps[-1].predicate += '\n' + line
-            self.steps[-1].predicate = self.steps[-1].predicate.strip()
+        def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
+            previous = self.steps[-1]
+            previous.predicate += '\n' + self.line
+            previous.predicate = previous.predicate.strip()
 
 
 class ReportVisitor:

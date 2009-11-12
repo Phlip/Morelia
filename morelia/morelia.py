@@ -30,11 +30,7 @@ class Parser:
         
         for scene in self.steps[0].steps:
             if scene._embellish():
-                scene2 = Scenario()
-                scene2.concept = scene
-                scene2.predicate = scene.predicate
-                scene2.steps = scene.steps  #  shallow copy!
-                scene2.row_indices = scene.row_indices[:]
+                scene2 = scene.copy()
                 scene2.row_indices[0] += 1
                 self.steps[0].steps.append(scene2)
                 break
@@ -213,6 +209,15 @@ class Scenario(Morelia):
             self.row_indices.append(rowz)
         
         return self.row_indices.count(1) > 0
+
+    def copy(self):
+        scene2 = Scenario()
+        scene2.concept      = self.concept
+        scene2.predicate    = self.predicate
+        scene2.steps          = self.steps  #  shallow copy!
+        scene2.row_indices = self.row_indices[:]
+        return scene2
+
 
 class Step(Viridis):
     def my_parent_type(self):  return Scenario

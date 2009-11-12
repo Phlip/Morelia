@@ -122,26 +122,31 @@ class MoreliaTest(TestCase):
         p.parse_features(''' | piggy | op |''')
         print p.steps # TODO
 
-    def assemble_scene_table(self):
+    def assemble_scene_table(self):        
+        scene = '''Feature: permute tables
+                       Scenario: turn one feature into many
+                           Given party <zone>
+                                | zone  |
+                                | beach |
+                                | hotel |
+                           Then hearty <crunk>
+                                | crunk | 
+                                | work  | 
+                                | jail  |'''
         p = Parser()
-        
-        self.table_scene = p.parse_features('''Scenario: permute tables
-                                                   Given party <zone>
-                                                        | zone  |
-                                                        | beach |
-                                                        | hotel |
-                                                   Then hearty <crunk>
-                                                        | crunk | 
-                                                        | work  | 
-                                                        | jail  |''')
+        self.table_scene = p.parse_features(scene)
 
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()
-        given, then, = self.table_scene.steps[0].steps
+        given, then, = self.table_scene.steps[0].steps[0].steps
         self.assertEqual(Row, given.steps[0].__class__)
         self.assertEqual(Row, then.steps[0].__class__)
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |', then.steps[0].predicate)
+
+    def test_Rows_find_step_parents(self):
+        self.assemble_scene_table()
+        feature = self.table_scene.steps[0]
 
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'

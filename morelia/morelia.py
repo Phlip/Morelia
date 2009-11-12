@@ -65,7 +65,6 @@ class Parser:
         node = self.thang
         node._parse(predicate, self.steps)
         self.steps.append(node)
-        node._embellish()
         return node
 
     def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
@@ -195,9 +194,13 @@ class Scenario(Morelia):
         visitor.suite.setUp()
         Morelia.evaluate_steps(self, visitor)
         visitor.suite.tearDown()  #  TODO  ensure this!
-        
+
     def _embellish(self):
-        self.row_indices = [1,1]
+        self.row_indices = []
+        
+        for step in self.steps:
+            rowz = int(step.steps != [] and step.steps[0].__class__ is Row)
+            self.row_indices.append(rowz)
 
 class Step(Viridis):
     def my_parent_type(self):  return Scenario

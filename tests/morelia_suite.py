@@ -156,8 +156,8 @@ class MoreliaTest(TestCase):
         scene = feature.steps[0]
         self.assertEqual([1,0,1], scene.row_indices)
 
-    def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
-        'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'
+    def step_my_milkshake(self, youth = 'boys', article = 'the'):
+        'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'
         self.youth = youth
     
     def test_find_step_by_name(self):
@@ -175,7 +175,7 @@ class MoreliaTest(TestCase):
     def test_find_step_with_match(self):
         step = Given('my milkshake brings all the girls to the yard')
         step.find_by_doc_string(self)
-        self.assertEqual(('girls', 'the', ''), step.matches)  #  TODO  the , '' will go away!
+        self.assertEqual(('girls', 'the'), step.matches)
 
     def test_step_not_found(self):
         step = Given('not there')

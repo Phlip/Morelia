@@ -27,9 +27,20 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
+        
         for scene in self.steps[0].steps:
-            scene._embellish()
-        return self
+            if scene._embellish():
+                scene2 = Scenario()
+                scene2.concept = scene
+                scene2.predicate = scene.predicate
+                scene2.steps = scene.steps  #  shallow copy!
+                scene2.row_indices = scene.row_indices[:]
+                scene2.row_indices[0] += 1
+                self.steps[0].steps.append(scene2)
+                break
+                #scene2.
+                
+        return self  #  TODO  what happens when these ain't scenes?
 
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
@@ -200,6 +211,8 @@ class Scenario(Morelia):
         for step in self.steps:
             rowz = int(step.steps != [] and step.steps[0].__class__ is Row)
             self.row_indices.append(rowz)
+        
+        return self.row_indices.count(1) > 0
 
 class Step(Viridis):
     def my_parent_type(self):  return Scenario

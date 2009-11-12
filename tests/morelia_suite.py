@@ -149,12 +149,16 @@ class MoreliaTest(TestCase):
         feature = self.table_scene.steps[0]
         scene = feature.steps[0]
         self.assertEqual([1,1], scene.row_indices)
+        scene = feature.steps[1]
+        self.assertEqual([2,1], scene.row_indices)
 
     def test_twizzle_gapped_Rows(self):
         self.assemble_scene_table('Step whatever\n')
         feature = self.table_scene.steps[0]
         scene = feature.steps[0]
         self.assertEqual([1,0,1], scene.row_indices)
+        scene = feature.steps[1]
+        self.assertEqual([2,0,1], scene.row_indices)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'

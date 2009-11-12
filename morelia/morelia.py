@@ -197,6 +197,7 @@ class Scenario(Morelia):
     def evaluate_steps(self, visitor):
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
+        print self.predicate
         visitor.suite.setUp()
         Morelia.evaluate_steps(self, visitor)
         visitor.suite.tearDown()  #  TODO  ensure this!

@@ -148,14 +148,12 @@ class MoreliaTest(TestCase):
         self.assemble_scene_table()
         feature = self.table_scene.steps[0]
         scene = feature.steps[0]
-        scene._embellish()  #  TODO  de-virtualize that
         self.assertEqual([1,1], scene.row_indices)
 
     def test_twizzle_gapped_Rows(self):
         self.assemble_scene_table('Step whatever\n')
         feature = self.table_scene.steps[0]
         scene = feature.steps[0]
-        scene._embellish()  #  TODO  move back into the parser as a fixup pass
         self.assertEqual([1,0,1], scene.row_indices)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):

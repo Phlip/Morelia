@@ -27,6 +27,8 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
+        for scene in self.steps[0].steps:
+            scene._embellish()
         return self
 
     def evaluate(self, suite):
@@ -104,9 +106,6 @@ class Morelia:
 
     def prefix(self):  return ''
     def my_parent_type(self):  None    
-
-    def _embellish(self):  pass
-        # self.row_indices = []
 
         #  TODO  all files must start with a Feature and contain only one
         

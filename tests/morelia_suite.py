@@ -122,17 +122,17 @@ class MoreliaTest(TestCase):
         p.parse_features(''' | piggy | op |''')
         print p.steps # TODO
 
-    def assemble_scene_table(self):        
+    def assemble_scene_table(self, inject = ''):        
         scene = '''Feature: permute tables
                        Scenario: turn one feature into many
                            Given party <zone>
                                 | zone  |
                                 | beach |
                                 | hotel |
-                           Then hearty <crunk>
+                           %sThen hearty <crunk>
                                 | crunk | 
                                 | work  | 
-                                | jail  |'''
+                                | jail  |''' % inject
         p = Parser()
         self.table_scene = p.parse_features(scene)
 
@@ -144,9 +144,11 @@ class MoreliaTest(TestCase):
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |', then.steps[0].predicate)
 
-    def test_Rows_find_step_parents(self):
+    def test_twizzle_Rows(self):
         self.assemble_scene_table()
         feature = self.table_scene.steps[0]
+        scene = feature.steps[0]
+        self.assertEqual([1,1], scene.row_indices)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the', TODO_take_this_out = ''):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard(.*)'

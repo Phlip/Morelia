@@ -65,8 +65,9 @@ class Parser:
         node = self.thang
         node._parse(predicate, self.steps)
         self.steps.append(node)
+        node._embellish()
         return node
-        
+
     def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
         previous = self.steps[-1]
         previous.predicate += '\n' + self.line
@@ -104,7 +105,10 @@ class Morelia:
 
     def prefix(self):  return ''
     def my_parent_type(self):  None    
-        
+
+    def _embellish(self):  pass
+        # self.row_indices = []
+
         #  TODO  all files must start with a Feature and contain only one
         
     def evaluate_steps(self, v): 
@@ -191,6 +195,9 @@ class Scenario(Morelia):
         visitor.suite.setUp()
         Morelia.evaluate_steps(self, visitor)
         visitor.suite.tearDown()  #  TODO  ensure this!
+        
+    def _embellish(self):
+        self.row_indices = [1,1]
 
 class Step(Viridis):
     def my_parent_type(self):  return Scenario

@@ -132,6 +132,7 @@ class MoreliaTest(TestCase):
                            %sThen hearty <crunk>
                                 | crunk | 
                                 | work  | 
+                                | mall  | 
                                 | jail  |''' % inject
         p = Parser()
         self.table_scene = p.parse_features(scene)
@@ -147,12 +148,12 @@ class MoreliaTest(TestCase):
     def test_Scenes_count_Row_dimensions(self):
         self.assemble_scene_table()
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([3, 3], dims)
+        self.assertEqual([3, 4], dims)
 
     def test_Scenes_count_more_Row_dimensions(self):
         self.assemble_scene_table('Step whatever\n')
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([3, 0, 3], dims)
+        self.assertEqual([3, 0, 4], dims)
 
     def test_twizzle_Rows(self):
         self.assemble_scene_table()

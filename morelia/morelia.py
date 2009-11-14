@@ -30,6 +30,9 @@ class Parser:
         
         for scene in self.steps[0].steps:
             if scene._embellish():
+                dims = scene.count_Row_dimensions()
+        #        for x in range(0, len(dims)):
+           #         print x, dims[x]
                 scene2 = scene.copy()
                 scene2.row_indices[0] += 1
                 self.steps[0].steps.append(scene2)

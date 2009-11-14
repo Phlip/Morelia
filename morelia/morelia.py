@@ -98,7 +98,7 @@ class TestVisitor:
 
 class Morelia:
         
-    def __init__(self, predicate = '', list = []):
+    def __init__(self, predicate = '', list = []):  #  TODO  take these out
         self._parse(predicate, list)  #  TODO  list -> Parser
 
     def _parse(self, predicate, list):
@@ -122,6 +122,13 @@ class Morelia:
             
     def evaluate_step(self, v):  pass
     def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
+    def count_dimensions(self):  
+        dim = 0
+        for step in self.steps:
+            dim += step.count_dimension()
+        return dim
+    def count_dimension(self):    # TODO  beautify this crud!
+        return 0
             
 
 class Viridis(Morelia):
@@ -197,7 +204,7 @@ class Scenario(Morelia):
     def evaluate_steps(self, visitor):
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
-        print self.predicate
+        # print self.predicate  #  TODO  if verbose
         visitor.suite.setUp()
         Morelia.evaluate_steps(self, visitor)
         visitor.suite.tearDown()  #  TODO  ensure this!
@@ -210,6 +217,12 @@ class Scenario(Morelia):
             self.row_indices.append(rowz)
         
         return self.row_indices.count(1) > 0
+
+    def count_Row_dimensions(self):
+        dims = []
+        for step in self.steps:
+            dims.append(step.count_dimensions())
+        return dims
 
     def copy(self):
         scene2 = Scenario()
@@ -237,6 +250,8 @@ class And(Step):  pass
 class Row(Morelia):
     def i_look_like(self):  return '\\|'
     def my_parent_type(self):  return Step
+    def count_dimension(self):
+        return 1  #  TODO  raise an error (if the table has one row!)
 
 #   TODO  prefix me by 2 more
 

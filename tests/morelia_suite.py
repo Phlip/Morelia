@@ -144,6 +144,16 @@ class MoreliaTest(TestCase):
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |', then.steps[0].predicate)
 
+    def test_Scenes_count_Row_dimensions(self):
+        self.assemble_scene_table()
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([3, 3], dims)
+
+    def test_Scenes_count_more_Row_dimensions(self):
+        self.assemble_scene_table('Step whatever\n')
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([3, 0, 3], dims)
+
     def test_twizzle_Rows(self):
         self.assemble_scene_table()
         feature = self.table_scene.steps[0]

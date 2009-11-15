@@ -35,16 +35,14 @@ class Parser:
                 print scenes.index(scene)
                 dims = scene.count_Row_dimensions()
 
-                scene2 = scene.copy(scenes, [1])
-                
-                if len(scene2.row_indices) > 1:
-                    scene2 = scene.copy(scenes, [0, 1])
+                scene.copy(scenes, [1])
                 
                 if len(dims) > 1:
-                    scene2 = scene.copy(scenes, [1, 1])
+                    scene.copy(scenes, [0, 1])
+                    scene.copy(scenes, [1, 1])
                     
-                    if len(scene2.row_indices) > 1:
-                        scene2 = scene.copy(scenes, [0, 2])
+                    if dims[0] > 0:
+                        scene.copy(scenes, [0, 2])
                         scene.copy(scenes, [1, 2])
                                         
                 break
@@ -248,7 +246,6 @@ class Scenario(Morelia):
             scene2.row_indices[x] += offsets[x]
         scenes.append(scene2) #  CONSIDER append to parent?
 #  TODO  this is appending to the end could we instead insert after the given step?
-        return scene2
 
 
 class Step(Viridis):

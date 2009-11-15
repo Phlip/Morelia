@@ -168,6 +168,10 @@ class MoreliaTest(TestCase):
         self.assertEqual([1, 2], scene.row_indices)
         scene = feature.steps[3]
         self.assertEqual([2, 2], scene.row_indices)
+        scene = feature.steps[4]
+        self.assertEqual([1, 3], scene.row_indices)
+        #~ scene = feature.steps[4]
+        #~ self.assertEqual([1, 3], scene.row_indices)
 
 #  TODO  decorate exceptions failures with their source feature lines
 #  TODO  COMMENTS!!!

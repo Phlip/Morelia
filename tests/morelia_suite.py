@@ -189,18 +189,13 @@ class MoreliaTest(TestCase):
                                 | this  shows | bad but permitted     |
                                 | style with  | columns out of order! |%s''' % (even_moar, moar)
         p = Parser()
-        #print scene
         self.table_scene = p.parse_features(scene)
 
 #  TODO  permit gaps & comments in tables
 
     def test_dimensions_with_leading_gaps_are_okay(self):
-        print 'leading dims'
         self.assemble_short_scene_table('', '\nGiven some dumb step')
         feature = self.table_scene.steps[0]
-        print len(feature.steps)
-        
-        print feature.steps[0].predicate
         self.assertEqual([0, 1], feature.steps[0].row_indices)
         self.assertEqual([0, 2], feature.steps[1].row_indices)
 

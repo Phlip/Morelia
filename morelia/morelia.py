@@ -47,6 +47,9 @@ class Parser:
                     for z in range(dims[2] - 1):
                         self._unroll(scene, scenes, dims, [z])
 
+                if len(dims) > 3:  #  or, uh, clean up this f---ing algorithm
+                    raise 'a Scenario with > 3 tables would take too long to run!'
+                    
                 break
                 
         return self  #  TODO  what happens when these ain't scenes?
@@ -150,11 +153,13 @@ class Morelia:
             
     def evaluate_step(self, v):  pass
     def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
+        
     def count_dimensions(self):  
         dim = 0
         for step in self.steps:
             dim += step.count_dimension()
         return dim
+        
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
             
@@ -247,11 +252,7 @@ class Scenario(Morelia):
         return self.row_indices.count(1) > 0
 
     def count_Row_dimensions(self):
-        dims = []
-        for step in self.steps:
-            dims.append(step.count_dimensions())
-        print dims
-        return dims
+        return [step.count_dimensions() for step in self.steps]
 
     def copy(self, scenes, offsets):
         scene2 = Scenario()

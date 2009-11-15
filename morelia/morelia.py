@@ -37,7 +37,7 @@ class Parser:
 
                 scene.copy(scenes, [1])
                 
-                if len(dims) > 1:
+                if len(dims) == 2:
                     scene.copy(scenes, [0, 1])
                     scene.copy(scenes, [1, 1])
                     scene.copy(scenes, [0, 2])

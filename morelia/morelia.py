@@ -45,6 +45,7 @@ class Parser:
                     
                     if len(scene2.row_indices) > 1:
                         scene2 = scene.copy(scenes, [0, 2])
+                        scene.copy(scenes, [1, 2])
                                         
                 break
                 #scene2.

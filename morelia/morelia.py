@@ -45,7 +45,19 @@ class Parser:
                     scene2.row_indices[1] += 1
                     scenes.append(scene2)  #  TODO  this is appending to the end could we instead insert after the given step?
                 
-                
+                if len(dims) > 1:
+                    scene2 = scene.copy()
+                    scene2.row_indices[0] += 1
+                    scene2.row_indices[1] += 1
+                    scenes.append(scene2)
+                    
+                    scene2 = scene.copy()
+                    
+                    if len(scene2.row_indices) > 1:  #  TODO  not tested yet
+                        scene2.row_indices[1] += 1
+                        scenes.append(scene2)  #  TODO  this is appending to the end could we instead insert after the given step?
+                    
+                    
                 break
                 #scene2.
                 

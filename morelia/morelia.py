@@ -41,9 +41,12 @@ class Parser:
                     self._unroll_dimension(scene, scenes, dims[0] - 1, [])
                 
                 if len(dims) == 2:
-                    for y in range(dims[1] - 1):
-                        self._unroll_dimension(scene, scenes, dims[0] - 1, [y])
-
+                    if dims[1] > 0:
+                        for y in range(dims[1] - 1):
+                            self._unroll_dimension(scene, scenes, dims[0] - 1, [y])
+                    else:
+                        self._unroll_dimension(scene, scenes, dims[0] - 1, [0])
+                        
                 if len(dims) == 3:
                     for z in range(dims[2] - 1):
                         if dims[1] > 0:
@@ -244,6 +247,7 @@ class Scenario(Morelia):
         dims = []
         for step in self.steps:
             dims.append(step.count_dimensions())
+        print dims
         return dims
 
     def copy(self, scenes, offsets):

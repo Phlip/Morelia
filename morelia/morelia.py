@@ -38,29 +38,29 @@ class Parser:
                 scenes.remove(scene)
 
                 if len(dims) == 1:
-                    self._unroll_dimension(scene, scenes, dims[0] - 1, [])
+                    self._unroll_dimension(scene, scenes, dims, [])
                 
                 if len(dims) == 2:
-                    if dims[1] > 0:
-                        for y in range(dims[1] - 1):
-                            self._unroll_dimension(scene, scenes, dims[0] - 1, [y])
-                    else:
-                        self._unroll_dimension(scene, scenes, dims[0] - 1, [0])
+                    self._unroll(scene, scenes, dims, [])
                         
                 if len(dims) == 3:
                     for z in range(dims[2] - 1):
-                        if dims[1] > 0:
-                            for y in range(dims[1] - 1):
-                                self._unroll_dimension(scene, scenes, dims[0] - 1, [y, z])
-                        else:
-                            self._unroll_dimension(scene, scenes, dims[0] - 1, [0, z])
+                        self._unroll(scene, scenes, dims, [z])
 
                 break
                 
         return self  #  TODO  what happens when these ain't scenes?
 
-    def _unroll_dimension(self, scene, scenes, max_x, outer_dim):
-        for x in range(max_x):
+    def _unroll(self, scene, scenes, dims, outer_dim):
+                        if dims[1] > 0:
+                            for y in range(dims[1] - 1):
+                                self._unroll_dimension(scene, scenes, dims, [y] + outer_dim)
+                        else:
+                            self._unroll_dimension(scene, scenes, dims, [0] + outer_dim)
+
+
+    def _unroll_dimension(self, scene, scenes, dims, outer_dim):
+        for x in range(dims[0] - 1):
             scene.copy(scenes, [x] + outer_dim)
 
     def evaluate(self, suite):

@@ -51,7 +51,6 @@ class Parser:
                                 self._unroll_dimension(scene, scenes, dims[0] - 1, [y, z])
                         else:
                             self._unroll_dimension(scene, scenes, dims[0] - 1, [0, z])
-                            
 
                 break
                 

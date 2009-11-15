@@ -181,17 +181,20 @@ class MoreliaTest(TestCase):
 
 #  TODO  note that default arguments on steps are permitted!
 
-    def assemble_short_scene_table(self, moar = ''):
+    def assemble_short_scene_table(self, moar = '', even_moar = ''):
         scene = '''Feature: the smoker you drink
-                       Scenario: the programmer you get
+                       Scenario: the programmer you get%s
                            Given party <element> in <faction>
                                 | faction     | element               |
                                 | this  shows | bad but permitted     |
-                                | style with  | columns out of order! |%s''' % moar
+                                | style with  | columns out of order! |%s''' % (even_moar, moar)
         p = Parser()
         self.table_scene = p.parse_features(scene)
 
 #  TODO  permit gaps & comments in tables
+
+    def test_dimensions_with_leading_gaps_are_okay(self):
+        self.assemble_short_scene_table('', 'Given some dumb step')
 
     def test_only_one_table_permutes_only_once(self):
         self.assemble_short_scene_table()

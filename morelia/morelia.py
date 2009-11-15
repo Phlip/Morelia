@@ -35,10 +35,10 @@ class Parser:
                 print scenes.index(scene)
                 dims = scene.count_Row_dimensions()
 
-                scene2 = scene.copy()
+                scene2 = scene.copy(scenes)
                 scene2.row_indices[0] += 1
                 #scene2.row_indices[1] += 0
-                scenes.append(scene2)
+                
                 
                 if len(scene2.row_indices) > 1:
                     scene2 = scene.copy()
@@ -248,12 +248,13 @@ class Scenario(Morelia):
             dims.append(step.count_dimensions())
         return dims
 
-    def copy(self):
+    def copy(self, scenes = None):
         scene2 = Scenario()
         scene2.concept      = self.concept
         scene2.predicate    = self.predicate
         scene2.steps          = self.steps  #  shallow copy!
         scene2.row_indices = self.row_indices[:]
+        if scenes:  scenes.append(scene2) #  CONSIDER append to parent? # TODO  take out if
         return scene2
 
 

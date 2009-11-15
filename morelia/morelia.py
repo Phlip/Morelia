@@ -32,19 +32,24 @@ class Parser:
         
         for scene in scenes:
             if scene._embellish():
-                print ('scene index', scenes.index(scene))
+                #~ print dir(scenes)
+                waz_at = scenes.index(scene)
+                scenes.remove(scene)
                 dims = scene.count_Row_dimensions()
 
                 if len(dims) == 1:
-                    for x in range(dims[0] - 2):
-                        scene.copy(scenes, [x + 1])
+                    for x in range(dims[0] - 1):
+                        scene.copy(scenes, [x])
                 
                 if len(dims) == 2:
-                    scene.copy(scenes, [1, 0])
-                    scene.copy(scenes, [0, 1])
-                    scene.copy(scenes, [1, 1])
-                    scene.copy(scenes, [0, 2])
-                    scene.copy(scenes, [1, 2])
+                    for x in range(dims[0] - 1):
+                        scene.copy(scenes, [x, 0])
+
+                    for x in range(dims[0] - 1):
+                        scene.copy(scenes, [x, 1])
+
+                    for x in range(dims[0] - 1):
+                        scene.copy(scenes, [x, 2])
                                         
                 break
                 

@@ -246,10 +246,12 @@ class MoreliaTest(TestCase):
         feature = self.table_scene.steps[0]
         #return # TODO
         scene = feature.steps[0]
-        return
+#        return
         self.assertEqual([1,0,1], scene.row_indices)
         scene = feature.steps[1]
         self.assertEqual([2,0,1], scene.row_indices)
+        scene = feature.steps[2]
+        self.assertEqual([1,0,2], scene.row_indices)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'

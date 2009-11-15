@@ -42,12 +42,16 @@ class Parser:
                 
                 if len(dims) == 2:
                     for y in range(dims[1] - 1):
-                        for x in range(dims[0] - 1):
-                            scene.copy(scenes, [x, y])
+                        self._unroll_dimension(scene, scenes, dims[0] - 1, [y])
 
                 if len(dims) == 3:
-                    for x in range(dims[0] - 1):
-                        scene.copy(scenes, [x, 0])
+                    for z in range(dims[2] - 1):
+                        if dims[1] > 0:
+                            for y in range(dims[1] - 1):
+                                self._unroll_dimension(scene, scenes, dims[0] - 1, [y, z])
+                        else:
+                            self._unroll_dimension(scene, scenes, dims[0] - 1, [0, z])
+                            
 
                 break
                 

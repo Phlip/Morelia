@@ -27,15 +27,25 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
+        feature = self.steps[0]  #  TODO  use more
+        scenes = feature.steps
         
-        for scene in self.steps[0].steps:
+        for scene in scenes:
             if scene._embellish():
+                print scenes.index(scene)
                 dims = scene.count_Row_dimensions()
-        #        for x in range(0, len(dims)):
-           #         print x, dims[x]
+
                 scene2 = scene.copy()
                 scene2.row_indices[0] += 1
                 self.steps[0].steps.append(scene2)
+                
+                scene2 = scene.copy()
+                
+                if len(scene2.row_indices) > 1:
+                    scene2.row_indices[1] += 1
+                    self.steps[0].steps.append(scene2)  #  TODO  this is appending to the end could we instead insert after the given step?
+                
+                
                 break
                 #scene2.
                 

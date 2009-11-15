@@ -190,6 +190,8 @@ class MoreliaTest(TestCase):
         self.assertEqual([1], scene.row_indices)
         scene = feature.steps[1]
         self.assertEqual([2], scene.row_indices)
+        scene = feature.steps[2]
+        self.assertEqual([3], scene.row_indices)
         self.assertEqual(3, len(feature.steps))
 
     def test_twizzle_Rows(self):

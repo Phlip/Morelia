@@ -245,7 +245,7 @@ class Scenario(Morelia):
             dims.append(step.count_dimensions())
         return dims
 
-    def copy(self, scenes = None):
+    def copy(self, scenes):
         scene2 = Scenario()
         scene2.concept      = self.concept
         scene2.predicate    = self.predicate

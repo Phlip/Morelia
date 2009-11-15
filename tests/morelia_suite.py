@@ -176,7 +176,7 @@ class MoreliaTest(TestCase):
 
     def test_Scenes_count_more_Row_dimensions(self):
         self.assemble_scene_table('Step whatever\n')
-        return # TODO
+#        return # TODO
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
         self.assertEqual([3, 0, 4], dims)
 
@@ -244,7 +244,7 @@ class MoreliaTest(TestCase):
     def test_twizzle_gapped_Rows(self):
         self.assemble_scene_table('Step whatever\n')
         feature = self.table_scene.steps[0]
-        return # TODO
+        #return # TODO
         scene = feature.steps[0]
         return
         self.assertEqual([1,0,1], scene.row_indices)

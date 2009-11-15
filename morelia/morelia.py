@@ -34,26 +34,28 @@ class Parser:
             if scene._embellish():
                 #~ print dir(scenes)
                 waz_at = scenes.index(scene)
-                scenes.remove(scene)
                 dims = scene.count_Row_dimensions()
+                scenes.remove(scene)
 
                 if len(dims) == 1:
-                    for x in range(dims[0] - 1):
-                        scene.copy(scenes, [x])
+                    self._unroll_dimension(scene, scenes, dims[0] - 1, [])
                 
                 if len(dims) == 2:
+                    for y in range(dims[1] - 1):
+                        for x in range(dims[0] - 1):
+                            scene.copy(scenes, [x, y])
+
+                if len(dims) == 3:
                     for x in range(dims[0] - 1):
                         scene.copy(scenes, [x, 0])
 
-                    for x in range(dims[0] - 1):
-                        scene.copy(scenes, [x, 1])
-
-                    for x in range(dims[0] - 1):
-                        scene.copy(scenes, [x, 2])
-                                        
                 break
                 
         return self  #  TODO  what happens when these ain't scenes?
+
+    def _unroll_dimension(self, scene, scenes, max_x, outer_dim):
+        for x in range(max_x):
+            scene.copy(scenes, [x] + outer_dim)
 
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis

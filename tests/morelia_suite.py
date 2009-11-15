@@ -54,7 +54,7 @@ class MoreliaTest(TestCase):
 
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation
-                        Scenario: starz upon tharz bucks'''
+                   Scenario: starz upon tharz bucks'''
         steps = Parser().parse_feature(input)
         step = steps[0]
         assert step.__class__ == Feature

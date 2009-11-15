@@ -35,24 +35,24 @@ class Parser:
                 print scenes.index(scene)
                 dims = scene.count_Row_dimensions()
 
-                scene2 = scene.copy(scenes)
-                scene2.row_indices[0] += 1
-                #scene2.row_indices[1] += 0
-                
+                scene2 = scene.copy(scenes, [1])
+                #scene2.row_indices[0] += 1
+                ##scene2.row_indices[1] += 0
                 
                 if len(scene2.row_indices) > 1:
-                    scene2 = scene.copy(scenes)
-                    scene2.row_indices[1] += 1
+                    scene2 = scene.copy(scenes, [0, 1])
+                    #~ scene2.row_indices[0] += 0
+                    #~ scene2.row_indices[1] += 1
                 
                 if len(dims) > 1:
-                    scene2 = scene.copy(scenes)
-                    scene2.row_indices[0] += 1
-                    scene2.row_indices[1] += 1
+                    scene2 = scene.copy(scenes, [1, 1])
+                    #~ scene2.row_indices[0] += 1
+                    #~ scene2.row_indices[1] += 1
                     
                     if len(scene2.row_indices) > 1:  #  TODO  not tested yet
-                        scene2 = scene.copy(scenes)
-                        scene2.row_indices[0] += 0
-                        scene2.row_indices[1] += 2
+                        scene2 = scene.copy(scenes, [0, 2])
+                        #~ scene2.row_indices[0] += 0
+                        #~ scene2.row_indices[1] += 2
                                         
                 break
                 #scene2.
@@ -245,12 +245,14 @@ class Scenario(Morelia):
             dims.append(step.count_dimensions())
         return dims
 
-    def copy(self, scenes):
+    def copy(self, scenes, offsets):
         scene2 = Scenario()
         scene2.concept      = self.concept
         scene2.predicate    = self.predicate
         scene2.steps          = self.steps  #  shallow copy!
         scene2.row_indices = self.row_indices[:]
+        for x in range(len(offsets)):
+            scene2.row_indices[x] += offsets[x]
         scenes.append(scene2) #  CONSIDER append to parent?
 #  TODO  this is appending to the end could we instead insert after the given step?
         return scene2

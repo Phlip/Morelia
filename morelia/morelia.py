@@ -36,23 +36,15 @@ class Parser:
                 dims = scene.count_Row_dimensions()
 
                 scene2 = scene.copy(scenes, [1])
-                #scene2.row_indices[0] += 1
-                ##scene2.row_indices[1] += 0
                 
                 if len(scene2.row_indices) > 1:
                     scene2 = scene.copy(scenes, [0, 1])
-                    #~ scene2.row_indices[0] += 0
-                    #~ scene2.row_indices[1] += 1
                 
                 if len(dims) > 1:
                     scene2 = scene.copy(scenes, [1, 1])
-                    #~ scene2.row_indices[0] += 1
-                    #~ scene2.row_indices[1] += 1
                     
                     if len(scene2.row_indices) > 1:
                         scene2 = scene.copy(scenes, [0, 2])
-                        #~ scene2.row_indices[0] += 0
-                        #~ scene2.row_indices[1] += 2
                                         
                 break
                 #scene2.

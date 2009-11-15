@@ -160,21 +160,37 @@ class MoreliaTest(TestCase):
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
         self.assertEqual([3, 0, 4], dims)
 
-    def assemble_short_scene_table(self):
+#  TODO  note that default arguments on steps are permitted!
+
+    def assemble_short_scene_table(self, moar = ''):
         scene = '''Feature: the smoker you drink
                        Scenario: the programmer you get
                            Given party <element> in <faction>
                                 | faction     | element               |
                                 | this  shows | bad but permitted     |
-                                | style with  | columns out of order! |'''
+                                | style with  | columns out of order! |%s''' % moar
         p = Parser()
         self.table_scene = p.parse_features(scene)
+
+#  TODO  permit gaps & comments in tables
 
     def test_only_one_table_permutes_only_once(self):
         self.assemble_short_scene_table()
         feature = self.table_scene.steps[0]
         scene = feature.steps[0]
         self.assertEqual([1], scene.row_indices)
+        scene = feature.steps[1]
+        self.assertEqual([2], scene.row_indices)
+        self.assertEqual(2, len(feature.steps))
+
+    def test_only_one_table_permutes_a_little_moar(self):
+        self.assemble_short_scene_table('\n| panic | button |')
+        feature = self.table_scene.steps[0]
+        scene = feature.steps[0]
+        self.assertEqual([1], scene.row_indices)
+        scene = feature.steps[1]
+        self.assertEqual([2], scene.row_indices)
+        self.assertEqual(3, len(feature.steps))
 
     def test_twizzle_Rows(self):
         self.assemble_scene_table()

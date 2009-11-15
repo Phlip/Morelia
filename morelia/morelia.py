@@ -32,12 +32,15 @@ class Parser:
         
         for scene in scenes:
             if scene._embellish():
-                print scenes.index(scene)
+                print ('scene index', scenes.index(scene))
                 dims = scene.count_Row_dimensions()
 
-                scene.copy(scenes, [1])
+                if len(dims) == 1:
+                    for x in range(dims[0] - 2):
+                        scene.copy(scenes, [x + 1])
                 
                 if len(dims) == 2:
+                    scene.copy(scenes, [1])
                     scene.copy(scenes, [0, 1])
                     scene.copy(scenes, [1, 1])
                     scene.copy(scenes, [0, 2])

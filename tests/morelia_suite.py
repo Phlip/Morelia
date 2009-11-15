@@ -142,16 +142,6 @@ class MoreliaTest(TestCase):
 #  TODO  squeak if the table has no | in the middle or on the end etc, or if item not found
 #  TODO  parse the || as Json/Yaml?
 
-    def assemble_short_scene_table(self):
-        scene = '''Feature: the smoker you drink
-                       Scenario: the programmer you get
-                           Given party <element> in <faction>
-                                | faction     | element               |
-                                | this  shows | bad but permitted     |
-                                | style with  | columns out of order! |'''
-        p = Parser()
-        self.table_scene = p.parse_features(scene)
-
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()
         given, then, = self.table_scene.steps[0].steps[0].steps
@@ -170,8 +160,18 @@ class MoreliaTest(TestCase):
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
         self.assertEqual([3, 0, 4], dims)
 
+    def assemble_short_scene_table(self):
+        scene = '''Feature: the smoker you drink
+                       Scenario: the programmer you get
+                           Given party <element> in <faction>
+                                | faction     | element               |
+                                | this  shows | bad but permitted     |
+                                | style with  | columns out of order! |'''
+        p = Parser()
+        self.table_scene = p.parse_features(scene)
+
     def test_only_one_table_permutes_only_once(self):
-        pass
+        self.assemble_short_scene_table()
 
     def test_twizzle_Rows(self):
         self.assemble_scene_table()

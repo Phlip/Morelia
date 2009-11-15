@@ -40,13 +40,10 @@ class Parser:
                 if len(dims) > 1:
                     scene.copy(scenes, [0, 1])
                     scene.copy(scenes, [1, 1])
-                    
-                    if dims[0] > 0:
-                        scene.copy(scenes, [0, 2])
-                        scene.copy(scenes, [1, 2])
+                    scene.copy(scenes, [0, 2])
+                    scene.copy(scenes, [1, 2])
                                         
                 break
-                #scene2.
                 
         return self  #  TODO  what happens when these ain't scenes?
 

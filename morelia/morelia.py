@@ -49,7 +49,7 @@ class Parser:
                     #~ scene2.row_indices[0] += 1
                     #~ scene2.row_indices[1] += 1
                     
-                    if len(scene2.row_indices) > 1:  #  TODO  not tested yet
+                    if len(scene2.row_indices) > 1:
                         scene2 = scene.copy(scenes, [0, 2])
                         #~ scene2.row_indices[0] += 0
                         #~ scene2.row_indices[1] += 2

@@ -146,9 +146,9 @@ class MoreliaTest(TestCase):
         self.assemble_scene_table()
         given, then, = self.table_scene.steps[0].steps[0].steps
         self.assertEqual(Row, given.steps[0].__class__)
-        self.assertEqual(Row, then.steps[0].__class__)
+        self.assertEqual(Row,  then.steps[0].__class__)
         self.assertEqual('zone  |', given.steps[0].predicate)
-        self.assertEqual('crunk |', then.steps[0].predicate)
+        self.assertEqual('crunk |',  then.steps[0].predicate)
 
     def test_Scenes_count_Row_dimensions(self):
         self.assemble_scene_table()
@@ -172,6 +172,9 @@ class MoreliaTest(TestCase):
 
     def test_only_one_table_permutes_only_once(self):
         self.assemble_short_scene_table()
+        feature = self.table_scene.steps[0]
+        scene = feature.steps[0]
+        self.assertEqual([1], scene.row_indices)
 
     def test_twizzle_Rows(self):
         self.assemble_scene_table()

@@ -199,7 +199,7 @@ class MoreliaTest(TestCase):
         self.assemble_short_scene_table('', '\nGiven some dumb step')
         feature = self.table_scene.steps[0]
         print len(feature.steps)
-        return 
+        
         print feature.steps[0].predicate
         self.assertEqual([0, 1], feature.steps[0].row_indices)
         self.assertEqual([0, 2], feature.steps[1].row_indices)

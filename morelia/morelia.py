@@ -52,16 +52,19 @@ class Parser:
         return self  #  TODO  what happens when these ain't scenes?
 
     def _unroll(self, scene, scenes, dims, outer_dim):
-                        if dims[1] > 0:
-                            for y in range(dims[1] - 1):
-                                self._unroll_dimension(scene, scenes, dims, [y] + outer_dim)
-                        else:
-                            self._unroll_dimension(scene, scenes, dims, [0] + outer_dim)
-
+        if dims[1] > 0:
+            for y in range(dims[1] - 1):
+                self._unroll_dimension(scene, scenes, dims, [y] + outer_dim)
+        else:
+            self._unroll_dimension(scene, scenes, dims, [0] + outer_dim)
 
     def _unroll_dimension(self, scene, scenes, dims, outer_dim):
-        for x in range(dims[0] - 1):
-            scene.copy(scenes, [x] + outer_dim)
+        amount = dims[0] - 1
+        if amount == -1:
+            scene.copy(scenes, [0] + outer_dim)
+        else:
+            for x in range(amount):
+                scene.copy(scenes, [x] + outer_dim)
 
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis

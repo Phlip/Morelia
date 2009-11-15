@@ -186,13 +186,20 @@ class MoreliaTest(TestCase):
     def test_only_one_table_permutes_a_little_moar(self):
         self.assemble_short_scene_table('\n| panic | button |')
         feature = self.table_scene.steps[0]
-        scene = feature.steps[0]
-        self.assertEqual([1], scene.row_indices)
         scene = feature.steps[1]
         self.assertEqual([2], scene.row_indices)
         scene = feature.steps[2]
         self.assertEqual([3], scene.row_indices)
         self.assertEqual(3, len(feature.steps))
+
+    def test_only_one_table_permutes_yet_another_line(self):
+        self.assemble_short_scene_table('\n| pet | pangolin |\n| ant | supply |')
+        feature = self.table_scene.steps[0]
+        scene = feature.steps[2]
+        self.assertEqual([3], scene.row_indices)
+        scene = feature.steps[3]
+        self.assertEqual([4], scene.row_indices)
+        self.assertEqual(4, len(feature.steps))
 
     def test_twizzle_Rows(self):
         self.assemble_scene_table()

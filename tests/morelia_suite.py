@@ -114,7 +114,7 @@ class MoreliaTest(TestCase):
         self.assertEqual('\\|', Row().i_look_like())
 
     def test_Row_parse(self):
-        sauce = 'umma | gumma |'  #  TODO  better sauce
+        sauce = 'umma | gumma |'  #  TODO  better sauce - Pangolin from Pangea
         row = Row()
         row._parse(sauce, [])
         assert row.predicate == sauce
@@ -122,7 +122,7 @@ class MoreliaTest(TestCase):
     def test_parse_feature_Row(self):
         p = Parser()
         p.parse_features(''' | piggy | op |''')
-        print p.steps # TODO
+        #print p.steps # TODO
 
     def assemble_scene_table(self, inject = ''):        
         scene = '''Feature: permute tables

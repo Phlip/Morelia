@@ -37,13 +37,13 @@ class Parser:
 
                 scene2 = scene.copy()
                 scene2.row_indices[0] += 1
-                self.steps[0].steps.append(scene2)
+                scenes.append(scene2)
                 
                 scene2 = scene.copy()
                 
                 if len(scene2.row_indices) > 1:
                     scene2.row_indices[1] += 1
-                    self.steps[0].steps.append(scene2)  #  TODO  this is appending to the end could we instead insert after the given step?
+                    scenes.append(scene2)  #  TODO  this is appending to the end could we instead insert after the given step?
                 
                 
                 break

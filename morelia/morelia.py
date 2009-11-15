@@ -239,8 +239,11 @@ class Scenario(Morelia):
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  TODO  if verbose
         visitor.suite.setUp()
-        Morelia.evaluate_steps(self, visitor)
-        visitor.suite.tearDown()  #  TODO  ensure this!
+        
+        try:
+            Morelia.evaluate_steps(self, visitor)
+        finally:
+            visitor.suite.tearDown()
 
     def _embellish(self):
         self.row_indices = []

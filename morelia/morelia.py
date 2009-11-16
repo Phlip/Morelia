@@ -27,47 +27,8 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
-        feature = self.steps[0]  #  TODO  use more
-        scenes = feature.steps
-        
-        for scene in scenes:
-            if scene._embellish():
-                #~ print dir(scenes)
-                waz_at = scenes.index(scene)
-                dims = scene.count_Row_dimensions()
-                scenes.remove(scene)
-
-                if len(dims) == 1:
-                    self._unroll_dimension(scene, scenes, dims, [])
-                
-                if len(dims) == 2:
-                    self._unroll(scene, scenes, dims, [])
-                        
-                if len(dims) == 3:
-                    for z in range(dims[2] - 1):
-                        self._unroll(scene, scenes, dims, [z])
-
-                if len(dims) > 3:  #  or, uh, clean up this f---ing algorithm
-                    raise 'a Scenario with > 3 tables would take too long to run!'
-                    
-                break
-                
         return self  #  TODO  what happens when these ain't scenes?
 
-    def _unroll(self, scene, scenes, dims, outer_dim):
-        if dims[1] > 0:
-            for y in range(dims[1] - 1):
-                self._unroll_dimension(scene, scenes, dims, [y] + outer_dim)
-        else:
-            self._unroll_dimension(scene, scenes, dims, [0] + outer_dim)
-
-    def _unroll_dimension(self, scene, scenes, dims, outer_dim):
-        amount = dims[0] - 1
-        if amount == -1:
-            scene.copy(scenes, [0] + outer_dim)
-        else:
-            for x in range(amount):
-                scene.copy(scenes, [x] + outer_dim)
 
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
@@ -237,7 +198,7 @@ class Scenario(Morelia):
     def evaluate_steps(self, visitor):
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
-        # print self.predicate  #  TODO  if verbose
+        # print self.predicate  #  CONSIDER  if verbose
         visitor.suite.setUp()
         
         try:
@@ -256,17 +217,6 @@ class Scenario(Morelia):
 
     def count_Row_dimensions(self):
         return [step.count_dimensions() for step in self.steps]
-
-    def copy(self, scenes, offsets):
-        scene2 = Scenario()
-        scene2.concept      = self.concept
-        scene2.predicate    = self.predicate
-        scene2.steps          = self.steps  #  shallow copy!
-        scene2.row_indices = self.row_indices[:]
-        for x in range(len(offsets)):
-            scene2.row_indices[x] += offsets[x]
-        scenes.append(scene2) #  CONSIDER append to parent?
-#  TODO  this is appending to the end could we instead insert after the given step?
 
 
 class Step(Viridis):

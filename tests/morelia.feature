@@ -18,8 +18,12 @@ Scenario: When we challenge Morelia with a Step with no matching
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
-Scenario: my milkshake attracts both boys and girls to the yard
-    Given: my milkshake brings all the <youth> to the yard
-        | youth |
-        | boys  |
-        | girls   |
+Scenario: when did BowWowWow become classic rock?
+    Given: adventure of love - love and <culture>
+        | culture  |
+        | radio    |
+        | g-string |
+        | battery  |
+        | driven   |
+    When Moralia evaluates this
+    Then "culture" contains ['radio', 'g-string', 'battery', 'driven']

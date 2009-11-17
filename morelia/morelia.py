@@ -29,7 +29,6 @@ class Parser:
         self.parse_feature(prose)
         return self  #  TODO  what happens when these ain't scenes?
 
-
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
 

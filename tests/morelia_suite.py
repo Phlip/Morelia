@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+#~ from __future__ import generators
 import unittest
 from unittest import TestCase
 import re
 import sys
 import os
+from mock import Mock
 pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
@@ -49,6 +51,7 @@ class MoreliaTest(TestCase):
         assert step.__class__ == Given
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with Given in it')
+
 
 #  TODO  add Pangolins to the sample data
 
@@ -360,6 +363,39 @@ class MoreliaTest(TestCase):
     def step_the_second_line_contains(self, docstring):
         "the second line contains \"([^\"]+)\""
         self.diagnostic.split('\n')[4].index(docstring)
+
+    def test_permutate(self):  #  TODO  remove the title from the dimensions
+        self.assertEqual([[0]], permute([0]))
+        self.assertEqual([[0],[1],[2]], permute([2]))
+#        self.assertEqual([[0,0]], permute([0, 1]))
+  #      self.assertEqual([[0,0], [0,1]], permute([0, 2]))
+
+
+
+def permute(dims):
+    result = []
+    for dim in dims:
+        for q in range(0, dim+1):
+            result.append([q])
+    return result
+
+
+        #~ for uc in xuniqueCombinations(['l','o','v','e'],2): print ''.join(uc)
+        #~ print "Selections of 2 letters from 'love'"
+        #~ for s in xselections(['l','o','v','e'],2): print ''.join(s)
+#~ def xuniqueCombinations(items, n):
+    #~ if n==0: yield []
+    #~ else:
+        #~ for i in xrange(len(items)):
+            #~ for cc in xuniqueCombinations(items[i+1:],n-1):
+                #~ yield [items[i]]+cc
+
+#~ def xselections(items, n):
+    #~ if n==0: yield []
+    #~ else:
+        #~ for i in xrange(len(items)):
+            #~ for ss in xselections(items, n-1):
+                #~ yield [items[i]]+ss
 
 
 #~ TODO Scenario: Leading # marks comment lines.

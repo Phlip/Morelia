@@ -213,6 +213,10 @@ class Scenario(Morelia):
         finally:
             visitor.suite.tearDown()
 
+    def permute_schedule(self):
+        dims = self.count_Row_dimensions()
+        return _something(dims)
+
     def _embellish(self):
         self.row_indices = []
         

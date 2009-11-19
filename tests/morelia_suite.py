@@ -72,23 +72,11 @@ class MoreliaTest(TestCase):
         expect = [(0, 0, 0), (0, 0, 1)]
         self.assertEqual(expect, _something([1,1,2]))
 
-    def test_permutate_dimensions(self):
-        expects = _something([3, 0, 4])
-        print expects
-        def comp(a, b):
-            q = 0
-            for x in a:
-                q *= 10
-                q += x
-            k = 0
-            for x in b:
-                k *= 10
-                k += x
-            print a,b
-            print q, k
-            return k < q
-        expects.sort(comp)
-        print expects
+    def test_permute_schedule(self):
+        expect = _something([3, 0, 4])
+        self.assemble_scene_table('Step you betcha\n')
+        schedule = self.table_scene.steps[0].steps[0].permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
+        self.assertEqual(expect, schedule)
 
 #  TODO  add Pangolins to the sample data
 

@@ -76,6 +76,7 @@ class MoreliaTest(TestCase):
         expects = _something([3, 0, 4])
         print expects
         print expects.sort()
+        print expects
 
 #  TODO  add Pangolins to the sample data
 

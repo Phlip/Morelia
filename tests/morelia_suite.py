@@ -365,8 +365,8 @@ class MoreliaTest(TestCase):
         self.diagnostic.split('\n')[4].index(docstring)
 
     def test_permutate(self):  #  TODO  remove the title from the dimensions
-        self.assertEqual([[0]],         permute([0]))
-        self.assertEqual([[0,0]],       permute([0, 0]))
+        self.assertEqual([[0]],         permute([1]))
+        self.assertEqual([[0,0]],       permute([1,1]))
         #~ self.assertEqual([[0],[1]],    permute([2]))
 #        self.assertEqual([[0,0]], permute([0, 1]))
   #      self.assertEqual([[0,0], [0,1]], permute([0, 2]))
@@ -375,10 +375,11 @@ class MoreliaTest(TestCase):
 
 def permute(dims):
     result = []
-    z = []
-    for dim in dims:
-        z.append(0)
-    result.append(z)
+    for y in range(0, dims[0]):
+        case = []
+        for x in range(0, len(dims)):
+            case.append(0)
+        result.append(case)
     return result
 
 

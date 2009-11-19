@@ -53,6 +53,29 @@ class MoreliaTest(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with Given in it')
 
+    def test_Scenes_count_Row_dimensions(self):
+        self.assemble_scene_table()
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([3, 4], dims)
+
+    def test_Scenes_count_more_Row_dimensions(self):
+        self.assemble_scene_table('Step whatever\n')
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([3, 0, 4], dims)
+
+    def test_permutate(self):  #  TODO  remove the title from the dimensions
+        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
+                        (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
+        self.assertEqual(expect, _something([0,4,3]))
+        expect = [(0, 0, 0)]
+        self.assertEqual(expect, _something([1,1,1]))
+        expect = [(0, 0, 0), (0, 0, 1)]
+        self.assertEqual(expect, _something([1,1,2]))
+
+    def test_permutate_dimensions(self):
+        expects = _something([3, 0, 4])
+        print expects
+        print expects.sort()
 
 #  TODO  add Pangolins to the sample data
 
@@ -172,16 +195,6 @@ class MoreliaTest(TestCase):
         self.assertEqual(Row,  then.steps[0].__class__)
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |',  then.steps[0].predicate)
-
-    def test_Scenes_count_Row_dimensions(self):
-        self.assemble_scene_table()
-        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([3, 4], dims)
-
-    def test_Scenes_count_more_Row_dimensions(self):
-        self.assemble_scene_table('Step whatever\n')
-        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([3, 0, 4], dims)
 
 #  TODO  note that default arguments on steps are permitted!
 
@@ -364,14 +377,6 @@ class MoreliaTest(TestCase):
     def step_the_second_line_contains(self, docstring):
         "the second line contains \"([^\"]+)\""
         self.diagnostic.split('\n')[4].index(docstring)
-
-    def test_permutate(self):  #  TODO  remove the title from the dimensions
-        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
-        self.assertEqual(expect, _something([0,4,3]))
-        expect = [(0, 0, 0)]
-        self.assertEqual(expect, _something([1,1,1]))
-        expect = [(0, 0, 0), (0, 0, 1)]
-        self.assertEqual(expect, _something([1,1,2]))
 
 
 

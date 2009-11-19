@@ -13,19 +13,20 @@ import re
 from itertools import imap, product
 
 def _special_range(n):
-    return (xrange(n) if n else [0])
+    return xrange(n) if n else [0]
 
 def _something(arr):  #  TODO  rename thingers
     return list(product(*imap(_special_range, arr)))
+      #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
 
  #  TODO  cron order already!
 
 class Parser:
     def __init__(self):  
-        self.thangs = [Feature, Scenario,
+        self.thangs = [ Feature, Scenario,
                                     Step, Given, When, Then, And,
-                                       Row]
+                                       Row ]
         self.steps = []
 
     def parse_file(self, filename):

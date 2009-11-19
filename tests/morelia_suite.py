@@ -86,7 +86,7 @@ class MoreliaTest(TestCase):
                 k += x
             print a,b
             print q, k
-            return k > q
+            return k < q
         expects.sort(comp)
         print expects
 

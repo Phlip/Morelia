@@ -75,7 +75,19 @@ class MoreliaTest(TestCase):
     def test_permutate_dimensions(self):
         expects = _something([3, 0, 4])
         print expects
-        print expects.sort()
+        def comp(a, b):
+            q = 0
+            for x in a:
+                q *= 10
+                q += x
+            k = 0
+            for x in b:
+                k *= 10
+                k += x
+            print a,b
+            print q, k
+            return k > q
+        expects.sort(comp)
         print expects
 
 #  TODO  add Pangolins to the sample data

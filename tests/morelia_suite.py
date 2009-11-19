@@ -11,6 +11,7 @@ pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
 from morelia import *
+from morelia import _something
 
  #  TODO  cron order already!
 
@@ -365,40 +366,15 @@ class MoreliaTest(TestCase):
         self.diagnostic.split('\n')[4].index(docstring)
 
     def test_permutate(self):  #  TODO  remove the title from the dimensions
-        self.assertEqual([[0]],         permute([1]))
-        self.assertEqual([[0,0]],       permute([1,1]))
-        #~ self.assertEqual([[0],[1]],    permute([2]))
-#        self.assertEqual([[0,0]], permute([0, 1]))
-  #      self.assertEqual([[0,0], [0,1]], permute([0, 2]))
+        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
+        self.assertEqual(expect, _something([0,4,3]))
+        expect = [(0, 0, 0)]
+        self.assertEqual(expect, _something([1,1,1]))
+        expect = [(0, 0, 0), (0, 0, 1)]
+        self.assertEqual(expect, _something([1,1,2]))
 
 
 
-def permute(dims):
-    result = []
-    for y in range(0, dims[0]):
-        case = []
-        for x in range(0, len(dims)):
-            case.append(0)
-        result.append(case)
-    return result
-
-
-        #~ for uc in xuniqueCombinations(['l','o','v','e'],2): print ''.join(uc)
-        #~ print "Selections of 2 letters from 'love'"
-        #~ for s in xselections(['l','o','v','e'],2): print ''.join(s)
-#~ def xuniqueCombinations(items, n):
-    #~ if n==0: yield []
-    #~ else:
-        #~ for i in xrange(len(items)):
-            #~ for cc in xuniqueCombinations(items[i+1:],n-1):
-                #~ yield [items[i]]+cc
-
-#~ def xselections(items, n):
-    #~ if n==0: yield []
-    #~ else:
-        #~ for i in xrange(len(items)):
-            #~ for ss in xselections(items, n-1):
-                #~ yield [items[i]]+ss
 
 
 #~ TODO Scenario: Leading # marks comment lines.

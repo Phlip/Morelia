@@ -10,6 +10,13 @@
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
 import re
+from itertools import imap, product
+
+def _special_range(n):
+    return (xrange(n) if n else [0])
+
+def _something(arr):  #  TODO  rename thingers
+    return list(product(*imap(_special_range, arr)))
 
 
  #  TODO  cron order already!

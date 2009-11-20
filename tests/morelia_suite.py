@@ -179,20 +179,21 @@ class MoreliaTest(TestCase):
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
-    def test_two_dimensional_table(self):
+    def test_another_two_dimensional_table(self):
         global crunks, zones
         crunks = []
         zones = []
         scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
         Parser().parse_features(scene).evaluate(self)
-        print zones
-        #self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
+        self.assertEqual(['work', 'mall', 'jail', 'work', 'mall', 'jail'], crunks)
+        self.assertEqual(['beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel'], zones)
         
     def step_parity_zone(self, zone):  #  TODO  prevent collision with another "step_party"
         "parity (.*)"  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
         global zones
+        
         zones.append(zone)
 
     def step_flesh_is_weak(self):
@@ -200,7 +201,9 @@ class MoreliaTest(TestCase):
 
     def step_hearty_crunk_(self, crunk):
         "hearty (.*)"
-
+        
+        global crunks
+        crunks.append(crunk)
         self.got_crunk = crunk
 
 #  TODO  COMMENTS!!!

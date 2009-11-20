@@ -170,16 +170,30 @@ class MoreliaTest(TestCase):
         self.assemble_scene_table('Step flesh is weak\n')
         scenario = self.table_scene.steps[0].steps[0] # TODO bottle up the self.table_scene.steps[0].steps[0]
         visitor = TestVisitor(self)
+        global crunks, zones
+        crunks = []
+        zones = []
         scenario.row_indices = [2, 0, 3]
         scenario.evaluate_test_case(visitor)
         return # TODO  does this reflect reality?
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
+    def test_two_dimensional_table(self):
+        global crunks, zones
+        crunks = []
+        zones = []
+        scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
+        Parser().parse_features(scene).evaluate(self)
+        print zones
+        #self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
+        
     def step_parity_zone(self, zone):  #  TODO  prevent collision with another "step_party"
         "parity (.*)"  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
+        global zones
+        zones.append(zone)
 
     def step_flesh_is_weak(self):
         pass
@@ -229,15 +243,6 @@ class MoreliaTest(TestCase):
         global elements, factions
         factions.append(faction)
         elements.append(element)
-
-    def test_two_dimensional_table(self):
-        global elements, factions
-        elements = []
-        factions = []
-        scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
-        Parser().parse_features(scene).evaluate(self)
-        #self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
-        
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'

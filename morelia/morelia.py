@@ -140,7 +140,7 @@ class Viridis(Morelia):
 
     def prefix(self):  return '  '
 
-    def augment_predicate(self):
+    def augment_predicate(self):  #  TODO  move me to step?
         if self.parent == None:  return self.predicate
         dims = self.parent.count_Row_dimensions()
         if set(dims) == set([0]):  return self.predicate
@@ -155,7 +155,7 @@ class Viridis(Morelia):
 
             if self.table != []:
                 q = 0
-                
+
                 for self.title in self.table[0].harvest():
                     self.replace_replitron(x, q)
                     q += 1

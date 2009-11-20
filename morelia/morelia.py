@@ -160,9 +160,9 @@ class Viridis(Morelia):
             if table != []:
                 q = -1
                 
-                for title in table[0].harvest():
+                for self.title in table[0].harvest():
                     q += 1
-                    self.replace_replitron(x, table, title, replitron, q)
+                    self.replace_replitron(x, table, self.title, replitron, q)
         
         return self.copy
 

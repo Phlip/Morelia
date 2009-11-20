@@ -173,9 +173,8 @@ class MoreliaTest(TestCase):
         global crunks, zones
         crunks = []
         zones = []
-        scenario.row_indices = [2, 0, 3]
+        scenario.row_indices = [1, 0, 2]
         scenario.evaluate_test_case(visitor)
-        return # TODO  does this reflect reality?
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
@@ -192,6 +191,7 @@ class MoreliaTest(TestCase):
         "party (.*)"  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
+        if zone == '<zone>':  print zone 
         global zones
         
         zones.append(zone)

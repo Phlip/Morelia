@@ -98,15 +98,12 @@ class MoreliaTest(TestCase):
         scenario = self.table_scene.steps[0].steps[0] # TODO bottle up the self.table_scene.steps[0].steps[0]
         visitor = TestVisitor(self)
         scenario.row_indices = [2, 0, 3]
-        print scenario.row_indices
-        
-        print scenario
         scenario.evaluate_test_case(visitor)
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
     def step_party_zone(self, zone):
-        "party (.*)"
+        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
         
         self.got_party_zone = zone
 

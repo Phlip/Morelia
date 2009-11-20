@@ -299,6 +299,10 @@ class Row(Morelia):
         row = [s.strip() for s in self.predicate.split('|')]
         return row[:-1]
 
+#~ class Comment(Morelia):
+    #~ def i_look_like(self):  return '#'
+    #~ def my_parent_type(self):  return Morelia # aka "any"
+
 
 #   TODO  prefix me by 2 more
 

@@ -95,9 +95,11 @@ class TestVisitor:
         # print node.concept + ': ' + node.predicate # TODO  if verbose
         node.evaluate_step(self)
 
+
 class Morelia:
         
     def __init__(self, predicate = '', list = []):  #  TODO  take these out
+        self.parent = None
         self._parse(predicate, list)  #  TODO  list -> Parser
 
     def _parse(self, predicate, list):
@@ -108,6 +110,7 @@ class Morelia:
         for s in list[::-1]:
             if issubclass(s.__class__, self.my_parent_type()):
                 s.steps.append(self)  #  TODO  squeek if can't find parent
+                self.parent = s
                 return
 
     def prefix(self):  return ''
@@ -115,11 +118,12 @@ class Morelia:
 
         #  TODO  all files must start with a Feature and contain only one
         
-    def evaluate_steps(self, v): 
+    def evaluate_steps(self, v):
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
             
-    def evaluate_step(self, v):  pass
+    def evaluate_step(self, v):  pass  #  TODO  rename
+        
     def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
         
     def count_dimensions(self):  
@@ -135,6 +139,40 @@ class Morelia:
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
+
+    def augment_predicate(self):
+        if self.parent == None:
+            return self.predicate
+            
+        dims = self.parent.count_Row_dimensions()
+        if set(dims) == set([0]):
+            return self.predicate
+        
+        rep = re.compile(r'\<(\w+)\>')
+        replitrons = rep.findall(self.predicate)
+        if replitrons == []:  return self.predicate
+        replitron = replitrons[0]
+        copy = self.predicate[:]
+
+        for x in range(0, len(self.parent.row_indices)):
+            table = self.parent.steps[x].steps
+            if table != []:
+                for title in self.harvest_row(table[0].predicate):
+                    if title == replitron:
+                        at = self.parent.row_indices[x]
+                        print (at, 'title', title, 'replitron', replitron)
+                        if at < len(table):  #  TODO  this should never happen
+                            found = self.harvest_row(table[at].predicate)[0]  #  #  TODO  strip trailing pipe
+                            copy = copy.replace('<'+replitron+'>', found)
+                            print copy
+                            break
+        
+        return copy
+        
+    def harvest_row(self, pred):  #  TODO  simplify into correct location
+        return [s.strip() for s in pred.split('|')]
+        
+        # TODO  mix replitrons and matchers!
 
     def find_step_name(self, suite):
         self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
@@ -170,7 +208,7 @@ class Viridis(Morelia):
             
             if doc:
                 doc = re.compile('^' + doc + '$', re.MULTILINE)  #  CONSIDER deal with users who put in the ^$
-                m = doc.match(self.predicate)
+                m = doc.match(self.augment_predicate())
 
                 if m:
                     self.matches = m.groups()
@@ -203,11 +241,18 @@ class Scenario(Morelia):
     def my_parent_type(self):  return Feature
 
     def evaluate_steps(self, visitor):
+        schedule = self.permute_schedule()
+        
+        for indices in schedule:
+            self.row_indices = indices
+            self.evaluate_test_case(visitor)  #  note this works on reports too!
+        
+    def evaluate_test_case(self, visitor):  #  note this permutes reports too!
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  CONSIDER  if verbose
         visitor.suite.setUp()
-        
+                
         try:
             Morelia.evaluate_steps(self, visitor)
         finally:
@@ -248,6 +293,7 @@ class Row(Morelia):
     def i_look_like(self):  return '\\|'
     def my_parent_type(self):  return Step
     def count_dimension(self):
+        if self is self.parent.steps[0]:  return 0
         return 1  #  TODO  raise an error (if the table has one row!)
 
 #   TODO  prefix me by 2 more

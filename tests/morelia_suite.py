@@ -185,35 +185,16 @@ class MoreliaTest(TestCase):
 
         self.got_crunk = crunk
 
-    #~ def test_twizzle_moar_Rows(self):
-        #~ self.assemble_scene_table('| half-pipe |\n')
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[0]
-        #~ self.assertEqual([1, 1], scene.row_indices)
-        #~ scene = feature.steps[1]
-        #~ self.assertEqual([2, 1], scene.row_indices)
-        #~ scene = feature.steps[2]
-        #~ return # TODO
-        #~ self.assertEqual([3, 1], scene.row_indices)
-        #~ scene = feature.steps[3]
-        #~ self.assertEqual([1, 2], scene.row_indices)
-        #~ scene = feature.steps[4]
-        #~ self.assertEqual([2, 2], scene.row_indices)
-        #~ scene = feature.steps[5]
-        #~ self.assertEqual([1, 3], scene.row_indices)
-        #~ scene = feature.steps[6]
-        #~ self.assertEqual([2, 3], scene.row_indices)
-
 #  TODO  squeak if the table has no | in the middle or on the end etc, or if item not found
 #  TODO  parse the || as Json/Yaml?
 
-    #~ def test_Rows_find_step_parents(self):
-        #~ self.assemble_scene_table()
-        #~ given, then, = self.table_scene.steps[0].steps[0].steps
-        #~ self.assertEqual(Row, given.steps[0].__class__)
-        #~ self.assertEqual(Row,  then.steps[0].__class__)
-        #~ self.assertEqual('zone  |', given.steps[0].predicate)
-        #~ self.assertEqual('crunk |',  then.steps[0].predicate)
+    def test_Rows_find_step_parents(self):
+        self.assemble_scene_table()
+        given, then, = self.table_scene.steps[0].steps[0].steps
+        self.assertEqual(Row, given.steps[0].__class__)
+        self.assertEqual(Row,  then.steps[0].__class__)
+        self.assertEqual('zone  |', given.steps[0].predicate)
+        self.assertEqual('crunk |',  then.steps[0].predicate)
 
 #~ #  TODO  note that default arguments on steps are permitted!
 

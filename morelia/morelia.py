@@ -152,7 +152,7 @@ class Viridis(Morelia):
         replitrons = rep.findall(self.predicate)
         if replitrons == []:  return self.predicate
         replitron = replitrons[0]
-        copy = self.predicate[:]
+        self.copy = self.predicate[:]
 
         for x in range(0, len(self.parent.row_indices)):
             table = self.parent.steps[x].steps
@@ -162,27 +162,18 @@ class Viridis(Morelia):
                 
                 for title in table[0].harvest():
                     q += 1
-                    copy = self.replace_replitron(x, table, title, replitron, copy, q)
-                    if title == replitron:
-                        at = self.parent.row_indices[x]
-
-                        if at < len(table):  #  TODO  this should never happen
-                            found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
-                            copy = copy.replace('<'+replitron+'>', found)
-                            break  #  TODO  need this?
+                    self.replace_replitron(x, table, title, replitron, q)
         
-        return copy
+        return self.copy
 
-    def replace_replitron(self, x, table, title, replitron, copy, q):
+    def replace_replitron(self, x, table, title, replitron, q):
         if title == replitron:
             at = self.parent.row_indices[x]
 
             if at < len(table):  #  TODO  this should never happen
                 found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
-                copy = copy.replace('<'+replitron+'>', found)
-                return copy  #  TODO  need this?
-                
-        return copy
+                self.copy = self.copy.replace('<'+replitron+'>', found)
+                return  #  TODO  need this?
 
         # TODO  mix replitrons and matchers!
 

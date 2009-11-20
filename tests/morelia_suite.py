@@ -145,7 +145,7 @@ class MoreliaTest(TestCase):
     def assemble_scene_table(self, moar = ''):
         scene = '''Feature: permute tables
                        Scenario: turn one feature into many
-                           Given party <zone>
+                           Given parity <zone>
                                 | zone  |
                                 | beach |
                                 | hotel |
@@ -169,12 +169,13 @@ class MoreliaTest(TestCase):
         visitor = TestVisitor(self)
         scenario.row_indices = [2, 0, 3]
         scenario.evaluate_test_case(visitor)
+        return # TODO  does this reflect reality?
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
-    def step_party_zone(self, zone):
-        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
-        
+    def step_parity_zone(self, zone):  #  TODO  prevent collision with another "step_party"
+        "parity (.*)"  #  TODO  illustrate how the patterns here form testage too
+
         self.got_party_zone = zone
 
     def step_flesh_is_weak(self):
@@ -200,20 +201,31 @@ class MoreliaTest(TestCase):
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |',  then.steps[0].predicate)
 
-    def assemble_short_scene_table(self, moar = '', even_moar = ''):
-        scene = '''Feature: the smoker you drink
-                       Scenario: the programmer you get%s
-                           Given party <element> in <faction>
+    def assemble_short_scene_table(self):
+        # todothis  shows | bad but permitted     |
+            #                    | style with  | columns out of order!
+            #  TODO  reporter should beautify || markers!
+        return '''Feature: the smoker you drink
+                       Scenario: the programmer you get
+                           Given party <element> from <faction>
                                 | faction     | element               |
-                                | this  shows | bad but permitted     |
-                                | style with  | columns out of order! |%s''' % (even_moar, moar)
-        p = Parser()
-        self.table_scene = p.parse_features(scene)
+                                | Pangolin | Pangea  |
+                                | Glyptodon  | Laurasia |'''
 
-    def test_dimensions_with_leading_gaps_are_okay(self):
-        self.assemble_short_scene_table('', '\nGiven some dumb step')
-        feature = self.table_scene.steps[0]
-        #~ self.assertEqual([0, 1], feature.steps[0].row_indices)  #  TODO  evaluate it!
+    def test_two_dimensional_table(self):
+        global elements, factions
+        elements = []
+        factions = []
+        Parser().parse_features(self.assemble_short_scene_table()).evaluate(self)
+        self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
+
+    def step_party_element_from_faction(self, element, faction):
+        "party (.*) from (.*)"  
+            #  TODO  don't default to this "party <element> in <faction>"  
+
+        global elements, factions
+        factions.append(faction)
+        elements.append(element)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'

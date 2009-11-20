@@ -147,26 +147,27 @@ class Viridis(Morelia):
         rep = re.compile(r'\<(\w+)\>')
         replitrons = rep.findall(self.predicate)
         if replitrons == []:  return self.predicate
-        self.replitron = replitrons[0]  #  TODO  more than one!
         self.copy = self.predicate[:]
+        for self.replitron in replitrons:
+            for x in range(0, len(self.parent.row_indices)):
+                self.table = self.parent.steps[x].steps
+            
+                if self.table != []:  #  TODO  why is this here?
+                    q = 0
 
-        for x in range(0, len(self.parent.row_indices)):
-            self.table = self.parent.steps[x].steps
-
-            if self.table != []:
-                q = 0
-
-                for self.title in self.table[0].harvest():
-                    self.replace_replitron(x, q)
-                    q += 1
+                    for self.title in self.table[0].harvest():
+                        self.replace_replitron(x, q)
+                        q += 1
 
         return self.copy
 
     def replace_replitron(self, x, q):
         if self.title != self.replitron:  return
-        at = self.parent.row_indices[x]
+        at = self.parent.row_indices[x] + 1
         if at >= len(self.table):  return  #  TODO  this should never happen
-        found = self.table[at].harvest()[q]  #  #  TODO  strip trailing pipe
+        stick = self.table[at].harvest()
+        found = stick[q]  #  #  TODO  strip trailing pipe more smartly!
+        #  TODO  only if it's not nothing?
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # TODO  mix replitrons and matchers!
@@ -307,5 +308,3 @@ if __name__ == '__main__':
     os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value
 
 #  TODO  maximum munch fails - Given must start a line
-
-

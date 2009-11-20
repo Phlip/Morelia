@@ -162,12 +162,12 @@ class Viridis(Morelia):
                 
                 for self.title in table[0].harvest():
                     q += 1
-                    self.replace_replitron(x, table, self.title, replitron, q)
+                    self.replace_replitron(x, table, replitron, q)
         
         return self.copy
 
-    def replace_replitron(self, x, table, title, replitron, q):
-        if title != replitron:  return
+    def replace_replitron(self, x, table, replitron, q):
+        if self.title != replitron:  return
         at = self.parent.row_indices[x]
         if at >= len(table):  return  #  TODO  this should never happen
         found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe

@@ -142,8 +142,8 @@ class MoreliaTest(TestCase):
         expect = [(0, 0, 0), (0, 0, 1)]
         self.assertEqual(expect, _something([1,1,2]))
 
-    def assemble_scene_table(self, moar = ''):
-        scene = '''Feature: permute tables
+    def assemble_scene_table_source(self, moar = ''):
+        return '''Feature: permute tables
                        Scenario: turn one feature into many
                            Given parity <zone>
                                 | zone  |
@@ -154,6 +154,9 @@ class MoreliaTest(TestCase):
                                 | work  | 
                                 | mall  | 
                                 | jail  |''' % moar
+                                
+    def assemble_scene_table(self, moar = ''):
+        scene = self.assemble_scene_table_source(moar)
         p = Parser()
         self.table_scene = p.parse_features(scene)
 

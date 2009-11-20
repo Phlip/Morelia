@@ -227,7 +227,7 @@ class MoreliaTest(TestCase):
         return '''Feature: the smoker you drink
                        Scenario: the programmer you get
                            Given party <element> from <faction>
-                                | faction     | element               |
+                                | faction     | element   |
                                 | Pangolin | Pangea  |
                                 | Glyptodon  | Laurasia |'''
 

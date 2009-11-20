@@ -185,8 +185,12 @@ class MoreliaTest(TestCase):
 
         self.got_crunk = crunk
 
+#  TODO  COMMENTS!!!
+#  TODO  note that default arguments on steps are permitted!
 #  TODO  squeak if the table has no | in the middle or on the end etc, or if item not found
-#  TODO  parse the || as Json/Yaml?
+#  TODO  parse the || as Json/Yaml? - permit gaps & comments in tables
+#  TODO  decorate exceptions failures with their source feature lines
+#  TODO  respect the tests' verbosity levels
 
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()
@@ -196,82 +200,21 @@ class MoreliaTest(TestCase):
         self.assertEqual('zone  |', given.steps[0].predicate)
         self.assertEqual('crunk |',  then.steps[0].predicate)
 
-#~ #  TODO  note that default arguments on steps are permitted!
+    def assemble_short_scene_table(self, moar = '', even_moar = ''):
+        scene = '''Feature: the smoker you drink
+                       Scenario: the programmer you get%s
+                           Given party <element> in <faction>
+                                | faction     | element               |
+                                | this  shows | bad but permitted     |
+                                | style with  | columns out of order! |%s''' % (even_moar, moar)
+        p = Parser()
+        self.table_scene = p.parse_features(scene)
 
-    #~ def assemble_short_scene_table(self, moar = '', even_moar = ''):
-        #~ scene = '''Feature: the smoker you drink
-                       #~ Scenario: the programmer you get%s
-                           #~ Given party <element> in <faction>
-                                #~ | faction     | element               |
-                                #~ | this  shows | bad but permitted     |
-                                #~ | style with  | columns out of order! |%s''' % (even_moar, moar)
-        #~ p = Parser()
-        #~ self.table_scene = p.parse_features(scene)
-
-#  TODO  permit gaps & comments in tables
-
-    #~ def test_dimensions_with_leading_gaps_are_okay(self):
-        #~ self.assemble_short_scene_table('', '\nGiven some dumb step')
-        #~ feature = self.table_scene.steps[0]
-        #~ self.assertEqual([0, 1], feature.steps[0].row_indices)
+    def test_dimensions_with_leading_gaps_are_okay(self):
+        self.assemble_short_scene_table('', '\nGiven some dumb step')
+        feature = self.table_scene.steps[0]
+        #~ self.assertEqual([0, 1], feature.steps[0].row_indices)  #  TODO  evaluate it!
         #~ self.assertEqual([0, 2], feature.steps[1].row_indices)
-
-    #~ def test_only_one_table_permutes_only_once(self):
-        #~ self.assemble_short_scene_table()
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[0]
-        #~ self.assertEqual([1], scene.row_indices)
-        #~ scene = feature.steps[1]
-        #~ self.assertEqual([2], scene.row_indices)
-        #~ self.assertEqual(2, len(feature.steps))
-
-    #~ def test_only_one_table_permutes_a_little_moar(self):
-        #~ self.assemble_short_scene_table('\n| panic | button |')
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[1]
-        #~ self.assertEqual([2], scene.row_indices)
-        #~ scene = feature.steps[2]
-        #~ self.assertEqual([3], scene.row_indices)
-        #~ self.assertEqual(3, len(feature.steps))
-
-    #~ def test_only_one_table_permutes_yet_another_line(self):
-        #~ self.assemble_short_scene_table('\n| pet | pangolin |\n| ant | supply |')
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[2]
-        #~ self.assertEqual([3], scene.row_indices)
-        #~ scene = feature.steps[3]
-        #~ self.assertEqual([4], scene.row_indices)
-        #~ self.assertEqual(4, len(feature.steps))
-
-    #~ def test_twizzle_Rows(self):
-        #~ self.assemble_scene_table()
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[0]
-        #~ self.assertEqual([1, 1], scene.row_indices)
-        #~ scene = feature.steps[1]
-        #~ self.assertEqual([2, 1], scene.row_indices)
-        #~ scene = feature.steps[2]
-        #~ self.assertEqual([1, 2], scene.row_indices)
-        #~ scene = feature.steps[3]
-        #~ self.assertEqual([2, 2], scene.row_indices)
-        #~ scene = feature.steps[4]
-        #~ self.assertEqual([1, 3], scene.row_indices)
-        #~ scene = feature.steps[5]
-        #~ self.assertEqual([2, 3], scene.row_indices)
-
-#  TODO  decorate exceptions failures with their source feature lines
-#  TODO  COMMENTS!!!
-#  TODO  respect the tests' verbosity levels
-
-    #~ def test_twizzle_gapped_Rows(self):
-        #~ self.assemble_scene_table('Step whatever\n')
-        #~ feature = self.table_scene.steps[0]
-        #~ scene = feature.steps[0]
-        #~ self.assertEqual([1,0,1], scene.row_indices)
-        #~ scene = feature.steps[1]
-        #~ self.assertEqual([2,0,1], scene.row_indices)
-        #~ scene = feature.steps[2]
-        #~ self.assertEqual([1,0,2], scene.row_indices)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'

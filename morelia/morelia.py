@@ -29,6 +29,8 @@ class Parser:
                                        Row ]
         self.steps = []
 
+#  TODO  deal with ragged tables
+
     def parse_file(self, filename):
         prose = open(filename, 'r').read()
         return self.parse_features(prose)

@@ -322,9 +322,6 @@ class MoreliaTest(TestCase):
         self.diagnostic.split('\n')[4].index(docstring)
 
 
-
-
-
 #~ TODO Scenario: Leading # marks comment lines.
     #~ (Warning: Only leading marks are respected for now!)
     #~ Given a feature file with "When something

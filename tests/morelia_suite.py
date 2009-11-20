@@ -145,7 +145,7 @@ class MoreliaTest(TestCase):
     def assemble_scene_table_source(self, moar = ''):
         return '''Feature: permute tables
                        Scenario: turn one feature into many
-                           Given parity <zone>
+                           Given party <zone>
                                 | zone  |
                                 | beach |
                                 | hotel |
@@ -185,11 +185,11 @@ class MoreliaTest(TestCase):
         zones = []
         scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
         Parser().parse_features(scene).evaluate(self)
-        self.assertEqual(['work', 'mall', 'jail', 'work', 'mall', 'jail'], crunks)
-        self.assertEqual(['beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel'], zones)
+        self.assertEqual([ 'work',   'mall',  'jail',   'work',   'mall',  'jail'   ], crunks)
+        self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
         
-    def step_parity_zone(self, zone):  #  TODO  prevent collision with another "step_party"
-        "parity (.*)"  #  TODO  illustrate how the patterns here form testage too
+    def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
+        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
         global zones

@@ -26,10 +26,8 @@ class Parser:
     def __init__(self):  
         self.thangs = [ Feature, Scenario,
                                     Step, Given, When, Then, And,
-                                       Row ]
+                                       Row, Comment ]
         self.steps = []
-
-#  TODO  deal with ragged tables
 
     def parse_file(self, filename):
         prose = open(filename, 'r').read()
@@ -64,6 +62,7 @@ class Parser:
             self.thang = klass()
             name = self.thang.i_look_like()
             rx = '\s*(' + name + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+            
             m = re.compile(rx).match(self.line)
 
             if m and len(m.groups()) > 0:
@@ -301,9 +300,11 @@ class Row(Morelia):
         row = [s.strip() for s in self.predicate.split('|')]
         return row[:-1]
 
-#~ class Comment(Morelia):
-    #~ def i_look_like(self):  return '#'
-    #~ def my_parent_type(self):  return Morelia # aka "any"
+#  TODO  sample data with "post-it haiku"
+
+class Comment(Morelia):
+    def i_look_like(self):  return '\\#'
+    def my_parent_type(self):  return Morelia # aka "any"
 
 
 #   TODO  prefix me by 2 more

@@ -64,16 +64,16 @@ class MoreliaTest(TestCase):
         self.assertEqual(step.concept, 'Scenario')
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-    #~ def test_feature_with_scenario(self):
-        #~ input = '''Feature: The Sacred White Llama of the Inca
-                   #~ #  I are a comment'''
-        #~ steps = Parser().parse_feature(input)
-        #~ assert steps[0].__class__ == Feature
+    def test_feature_with_scenario(self):
+        input = '''Feature: The Sacred White Llama of the Inca
+                   #  I are a comment'''
+        steps = Parser().parse_feature(input)
+        assert steps[0].__class__ == Feature
         
-        #~ step = steps[1]
-        #~ assert step.__class__ == Comment
-        #~ self.assertEqual(step.concept, '#')
-        #~ self.assertEqual(step.predicate, 'I are a comment')
+        step = steps[1]
+        assert step.__class__ == Comment
+        self.assertEqual(step.concept, 'Comment')
+        self.assertEqual(step.predicate, 'I are a comment')
 
     def pet_scenario(self):
         return '''Scenario: See all vendors

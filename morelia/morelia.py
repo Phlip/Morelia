@@ -156,16 +156,16 @@ class Viridis(Morelia):
 
         for x in range(0, len(self.parent.row_indices)):
             table = self.parent.steps[x].steps
+
             if table != []:
                 for title in self.harvest_row(table[0].predicate):
                     if title == replitron:
                         at = self.parent.row_indices[x]
-                        print (at, 'title', title, 'replitron', replitron)
+
                         if at < len(table):  #  TODO  this should never happen
                             found = self.harvest_row(table[at].predicate)[0]  #  #  TODO  strip trailing pipe
                             copy = copy.replace('<'+replitron+'>', found)
-                            print copy
-                            break
+                            break  #  TODO  need this?
         
         return copy
         

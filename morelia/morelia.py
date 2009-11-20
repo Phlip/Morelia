@@ -171,9 +171,6 @@ class Viridis(Morelia):
         
         return copy
         
-    def harvest_row(self, pred):  #  TODO  simplify into correct location
-        return [s.strip() for s in pred.split('|')]
-        
         # TODO  mix replitrons and matchers!
 
     def find_step_name(self, suite):
@@ -300,9 +297,8 @@ class Row(Morelia):
         return 1  #  TODO  raise an error (if the table has one row!)
 
     def harvest(self):  #  TODO  simplify into correct location
-        go = [s.strip() for s in self.predicate.split('|')]
-        print go
-        return go
+        row = [s.strip() for s in self.predicate.split('|')]
+        return row[:-1]
 
 
 #   TODO  prefix me by 2 more

@@ -159,8 +159,10 @@ class Viridis(Morelia):
 
             if table != []:
                 q = -1
+                
                 for title in table[0].harvest():
                     q += 1
+                    copy = self.replace_replitron(x, table, title, replitron, copy, q)
                     if title == replitron:
                         at = self.parent.row_indices[x]
 
@@ -170,7 +172,18 @@ class Viridis(Morelia):
                             break  #  TODO  need this?
         
         return copy
-        
+
+    def replace_replitron(self, x, table, title, replitron, copy, q):
+        if title == replitron:
+            at = self.parent.row_indices[x]
+
+            if at < len(table):  #  TODO  this should never happen
+                found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
+                copy = copy.replace('<'+replitron+'>', found)
+                return copy  #  TODO  need this?
+                
+        return copy
+
         # TODO  mix replitrons and matchers!
 
     def find_step_name(self, suite):
@@ -296,7 +309,7 @@ class Row(Morelia):
         if self is self.parent.steps[0]:  return 0
         return 1  #  TODO  raise an error (if the table has one row!)
 
-    def harvest(self):  #  TODO  simplify into correct location
+    def harvest(self):
         row = [s.strip() for s in self.predicate.split('|')]
         return row[:-1]
 

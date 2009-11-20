@@ -13,6 +13,7 @@ sys.path.insert(0, morelia_path)
 from morelia import *
 from morelia import _something
 
+ #  TODO  add Pangolins to the sample data
  #  TODO  cron order already!
 
 
@@ -22,7 +23,6 @@ class MoreliaTest(TestCase):
         input = 'Feature: prevent wild animals from eating us'
         steps = Parser().parse_feature(input)
         step = steps[0]
-
         assert step.__class__ == Feature
         self.assertEqual(step.concept, 'Feature')
         self.assertEqual(step.predicate, 'prevent wild animals from eating us')
@@ -47,8 +47,6 @@ class MoreliaTest(TestCase):
         input = 'Given a string with Given in it\nAnd another string'
         steps = Parser().parse_feature(input)
         step = steps[0]
-        #~ print steps[1].concept
-        #~ print steps[1].predicate
         assert step.__class__ == Given
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with Given in it')
@@ -110,34 +108,30 @@ class MoreliaTest(TestCase):
     def step_flesh_is_weak(self):
         pass
 
-
     def step_hearty_crunk_(self, crunk):
         "hearty (.*)"
 
         self.got_crunk = crunk
 
+    def test_feature_with_scenario(self):
+        input = '''Feature: Civi-lie-zation
+                   Scenario: starz upon tharz bucks'''
+        steps = Parser().parse_feature(input)
+        step = steps[0]
+        assert step.__class__ == Feature
+        self.assertEqual(step.concept, 'Feature')
+        self.assertEqual(step.predicate, 'Civi-lie-zation')
+        step = steps[1]
+        assert step.__class__ == Scenario
+        self.assertEqual(step.concept, 'Scenario')
+        self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-#  TODO  add Pangolins to the sample data
-
-    #~ def test_feature_with_scenario(self):
-        #~ input = '''Feature: Civi-lie-zation
-                   #~ Scenario: starz upon tharz bucks'''
-        #~ steps = Parser().parse_feature(input)
-        #~ step = steps[0]
-        #~ assert step.__class__ == Feature
-        #~ self.assertEqual(step.concept, 'Feature')
-        #~ self.assertEqual(step.predicate, 'Civi-lie-zation')
-        #~ step = steps[1]
-        #~ assert step.__class__ == Scenario
-        #~ self.assertEqual(step.concept, 'Scenario')
-        #~ self.assertEqual(step.predicate, 'starz upon tharz bucks')
-
-    #~ def pet_scenario(self):
-        #~ return '''Scenario: See all vendors
-                      #~ Given I am logged in as a user in the administrator role
-                        #~ And There are 3 vendors
-                       #~ When I go to the manage vendors page
-                       #~ Then I should see the first 3 vendor names'''
+    def pet_scenario(self):
+        return '''Scenario: See all vendors
+                      Given I am logged in as a user in the administrator role
+                        And There are 3 vendors
+                       When I go to the manage vendors page
+                       Then I should see the first 3 vendor names'''
 
     #~ def test_parse_scenario(self):
         #~ scenario = self.pet_scenario()

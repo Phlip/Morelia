@@ -159,13 +159,13 @@ class Viridis(Morelia):
 
             if table != []:
                 q = -1
-                for title in self.harvest_row(table[0].predicate):
+                for title in table[0].harvest():
                     q += 1
                     if title == replitron:
                         at = self.parent.row_indices[x]
 
                         if at < len(table):  #  TODO  this should never happen
-                            found = self.harvest_row(table[at].predicate)[q]  #  #  TODO  strip trailing pipe
+                            found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
                             copy = copy.replace('<'+replitron+'>', found)
                             break  #  TODO  need this?
         
@@ -294,9 +294,16 @@ class And(Step):  pass
 class Row(Morelia):
     def i_look_like(self):  return '\\|'
     def my_parent_type(self):  return Step
+        
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0
         return 1  #  TODO  raise an error (if the table has one row!)
+
+    def harvest(self):  #  TODO  simplify into correct location
+        go = [s.strip() for s in self.predicate.split('|')]
+        print go
+        return go
+
 
 #   TODO  prefix me by 2 more
 

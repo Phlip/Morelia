@@ -133,35 +133,35 @@ class MoreliaTest(TestCase):
                        When I go to the manage vendors page
                        Then I should see the first 3 vendor names'''
 
-    #~ def test_parse_scenario(self):
-        #~ scenario = self.pet_scenario()
-        #~ steps = Parser().parse_feature(scenario)
-        #~ step_0, step_1, step_2, step_3, step_4 = steps
-        #~ self.assertEqual(step_0.concept, 'Scenario')
-        #~ self.assertEqual(step_0.predicate, 'See all vendors')
-        #~ self.assertEqual(step_1.concept, 'Given')
-        #~ self.assertEqual(step_1.predicate,     'I am logged in as a user in the administrator role')
-        #~ self.assertEqual(step_2.concept, 'And')
-        #~ self.assertEqual(step_2.predicate,   'There are 3 vendors')
-        #~ self.assertEqual(step_3.concept, 'When')
-        #~ self.assertEqual(step_3.predicate,    'I go to the manage vendors page')
-        #~ self.assertEqual(step_4.concept, 'Then')
-        #~ self.assertEqual(step_4.predicate,    'I should see the first 3 vendor names')
+    def test_parse_scenario(self):
+        scenario = self.pet_scenario()
+        steps = Parser().parse_feature(scenario)
+        step_0, step_1, step_2, step_3, step_4 = steps
+        self.assertEqual(step_0.concept, 'Scenario')
+        self.assertEqual(step_0.predicate, 'See all vendors')
+        self.assertEqual(step_1.concept, 'Given')
+        self.assertEqual(step_1.predicate,     'I am logged in as a user in the administrator role')
+        self.assertEqual(step_2.concept, 'And')
+        self.assertEqual(step_2.predicate,   'There are 3 vendors')
+        self.assertEqual(step_3.concept, 'When')
+        self.assertEqual(step_3.predicate,    'I go to the manage vendors page')
+        self.assertEqual(step_4.concept, 'Then')
+        self.assertEqual(step_4.predicate,    'I should see the first 3 vendor names')
 
-    #~ def test_strip_predicates(self):
-        #~ step = Parser().parse_feature('  Given   gangsta girl   \t     ')[0]
-        #~ self.assertEqual(step.concept, 'Given')
-        #~ self.assertEqual(step.predicate, 'gangsta girl')
+    def test_strip_predicates(self):
+        step = Parser().parse_feature('  Given   gangsta girl   \t     ')[0]
+        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.predicate, 'gangsta girl')
 
-    #~ def test_bond_predicates(self):
-        #~ step = Parser().parse_feature('  Given\n   elf quest   \t     ')[0]
-        #~ self.assertEqual(step.concept, 'Given')
-        #~ self.assertEqual(step.predicate, 'elf quest')
+    def test_bond_predicates(self):
+        step = Parser().parse_feature('  Given\n   elf quest   \t     ')[0]
+        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.predicate, 'elf quest')
 
-    #~ def test_scenarios_link_to_their_steps(self):
-        #~ steps = Parser().parse_feature(self.pet_scenario())
-        #~ scenario, step_1, step_2, step_3, step_4 = steps
-        #~ self.assertEqual([step_1, step_2, step_3, step_4], scenario.steps)
+    def test_scenarios_link_to_their_steps(self):
+        steps = Parser().parse_feature(self.pet_scenario())
+        scenario, step_1, step_2, step_3, step_4 = steps
+        self.assertEqual([step_1, step_2, step_3, step_4], scenario.steps)
 
     def test_how_to_identify_trees_from_quite_a_long_distance_away(self):
         assert Given != Step

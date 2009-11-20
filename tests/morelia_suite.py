@@ -121,7 +121,8 @@ class MoreliaTest(TestCase):
     def test_parse_feature_Row(self):
         p = Parser()
         p.parse_features(''' | piggy | op |''')
-        #print p.steps # TODO
+        assert Row == p.steps[0].__class__
+        assert p.steps[0].predicate == 'piggy | op |'
 
     def test_Scenes_count_Row_dimensions(self):
         self.assemble_scene_table()

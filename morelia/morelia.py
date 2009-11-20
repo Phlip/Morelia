@@ -141,13 +141,9 @@ class Viridis(Morelia):
     def prefix(self):  return '  '
 
     def augment_predicate(self):
-        if self.parent == None:
-            return self.predicate
-            
+        if self.parent == None:  return self.predicate
         dims = self.parent.count_Row_dimensions()
-        if set(dims) == set([0]):
-            return self.predicate
-        
+        if set(dims) == set([0]):  return self.predicate
         rep = re.compile(r'\<(\w+)\>')
         replitrons = rep.findall(self.predicate)
         if replitrons == []:  return self.predicate
@@ -155,22 +151,22 @@ class Viridis(Morelia):
         self.copy = self.predicate[:]
 
         for x in range(0, len(self.parent.row_indices)):
-            table = self.parent.steps[x].steps
+            self.table = self.parent.steps[x].steps
 
-            if table != []:
+            if self.table != []:
                 q = -1
                 
-                for self.title in table[0].harvest():
+                for self.title in self.table[0].harvest():
                     q += 1
-                    self.replace_replitron(x, table, q)
+                    self.replace_replitron(x, q)
         
         return self.copy
 
-    def replace_replitron(self, x, table, q):
+    def replace_replitron(self, x, q):
         if self.title != self.replitron:  return
         at = self.parent.row_indices[x]
-        if at >= len(table):  return  #  TODO  this should never happen
-        found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
+        if at >= len(self.table):  return  #  TODO  this should never happen
+        found = self.table[at].harvest()[q]  #  #  TODO  strip trailing pipe
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # TODO  mix replitrons and matchers!

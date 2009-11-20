@@ -159,7 +159,7 @@ class Viridis(Morelia):
                 for self.title in self.table[0].harvest():
                     self.replace_replitron(x, q)
                     q += 1
-        
+
         return self.copy
 
     def replace_replitron(self, x, q):

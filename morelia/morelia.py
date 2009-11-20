@@ -154,11 +154,11 @@ class Viridis(Morelia):
             self.table = self.parent.steps[x].steps
 
             if self.table != []:
-                q = -1
+                q = 0
                 
                 for self.title in self.table[0].harvest():
-                    q += 1
                     self.replace_replitron(x, q)
+                    q += 1
         
         return self.copy
 

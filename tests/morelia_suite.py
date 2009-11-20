@@ -51,68 +51,6 @@ class MoreliaTest(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with Given in it')
 
-    def test_Scenes_count_Row_dimensions(self):
-        self.assemble_scene_table()
-        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([2, 3], dims)
-
-    def test_Scenes_count_more_Row_dimensions(self):
-        self.assemble_scene_table('Step whatever\n')
-        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
-        self.assertEqual([2, 0, 3], dims)
-
-    def test_permutate(self):  #  TODO  remove the title from the dimensions
-        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
-                        (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
-        self.assertEqual(expect, _something([0,4,3]))
-        expect = [(0, 0, 0)]
-        self.assertEqual(expect, _something([1,1,1]))
-        expect = [(0, 0, 0), (0, 0, 1)]
-        self.assertEqual(expect, _something([1,1,2]))
-
-    def assemble_scene_table(self, moar = ''):
-        scene = '''Feature: permute tables
-                       Scenario: turn one feature into many
-                           Given party <zone>
-                                | zone  |
-                                | beach |
-                                | hotel |
-                           %sThen hearty <crunk>
-                                | crunk | 
-                                | work  | 
-                                | mall  | 
-                                | jail  |''' % moar
-        p = Parser()
-        self.table_scene = p.parse_features(scene)
-
-    def test_permute_schedule(self):
-        expect = _something([2, 0, 3])  #  TODO  by rights, 0 should be -1
-        self.assemble_scene_table('Step you betcha\n')
-        schedule = self.table_scene.steps[0].steps[0].permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
-        self.assertEqual(expect, schedule)
-
-    def test_evaluate_permuted_schedule(self):
-        self.assemble_scene_table('Step flesh is weak\n')
-        scenario = self.table_scene.steps[0].steps[0] # TODO bottle up the self.table_scene.steps[0].steps[0]
-        visitor = TestVisitor(self)
-        scenario.row_indices = [2, 0, 3]
-        scenario.evaluate_test_case(visitor)
-        self.assertEqual('hotel', visitor.suite.got_party_zone)
-        self.assertEqual('jail', visitor.suite.got_crunk)
-
-    def step_party_zone(self, zone):
-        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
-        
-        self.got_party_zone = zone
-
-    def step_flesh_is_weak(self):
-        pass
-
-    def step_hearty_crunk_(self, crunk):
-        "hearty (.*)"
-
-        self.got_crunk = crunk
-
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation
                    Scenario: starz upon tharz bucks'''
@@ -184,6 +122,68 @@ class MoreliaTest(TestCase):
         p = Parser()
         p.parse_features(''' | piggy | op |''')
         #print p.steps # TODO
+
+    def test_Scenes_count_Row_dimensions(self):
+        self.assemble_scene_table()
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([2, 3], dims)
+
+    def test_Scenes_count_more_Row_dimensions(self):
+        self.assemble_scene_table('Step whatever\n')
+        dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
+        self.assertEqual([2, 0, 3], dims)
+
+    def test_permutate(self):  #  TODO  remove the title from the dimensions
+        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
+                        (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
+        self.assertEqual(expect, _something([0,4,3]))
+        expect = [(0, 0, 0)]
+        self.assertEqual(expect, _something([1,1,1]))
+        expect = [(0, 0, 0), (0, 0, 1)]
+        self.assertEqual(expect, _something([1,1,2]))
+
+    def assemble_scene_table(self, moar = ''):
+        scene = '''Feature: permute tables
+                       Scenario: turn one feature into many
+                           Given party <zone>
+                                | zone  |
+                                | beach |
+                                | hotel |
+                           %sThen hearty <crunk>
+                                | crunk | 
+                                | work  | 
+                                | mall  | 
+                                | jail  |''' % moar
+        p = Parser()
+        self.table_scene = p.parse_features(scene)
+
+    def test_permute_schedule(self):
+        expect = _something([2, 0, 3])  #  TODO  by rights, 0 should be -1
+        self.assemble_scene_table('Step you betcha\n')
+        schedule = self.table_scene.steps[0].steps[0].permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
+        self.assertEqual(expect, schedule)
+
+    def test_evaluate_permuted_schedule(self):
+        self.assemble_scene_table('Step flesh is weak\n')
+        scenario = self.table_scene.steps[0].steps[0] # TODO bottle up the self.table_scene.steps[0].steps[0]
+        visitor = TestVisitor(self)
+        scenario.row_indices = [2, 0, 3]
+        scenario.evaluate_test_case(visitor)
+        self.assertEqual('hotel', visitor.suite.got_party_zone)
+        self.assertEqual('jail', visitor.suite.got_crunk)
+
+    def step_party_zone(self, zone):
+        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
+        
+        self.got_party_zone = zone
+
+    def step_flesh_is_weak(self):
+        pass
+
+    def step_hearty_crunk_(self, crunk):
+        "hearty (.*)"
+
+        self.got_crunk = crunk
 
     #~ def test_twizzle_moar_Rows(self):
         #~ self.assemble_scene_table('| half-pipe |\n')

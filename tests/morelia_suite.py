@@ -188,7 +188,7 @@ class MoreliaTest(TestCase):
         self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
         
     def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
-        "party (.*)"  #  TODO  illustrate how the patterns here form testage too
+        r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
         if zone == '<zone>':  print zone 

@@ -200,7 +200,7 @@ class MoreliaTest(TestCase):
         pass
 
     def step_hearty_crunk_(self, crunk):
-        "hearty (.*)"
+        r'hearty (\w+)'
         
         global crunks
         crunks.append(crunk)
@@ -222,8 +222,7 @@ class MoreliaTest(TestCase):
         self.assertEqual('crunk |',  then.steps[0].predicate)
 
     def assemble_short_scene_table(self):
-        # todothis  shows | bad but permitted     |
-            #                    | style with  | columns out of order!
+        #  TODO  warn about bad but permitted style -- with | columns | out of order!
             #  TODO  reporter should beautify || markers!
         return '''Feature: the smoker you drink
                        Scenario: the programmer you get

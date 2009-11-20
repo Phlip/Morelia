@@ -169,11 +169,9 @@ class Viridis(Morelia):
     def replace_replitron(self, x, table, title, replitron, q):
         if title != replitron:  return
         at = self.parent.row_indices[x]
-
-        if at < len(table):  #  TODO  this should never happen
-            found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
-            self.copy = self.copy.replace('<'+replitron+'>', found)
-            return  #  TODO  need this?
+        if at >= len(table):  return  #  TODO  this should never happen
+        found = table[at].harvest()[q]  #  #  TODO  strip trailing pipe
+        self.copy = self.copy.replace('<'+replitron+'>', found)
 
         # TODO  mix replitrons and matchers!
 

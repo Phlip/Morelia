@@ -230,6 +230,15 @@ class MoreliaTest(TestCase):
         factions.append(faction)
         elements.append(element)
 
+    def test_two_dimensional_table(self):
+        global elements, factions
+        elements = []
+        factions = []
+        scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
+        Parser().parse_features(scene).evaluate(self)
+        #self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
+        
+
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'
         self.youth = youth  #  TODO  is "youth" still needed?

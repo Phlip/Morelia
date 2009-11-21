@@ -111,7 +111,7 @@ class Morelia:
                 s.steps.append(self)  #  TODO  squeek if can't find parent
                 self.parent = s
                 break
-                
+
         return self
 
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
@@ -119,7 +119,7 @@ class Morelia:
     def my_parent_type(self):  None    
 
         #  TODO  all files must start with a Feature and contain only one
-        
+
     def evaluate_steps(self, v):
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)

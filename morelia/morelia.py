@@ -104,7 +104,7 @@ class Morelia:
         self._parse(predicate, list)  #  TODO  list -> Parser
 
     def _parse(self, predicate, list):
-        self.concept = re.sub('.*\\.', '', str(self.__class__)) # TODO strip!, & use i_look_like!
+        self.concept = self.my_class_name()
         self.predicate = predicate
         self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
 
@@ -114,6 +114,7 @@ class Morelia:
                 self.parent = s
                 return
 
+    def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
     def prefix(self):  return ''
     def my_parent_type(self):  None    
 
@@ -125,7 +126,7 @@ class Morelia:
             
     def evaluate_step(self, v):  pass  #  TODO  rename
         
-    def i_look_like(self):  return re.sub('.*\\.', '', str(self.__class__))
+    def i_look_like(self):  return self.my_class_name()
         
     def count_dimensions(self):  
         dim = 0

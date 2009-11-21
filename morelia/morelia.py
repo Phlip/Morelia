@@ -270,7 +270,7 @@ class Step(Viridis):
         at = self.parent.row_indices[x] + 1
         if at >= len(self.table):  return  #  TODO  this should never happen
         stick = self.table[at].harvest()
-        found = stick[q]  #  #  TODO  strip trailing pipe more smartly!
+        found = stick[q]
             #  TODO  only if it's not nothing?
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
@@ -291,8 +291,8 @@ class Row(Morelia):
         return 1  #  TODO  raise an error (if the table has one row!)
 
     def harvest(self):
-        row = [s.strip() for s in self.predicate.split('|')]
-        return row[:-1]
+        row = [s.strip() for s in re.sub(r'\|$', '', self.predicate).split('|')]
+        return row
 
 #  TODO  sample data with "post-it haiku"
 #  TODO  trailing comments

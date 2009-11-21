@@ -133,6 +133,7 @@ class Morelia:
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
             
+print dir()
 
 class Viridis(Morelia):
 

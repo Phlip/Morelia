@@ -154,7 +154,7 @@ class Viridis(Morelia):
             for x in range(0, len(self.parent.row_indices)):
                 self.table = self.parent.steps[x].steps
             
-                if self.table != []:  #  TODO  why is this here?
+                if self.table != []:
                     q = 0
 
                     for self.title in self.table[0].harvest():

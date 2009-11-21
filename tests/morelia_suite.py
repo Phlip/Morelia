@@ -292,13 +292,13 @@ class MoreliaTest(TestCase):
         assert None == step.find_by_doc_string(self)
         
     def step_evaluate_step_by_doc_string(self):
-        step = Given('my milkshake brings all the girls to a yard')
+        step = Given()._parse('my milkshake brings all the girls to a yard')
         self.youth = 'boys'
         step.evaluate(self)
         self.assertEqual('girls', self.youth)  # Uh...
 
     def test_evaluate_step_by_name(self):
-        step = Given('my milkshake')
+        step = Given()._parse('my milkshake')
         self.youth = 'girls'
         step.evaluate(self)
         self.assertEqual('boys', self.youth)

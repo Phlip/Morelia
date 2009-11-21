@@ -272,7 +272,7 @@ class MoreliaTest(TestCase):
         step = And()._parse('my milkshake brings all the boys to the yard')
         method = step.find_by_doc_string(self)
         expect = self.step_my_milkshake
-        self.assertEqual(expect, method)
+        self.assertEqual(expect, step.method)
 
     def test_find_step_with_match(self):
         step = When()._parse('my milkshake brings all the girls to the yard')

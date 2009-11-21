@@ -144,7 +144,7 @@ class Viridis(Morelia):
         
     def find_step_name(self, suite):
         self.method = None
-        self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
+        self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
 
@@ -180,9 +180,8 @@ class Viridis(Morelia):
 
                 if m:
                     self.matches = m.groups()
-                    return method
-                    
-        return None
+                    self.method = method
+                    return
 
     def find_steps(self, suite, regexp):
         matcher = re.compile(regexp)

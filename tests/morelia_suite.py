@@ -317,20 +317,23 @@ class MoreliaTest(TestCase):
     #~ def test_evaluate_unfound(self):
         #~ Parser().parse_file(pwd + '/nada.feature').evaluate(self)
         
-    #~ def test_evaluate_file(self):
-        #~ Parser().parse_file(pwd + '/morelia.feature').evaluate(self)
+    def test_evaluate_file(self):
+        Parser().parse_file(pwd + '/morelia.feature').evaluate(self)
 
-    def step_adventure_of_love_love_and_culture_(self):
-        "adventure of love - love and <culture>"        # TODO
+    def setUp(self):
+        self.culture = []
 
-    def step_Moralia_evaluates_this(self):
-        "Moralia evaluates this"
+    def step_adventure_of_love_love_and_culture_(self, culture):
+        'adventure of love - love and (.+)'
+        self.culture.append(culture)
 
-    def step__culture_contains_radio_g_string_battery_driven_(self):
-        "\"culture\" contains ['radio', 'g-string', 'battery', 'driven']"
+    def step_Moralia_evaluates_this(self):  pass
 
-        # code
-
+    def step_culture_contains(self, arguments):
+        r'"culture" contains (.*)'
+        
+        self.assertEqual(1, arguments.count(self.culture[0]))
+        self.assertEqual(1, len(self.culture))
 
     def toast_report_file(self):
         Parser().parse_file(pwd + '/morelia.feature').report(self)

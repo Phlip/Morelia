@@ -289,7 +289,7 @@ class Then(Step):  pass
 class And(Step):  pass
 
 class Row(Morelia):
-    def i_look_like(self):  return '\\|'
+    def i_look_like(self):  return r'\|'
     def my_parent_type(self):  return Step
         
     def count_dimension(self):
@@ -303,7 +303,7 @@ class Row(Morelia):
 #  TODO  sample data with "post-it haiku"
 
 class Comment(Morelia):
-    def i_look_like(self):  return '\\#'
+    def i_look_like(self):  return r'\#'
     def my_parent_type(self):  return Morelia # aka "any"
 
 

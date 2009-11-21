@@ -141,39 +141,7 @@ class Morelia:
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
-
-    def augment_predicate(self):  #  TODO  move me to step?
-        if self.parent == None:  return self.predicate
-        dims = self.parent.count_Row_dimensions()
-        if set(dims) == set([0]):  return self.predicate
-        rep = re.compile(r'\<(\w+)\>')
-        replitrons = rep.findall(self.predicate)
-        if replitrons == []:  return self.predicate
-        self.copy = self.predicate[:]
-        for self.replitron in replitrons:
-            for x in range(0, len(self.parent.row_indices)):
-                self.table = self.parent.steps[x].steps
-            
-                if self.table != []:
-                    q = 0
-
-                    for self.title in self.table[0].harvest():
-                        self.replace_replitron(x, q)
-                        q += 1
-
-        return self.copy
-
-    def replace_replitron(self, x, q):
-        if self.title != self.replitron:  return
-        at = self.parent.row_indices[x] + 1
-        if at >= len(self.table):  return  #  TODO  this should never happen
-        stick = self.table[at].harvest()
-        found = stick[q]  #  #  TODO  strip trailing pipe more smartly!
-        #  TODO  only if it's not nothing?
-        self.copy = self.copy.replace('<'+self.replitron+'>', found)
-
-        # TODO  mix replitrons and matchers!
-
+        
     def find_step_name(self, suite):
         self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
         if not self.method: self.method = self.find_by_name(suite)
@@ -282,6 +250,38 @@ class Step(Viridis):
         self.find_step_name(v.suite)
           #  TODO  prompt suggestion if method ain't found
         self.method(*self.matches)  #  TODO  setup, teardown, and nested conclusions
+
+    def augment_predicate(self):  #  TODO  unsucktacularize me pleeeeeeze
+        if self.parent == None:  return self.predicate
+        dims = self.parent.count_Row_dimensions()
+        if set(dims) == set([0]):  return self.predicate
+        rep = re.compile(r'\<(\w+)\>')
+        replitrons = rep.findall(self.predicate)
+        if replitrons == []:  return self.predicate
+        self.copy = self.predicate[:]
+        for self.replitron in replitrons:
+            for x in range(0, len(self.parent.row_indices)):
+                self.table = self.parent.steps[x].steps
+            
+                if self.table != []:
+                    q = 0
+
+                    for self.title in self.table[0].harvest():
+                        self.replace_replitron(x, q)
+                        q += 1
+
+        return self.copy
+
+    def replace_replitron(self, x, q):
+        if self.title != self.replitron:  return
+        at = self.parent.row_indices[x] + 1
+        if at >= len(self.table):  return  #  TODO  this should never happen
+        stick = self.table[at].harvest()
+        found = stick[q]  #  #  TODO  strip trailing pipe more smartly!
+        #  TODO  only if it's not nothing?
+        self.copy = self.copy.replace('<'+self.replitron+'>', found)
+
+        # TODO  mix replitrons and matchers!
 
 
 class Given(Step):   pass  #  TODO  distinguish these by fault signatures!

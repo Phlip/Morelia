@@ -132,8 +132,7 @@ class Morelia:
         
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
-            
-print dir()
+
 
 class Viridis(Morelia):
 
@@ -303,9 +302,6 @@ class Row(Morelia):
 class Comment(Morelia):
     def i_look_like(self):  return r'\#'
     def my_parent_type(self):  return Morelia # aka "any"
-
-
-#   TODO  prefix me by 2 more
 
 
 if __name__ == '__main__':

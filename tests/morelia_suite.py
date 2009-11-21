@@ -196,9 +196,9 @@ class MoreliaTest(TestCase):
         zones = []
         scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
         Parser().parse_features(scene).evaluate(self)
-        self.assertEqual([ 'work',   'mall',  'jail',   'work',   'mall',  'jail'   ], crunks)
+        self.assertEqual([ 'work',   'mall',  'jail',  'work',  'mall',  'jail' ], crunks)
         self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
-        
+
     def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
         r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too
 
@@ -215,7 +215,6 @@ class MoreliaTest(TestCase):
         crunks.append(crunk)
         self.got_crunk = crunk
 
-#  TODO  COMMENTS!!!
 #  TODO  note that default arguments on steps are permitted!
 #  TODO  squeak if the table has no | in the middle or on the end etc, or if item not found
 #  TODO  parse the || as Json/Yaml? - permit gaps & comments in tables

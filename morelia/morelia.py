@@ -20,8 +20,6 @@ def _something(arr):  #  TODO  rename thingers
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
 
- #  TODO  cron order already!
-
 class Parser:
     def __init__(self):  
         self.thangs = [ Feature, Scenario,

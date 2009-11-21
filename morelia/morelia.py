@@ -99,10 +99,10 @@ class TestVisitor:
 
 class Morelia:
         
-    def __init__(self, predicate = '', list = []):  #  TODO  take these out
+    def __init__(self): # , predicate = '', list = []):  #  TODO  take these out
         self.parent = None
-        if predicate != '':  print 'TODO'
-        self._parse(predicate, list)  #  TODO  list -> Parser
+        #~ if predicate != '':  print 'TODO'
+        #~ self._parse(predicate, list)  #  TODO  list -> Parser
 
     def _parse(self, predicate, list = []):
         self.concept = self.my_class_name()

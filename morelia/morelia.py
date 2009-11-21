@@ -248,8 +248,7 @@ class Step(Viridis):
         
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
-          #  TODO  prompt suggestion if method ain't found
-        self.method(*self.matches)  #  TODO  setup, teardown, and nested conclusions
+        self.method(*self.matches)
 
     def augment_predicate(self):  #  TODO  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate
@@ -259,6 +258,7 @@ class Step(Viridis):
         replitrons = rep.findall(self.predicate)
         if replitrons == []:  return self.predicate
         self.copy = self.predicate[:]
+
         for self.replitron in replitrons:
             for x in range(0, len(self.parent.row_indices)):
                 self.table = self.parent.steps[x].steps
@@ -302,6 +302,7 @@ class Row(Morelia):
         return row[:-1]
 
 #  TODO  sample data with "post-it haiku"
+#  TODO  trailing comments
 
 class Comment(Morelia):
     def i_look_like(self):  return r'\#'

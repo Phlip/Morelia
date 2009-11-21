@@ -143,8 +143,9 @@ class Viridis(Morelia):
     def prefix(self):  return '  '
         
     def find_step_name(self, suite):
+        self.method = None
         self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
-        if not self.method: self.method = self.find_by_name(suite)
+        if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
 
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
@@ -162,9 +163,8 @@ class Viridis(Morelia):
         
         for s in self.find_steps(suite, '^step_' + clean + '$'):  #  NOTE  the ^$ ain't tested
             self.method_name = s
-            return suite.__getattribute__(s)
-        
-        return None
+            self.method = suite.__getattribute__(s)
+            return
 
     def find_by_doc_string(self, suite):
         self.method_name = None

@@ -264,9 +264,9 @@ class MoreliaTest(TestCase):
     
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')
-        method = step.find_by_name(self)
+        step.find_by_name(self)
         expect = self.step_my_milkshake
-        self.assertEqual(expect, method)
+        self.assertEqual(expect, step.method)
 
     def test_find_step_by_doc_string(self):
         step = And()._parse('my milkshake brings all the boys to the yard')

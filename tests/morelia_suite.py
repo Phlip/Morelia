@@ -203,13 +203,10 @@ class MoreliaTest(TestCase):
         r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
-        if zone == '<zone>':  print zone 
         global zones
-        
         zones.append(zone)
 
-    def step_flesh_is_weak(self):
-        pass
+    def step_flesh_is_weak(self):  pass
 
     def step_hearty_crunk_(self, crunk):
         r'hearty (\w+)'
@@ -253,7 +250,7 @@ class MoreliaTest(TestCase):
         self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
 
     def step_party_element_from_faction(self, element, faction):
-        "party (.*) from (.*)"  
+        r'party (\w+) from (\w+)'
             #  TODO  don't default to this "party <element> in <faction>"  
 
         global elements, factions
@@ -326,7 +323,8 @@ class MoreliaTest(TestCase):
         self.culture = []
 
     def step_adventure_of_love_love_and_culture_(self, culture):
-        'adventure of love - love and (.+)'
+        r'adventure of love - love and (.+)'
+        
         self.culture.append(culture)
 
     def step_Moralia_evaluates_this(self):  pass

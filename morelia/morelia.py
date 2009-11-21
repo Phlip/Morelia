@@ -101,9 +101,10 @@ class Morelia:
         
     def __init__(self, predicate = '', list = []):  #  TODO  take these out
         self.parent = None
+        if predicate != '':  print 'TODO'
         self._parse(predicate, list)  #  TODO  list -> Parser
 
-    def _parse(self, predicate, list):
+    def _parse(self, predicate, list = []):
         self.concept = self.my_class_name()
         self.predicate = predicate
         self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
@@ -112,7 +113,9 @@ class Morelia:
             if issubclass(s.__class__, self.my_parent_type()):
                 s.steps.append(self)  #  TODO  squeek if can't find parent
                 self.parent = s
-                return
+                break
+                
+        return self
 
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
     def prefix(self):  return ''

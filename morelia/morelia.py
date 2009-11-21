@@ -116,7 +116,7 @@ class Morelia:
 
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
     def prefix(self):  return ''
-    def my_parent_type(self):  None    
+    def my_parent_type(self):  None
 
         #  TODO  all files must start with a Feature and contain only one
 
@@ -125,14 +125,10 @@ class Morelia:
         for step in self.steps:  step.evaluate_steps(v)
             
     def evaluate_step(self, v):  pass  #  TODO  rename
-        
     def i_look_like(self):  return self.my_class_name()
-        
+
     def count_dimensions(self):  
-        dim = 0
-        for step in self.steps:
-            dim += step.count_dimension()
-        return dim
+        return sum([step.count_dimension() for step in self.steps])
         
     def count_dimension(self):    # TODO  beautify this crud!
         return 0

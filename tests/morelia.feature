@@ -19,7 +19,7 @@ Scenario: When we challenge Morelia with a Step with no matching
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
-Scenario: when did BowWowWow become classic rock?
+Scenario: when did Bow Wow Wow become classic rock?
     Given: adventure of love - love and <culture>
         | culture  |
         | radio    |
@@ -28,3 +28,4 @@ Scenario: when did BowWowWow become classic rock?
         | driven   |
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
+

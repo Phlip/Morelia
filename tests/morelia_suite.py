@@ -358,12 +358,14 @@ class MoreliaTest(TestCase):
             self.diagnostic = str(e)
 
     def step_it_prints_a_diagnostic(self, sample):
-        "it prints a diagnostic containing \"([^\"]+)\""
+        r'it prints a diagnostic containing "([^"]+)"'
+        
         self.diagnostic.index(sample)  #  CONSIDER  clearer diagnostics!!
         #self.assertTrue(diagnostic, 'foo')
         
     def step_the_second_line_contains(self, docstring):
-        "the second line contains \"([^\"]+)\""
+        r'the second line contains "([^"]+)"'
+        
         self.diagnostic.split('\n')[4].index(docstring)
 
 

@@ -261,9 +261,9 @@ class MoreliaTest(TestCase):
         elements.append(element)
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
-        r'my milkshake brings all the (boys|girls|.youth.) to (.*) yard'
+        r'my milkshake brings all the (boys|girls) to (.*) yard'
         
-        self.youth = youth  #  TODO  is "youth" still needed?
+        self.youth = youth
     
     def test_find_step_by_name(self):
         step = Given('my milkshake')

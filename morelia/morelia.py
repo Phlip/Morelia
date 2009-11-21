@@ -271,7 +271,7 @@ class Step(Viridis):
         if at >= len(self.table):  return  #  TODO  this should never happen
         stick = self.table[at].harvest()
         found = stick[q]  #  #  TODO  strip trailing pipe more smartly!
-        #  TODO  only if it's not nothing?
+            #  TODO  only if it's not nothing?
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # TODO  mix replitrons and matchers!

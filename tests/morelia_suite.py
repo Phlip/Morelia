@@ -237,11 +237,13 @@ class MoreliaTest(TestCase):
         #  TODO  warn about bad but permitted style -- with | columns | out of order!
             #  TODO  reporter should beautify || markers!
         return '''Feature: the smoker you drink
-                       Scenario: the programmer you get
-                           Given party <element> from <faction>
-                                | faction     | element   |
-                                | Pangolin | Pangea  |
-                                | Glyptodon  | Laurasia |'''
+                    Scenario: the programmer you get
+                      Given party <element> from <faction>
+
+                                | faction   | element  |
+
+                                | Pangolin  | Pangea   |
+                                | Glyptodon | Laurasia |'''
 
     def test_two_dimensional_table(self):
         global elements, factions

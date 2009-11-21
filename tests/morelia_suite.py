@@ -339,7 +339,7 @@ class MoreliaTest(TestCase):
         Parser().parse_file(pwd + '/morelia.feature').report(self)
         
     def step_a_feature_file_with_contents(self, file_contents):
-        "a feature file with \"([^\"]+)\""
+        r'a feature file with "([^"]+)"'
         self.file_contents = file_contents
         
     #~ def step_wikked_(self):

@@ -104,7 +104,7 @@ class Morelia:
     def _parse(self, predicate, list = []):
         self.concept = self.my_class_name()
         self.predicate = predicate
-        self.steps = []  #  CONSIDER  parser inherits Morelia to get this - Parser IS Feature
+        self.steps = []
 
         for s in list[::-1]:
             if issubclass(s.__class__, self.my_parent_type()):

@@ -12,6 +12,12 @@
 import re
 from itertools import imap, product
 
+#  ERGO  Morelia should raise a form in any state!
+#  ERGO  get Morelia working with more Pythons - virtualenv it!
+
+# ERGO moralia should try the regex first then the step name
+
+
 def _special_range(n):
     return xrange(n) if n else [0]
 

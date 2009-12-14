@@ -71,17 +71,22 @@ class Viridis(Morelia):
 
         suite.fail(diagnostic)
 
-    def suggest(self, predicate = None):
+    def suggest(self, predicate = None):  #  TODO  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''
         if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'")
         predicate = predicate.replace('\n', '\\n')
-        m = re.search(r'\<(.+?)\>', predicate)
-        if m:  self.extra_arguments = ', ' + ', '.join(m.groups())
+        #print help(re)
+        m = re.findall(r'\<(.+?)\>', predicate)
+        for q in m:  self.extra_arguments += ', ' + q
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+        m = re.findall(r'"(.+?)"', predicate)
+        x = 1
+        print m
+        for q in m:  
+            self.extra_arguments += ', ' + 'arg%i' % x
+            x += 1
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
-        m = re.search(r'"(.+?)"', predicate)
-        if m:  self.extra_arguments = ', ' + 'arg1'
         return "r'" + predicate + "'"  #  TODO automatically insert replitrons!
 
     def find_by_name(self, suite):

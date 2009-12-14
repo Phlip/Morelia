@@ -410,7 +410,6 @@ class MoreliaSuite(TestCase):
         r'a source file with a (.+)'
 
         self.predicate = predicate.replace('\\n', '\n')
-        print predicate
         
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'

@@ -51,14 +51,15 @@ Scenario: Convert source predicates into their matching regular expressions
    Then we convert it into a <suggestion>
     And add <extra> arguments
    
-       |   predicate   | suggestion      |  extra  |
+       |   predicate     |   suggestion           |  extra        |
        
-       | tastes great  | r'tastes great' |         |
-       | less filling  | r'less filling' |         |
-       | line\nfeed    | r'line\nfeed'   |         |
-       | tick'ed'      | r'tick\'ed\''   |         |
-       | argu<ment>al  | r'argu(.+)al'   | , ment  |
-       | str"ing"      | r'str"([^"]+)"' | , arg1  |
+       | tastes great    | r'tastes great'        |               |
+       | less filling    | r'less filling'        |               |
+       | line\nfeed      | r'line\nfeed'          |               |
+       | tick'ed'        | r'tick\'ed\''          |               |
+       | argu<ment>al    | r'argu(.+)al'          | , ment        |
+       | arg<u>ment<al>  | r'arg(.+)ment(.+)'     | , u, al       |
+       | str"ing"        | r'str"([^"]+)"'        | , arg1        |
+       | "str"i"ngs"     | r'"([^"]+)"i"([^"]+)"' | , arg1, arg2  |
        
-       
-       
+#  TODO escape a pipe! and what happens when last pipe is gone?

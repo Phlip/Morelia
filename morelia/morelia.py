@@ -76,13 +76,11 @@ class Viridis(Morelia):
         if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'")
         predicate = predicate.replace('\n', '\\n')
-        #print help(re)
         m = re.findall(r'\<(.+?)\>', predicate)
         for q in m:  self.extra_arguments += ', ' + q
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
         m = re.findall(r'"(.+?)"', predicate)
         x = 1
-        print m
         for q in m:  
             self.extra_arguments += ', ' + 'arg%i' % x
             x += 1

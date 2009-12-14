@@ -415,12 +415,13 @@ class MoreliaSuite(TestCase):
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'
 
-        # code
+        from morelia import _suggest
+        self.suggestion = _suggest(self.predicate)
 
     def step_we_convert_it_into_a_(self, suggestion):
         r'we convert it into a (.+)'
 
-        # code
+        self.assertEqual(suggestion, self.suggestion)
 
 
 #~ Scenario: Leading # marks comment lines.

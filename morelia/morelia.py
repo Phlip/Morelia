@@ -42,19 +42,19 @@ class Morelia:
     def evaluate_steps(self, v):
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
-            
+
     def evaluate_step(self, v):  pass  #  TODO  rename
     def i_look_like(self):  return self.my_class_name()
 
     def count_dimensions(self):  
         return sum([step.count_dimension() for step in self.steps])
-        
+
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
 
 
 def _suggest(predicate):
-    return '"' + predicate.replace('"', '\\"') + '"'
+    return "r'" + predicate.replace("'", "\\'") + "'"
 
 
 class Viridis(Morelia):

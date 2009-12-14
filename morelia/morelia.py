@@ -53,13 +53,6 @@ class Morelia:
         return 0
 
 
-def _suggest(predicate):
-    predicate = predicate.replace("'", "\\'"). \
-                          replace('\n', '\\n')
-    predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...
-    return "r'" + predicate + "'"
-
-
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
@@ -73,16 +66,22 @@ class Viridis(Morelia):
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def step_' + re.sub('[^\w]+', '_', self.predicate) + '(self):\n' + \
-                     '        ' + _suggest(self.predicate) + '\n\n' + \
+                     '        ' + self.suggest(self.predicate) + '\n\n' + \
                      '        # code\n\n'
 
         suite.fail(diagnostic)
+
+    def suggest(self, predicate):
+        predicate = predicate.replace("'", "\\'"). \
+                              replace('\n', '\\n')
+        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...
+        return "r'" + predicate + "'"  #  TODO automatically insert replitrons!
 
     def find_by_name(self, suite):
         self.method_name = None
         clean = re.sub(r'[^\w]', '_?', self.predicate)
         self.matches = []
-        
+
         for s in self.find_steps(suite, '^step_' + clean + '$'):  #  NOTE  the ^$ ain't tested
             self.method_name = s
             self.method = suite.__getattribute__(s)

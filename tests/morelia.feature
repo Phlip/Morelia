@@ -54,6 +54,7 @@ Scenario: Convert source predicates into their matching regular expressions
        
        | tastes great  | r'tastes great' |
        | less filling  | r'less filling' |
+       | line\nfeed    | r'line\nfeed'   |
        
        
        

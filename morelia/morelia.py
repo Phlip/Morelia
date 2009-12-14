@@ -54,7 +54,9 @@ class Morelia:
 
 
 def _suggest(predicate):
-    return "r'" + predicate.replace("'", "\\'") + "'"
+    predicate = predicate.replace("'", "\\'"). \
+                          replace('\n', '\\n')
+    return "r'" + predicate + "'"
 
 
 class Viridis(Morelia):

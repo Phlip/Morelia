@@ -81,8 +81,8 @@ class Viridis(Morelia):
         args = re.findall(r'\<(.+?)\>', predicate)
         self._add_extra_args(args)
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
-        m = re.findall(r'"(.+?)"', predicate)
-        args = ['arg%i' % (x + 1) for x in range(0, len(m))]
+        args = re.findall(r'"(.+?)"', predicate)
+#        args = ['arg%i' % (x + 1) for x in range(0, len(m))]
         self._add_extra_args(args)            
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
         return "r'" + predicate + "'"

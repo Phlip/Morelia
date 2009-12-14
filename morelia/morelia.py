@@ -21,7 +21,8 @@ from itertools import imap, product
 def _special_range(n):
     return xrange(n) if n else [0]
 
-def _something(arr):  #  TODO  rename thingers
+
+def _something(arr):  #  TODO  rename that
     return list(product(*imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 

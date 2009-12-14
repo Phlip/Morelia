@@ -63,7 +63,7 @@ class Viridis(Morelia):
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
         doc_string = self.suggest()  #  TODO  rename to doc_string
-        arguments = '(self' + self.extra_arguments + ')'
+        arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
@@ -79,15 +79,23 @@ class Viridis(Morelia):
         predicate = predicate.replace("'", "\\'")
         predicate = predicate.replace('\n', '\\n')
         m = re.findall(r'\<(.+?)\>', predicate)
-        for q in m:  self.extra_arguments += ', ' + q
+        
+        for q in m:  
+            self._add_extra_arg(q)
+            
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
         m = re.findall(r'"(.+?)"', predicate)
         x = 1
+        
         for q in m:  
             self.extra_arguments += ', ' + 'arg%i' % x
             x += 1
+            
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
         return "r'" + predicate + "'"
+
+    def _add_extra_arg(self, arg):
+        self.extra_arguments += ', ' + arg
 
     def find_by_name(self, suite):
         self.method_name = None
@@ -101,7 +109,7 @@ class Viridis(Morelia):
 
     def find_by_doc_string(self, suite):
         self.method_name = None
-        
+
         for s in self.find_steps(suite, '^step_'):
             self.method_name = s
             method = suite.__getattribute__(s)

@@ -195,9 +195,10 @@ class MoreliaSuite(TestCase):
         self.table_scene = p.parse_features(scene)
 
     def test_permute_schedule(self):
-        expect = _something([2, 0, 3])  #  TODO  by rights, 0 should be -1
+        expect = _something([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
         self.assemble_scene_table('Step you betcha\n')
-        schedule = self.table_scene.steps[0].steps[0].permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
+        scenario = self.table_scene.steps[0].steps[0]
+        schedule = scenario.permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
         self.assertEqual(expect, schedule)
 
     def test_evaluate_permuted_schedule(self):

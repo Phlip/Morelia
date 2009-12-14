@@ -62,11 +62,13 @@ class Viridis(Morelia):
         self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
-
+        doc_string = self.suggest()  #  TODO  rename to doc_string
+        arguments = '(self' + self.extra_arguments + ')'
+        
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
-                     '    def step_' + re.sub('[^\w]+', '_', self.predicate) + '(self):\n' + \
-                     '        ' + self.suggest() + '\n\n' + \
+                     '    def step_' + re.sub('[^\w]+', '_', self.predicate) + arguments + ':\n' + \
+                     '        ' + doc_string + '\n\n' + \
                      '        # code\n\n'
 
         suite.fail(diagnostic)
@@ -85,7 +87,7 @@ class Viridis(Morelia):
             self.extra_arguments += ', ' + 'arg%i' % x
             x += 1
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
-        return "r'" + predicate + "'"  #  TODO automatically insert replitrons!
+        return "r'" + predicate + "'"
 
     def find_by_name(self, suite):
         self.method_name = None

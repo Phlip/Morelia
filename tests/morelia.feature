@@ -49,15 +49,16 @@ Scenario: Convert source predicates into their matching regular expressions
    Given a source file with a <predicate>
    When we evaluate the file
    Then we convert it into a <suggestion>
+    And add <extra> arguments
    
-       |   predicate   | suggestion      |
+       |   predicate   | suggestion      |  extra  |
        
-       | tastes great  | r'tastes great' |
-       | less filling  | r'less filling' |
-       | line\nfeed    | r'line\nfeed'   |
-       | tick'ed'      | r'tick\'ed\''   |
-       | argu<ment>al  | r'argu(.+)al'   |
-       | str"ing"      | r'str"([^"]+)"' |
+       | tastes great  | r'tastes great' |         |
+       | less filling  | r'less filling' |         |
+       | line\nfeed    | r'line\nfeed'   |         |
+       | tick'ed'      | r'tick\'ed\''   |         |
+       | argu<ment>al  | r'argu(.+)al'   | , ment  |
+       | str"ing"      | r'str"([^"]+)"' | , arg1  |
        
        
        

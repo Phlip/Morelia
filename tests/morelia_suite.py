@@ -415,12 +415,18 @@ class MoreliaSuite(TestCase):
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'
 
-        self.suggestion = Viridis().suggest(self.predicate)
+        self.viridis = Viridis()
+        self.suggestion = self.viridis.suggest(self.predicate)
 
     def step_we_convert_it_into_a_(self, suggestion):
         r'we convert it into a (.+)'
 
         self.assertEqual(suggestion, self.suggestion)
+
+    def step_add_extra_arguments(self, extra = ''):  #  TODO  blank columns should exist!
+        r'add (.+) arguments'
+
+        self.assertEqual(extra, self.viridis.extra_arguments)
 
 
 #~ Scenario: Leading # marks comment lines.

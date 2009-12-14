@@ -72,11 +72,16 @@ class Viridis(Morelia):
         suite.fail(diagnostic)
 
     def suggest(self, predicate = None):
+        self.extra_arguments = ''
         if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'")
         predicate = predicate.replace('\n', '\\n')
-        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...
-        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)  #  the irony IS lost on us...
+        m = re.search(r'\<(.+?)\>', predicate)
+        if m:  self.extra_arguments = ', ' + ', '.join(m.groups())
+        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
+        m = re.search(r'"(.+?)"', predicate)
+        if m:  self.extra_arguments = ', ' + 'arg1'
         return "r'" + predicate + "'"  #  TODO automatically insert replitrons!
 
     def find_by_name(self, suite):

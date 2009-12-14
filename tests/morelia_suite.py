@@ -198,12 +198,12 @@ class MoreliaSuite(TestCase):
         expect = _something([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
         self.assemble_scene_table('Step you betcha\n')
         scenario = self.table_scene.steps[0].steps[0]
-        schedule = scenario.permute_schedule() # TODO bottle up the self.table_scene.steps[0].steps[0]
+        schedule = scenario.permute_schedule()
         self.assertEqual(expect, schedule)
 
     def test_evaluate_permuted_schedule(self):
         self.assemble_scene_table('Step flesh is weak\n')
-        scenario = self.table_scene.steps[0].steps[0] # TODO bottle up the self.table_scene.steps[0].steps[0]
+        scenario = self.table_scene.steps[0].steps[0]
         visitor = TestVisitor(self)
         global crunks, zones
         crunks = []

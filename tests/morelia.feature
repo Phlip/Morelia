@@ -39,7 +39,7 @@ Scenario: when did Bow Wow Wow become classic rock?
         | culture  |
         | radio    |
         | g-string |
-        | battery  |
+        | battery  
         | driven   |
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']

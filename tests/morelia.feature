@@ -63,4 +63,6 @@ Scenario: Convert source predicates into their matching regular expressions
        | str"ing"        | r'str"([^"]+)"'        | , ing       |
        | "str"i"ngs"     | r'"([^"]+)"i"([^"]+)"' | , str, ngs  |
        
-#  TODO escape a pipe! and what happens when last pipe is gone?
+#      | pipe \| me      | r'pipe \\\| me'        |             |
+       
+#  TODO escape a pipe!

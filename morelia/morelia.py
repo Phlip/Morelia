@@ -65,7 +65,7 @@ class Viridis(Morelia):
         doc_string = self.suggest_doc_string()
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
-        
+
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def ' + method_name + arguments + ':\n' + \
@@ -302,7 +302,7 @@ class And(Step):  pass
 class Row(Morelia):
     def i_look_like(self):  return r'\|'
     def my_parent_type(self):  return Step
-        
+
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0
         return 1  #  TODO  raise an error (if the table has one row!)

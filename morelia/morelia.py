@@ -170,7 +170,7 @@ class Parser:
 
     def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
         previous = self.steps[-1]
-        previous.predicate += '\n' + self.line
+        previous.predicate += '\n' + self.line.strip()
         previous.predicate = previous.predicate.strip()
 
 

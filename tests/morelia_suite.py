@@ -71,7 +71,7 @@ class MoreliaSuite(TestCase):
         step = steps[0]
         assert step.__class__ == Given
         self.assertEqual(step.concept, 'Given')
-        self.assertEqual(step.predicate, 'a string with spacies and\n  another string')
+        self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
 
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation

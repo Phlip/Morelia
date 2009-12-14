@@ -146,7 +146,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual('\\|', Row().i_look_like())
 
     def test_Row_parse(self):
-        sauce = 'umma | gumma |'  #  TODO  better sauce - Pangolin from Pangea
+        sauce = 'buddha | brot |'
         row = Row()
         row._parse(sauce, [])
         assert row.predicate == sauce

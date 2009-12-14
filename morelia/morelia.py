@@ -78,15 +78,14 @@ class Viridis(Morelia):
         if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'")
         predicate = predicate.replace('\n', '\\n')
-        args = re.findall(r'\<(.+?)\>', predicate)
-        self._add_extra_args(args)
+        self._add_extra_args(r'\<(.+?)\>', predicate)
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
-        args = re.findall(r'"(.+?)"', predicate)
-        self._add_extra_args(args)            
+        self._add_extra_args(r'"(.+?)"', predicate)
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
         return "r'" + predicate + "'"
 
-    def _add_extra_args(self, args):
+    def _add_extra_args(self, matcher, predicate):
+        args = re.findall(matcher, predicate)
         for arg in args:  self.extra_arguments += ', ' + arg
 
     def find_by_name(self, suite):

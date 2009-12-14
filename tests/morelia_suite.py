@@ -167,7 +167,7 @@ class MoreliaSuite(TestCase):
         dims = self.table_scene.steps[0].steps[0].count_Row_dimensions()
         self.assertEqual([2, 0, 3], dims)
 
-    def test_permutate(self):  #  TODO  remove the title from the dimensions
+    def test_permutate(self):
         expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
                         (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
         self.assertEqual(expect, _something([0,4,3]))

@@ -399,7 +399,6 @@ class MoreliaSuite(TestCase):
         r'it contains 1 step'
 
         self.assertEqual(1, len(self.steps))
-        # TODO
 
     def step_the_step_concept_is_(self, concept):
         r'the step concept is (.+)'

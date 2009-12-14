@@ -74,6 +74,8 @@ class Viridis(Morelia):
 
         suite.fail(diagnostic)  #  TODO  are linefeeds tooken out of the method_name?
 
+#  ERGO  river is to riparian as pond is to ___?
+
     def suggest_doc_string(self, predicate = None):  #  CONSIDER  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''
         if not predicate:  predicate = self.predicate

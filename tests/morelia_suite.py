@@ -65,6 +65,14 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with Given in it')  # <-- note spacies are gone
 
+    def test_given_a_broken_string_with_excess_spacies(self):
+        input = 'Given a string with spacies and   \n  another string  '
+        steps = Parser().parse_feature(input)
+        step = steps[0]
+        assert step.__class__ == Given
+        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.predicate, 'a string with spacies and\n  another string')
+
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation
                    Scenario: starz upon tharz bucks'''

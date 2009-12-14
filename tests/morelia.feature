@@ -4,6 +4,12 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
+Scenario: Add two numbers
+  Given I have entered 50 into the calculator
+    And I have entered 70 into the calculator
+  When I press add
+   Then the result should be 120 on the screen
+   
 # TODO  use or lose feature
   where run-on comments are glommed together
   
@@ -39,8 +45,3 @@ Scenario: when did Bow Wow Wow become classic rock?
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step concept is Given
 
-Scenario: Add two numbers
-  Given I have entered 50 into the calculator
-    And I have entered 70 into the calculator
-  When I press add
-   Then the result should be 120 on the screen

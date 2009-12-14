@@ -59,7 +59,7 @@ class Viridis(Morelia):
 
     def find_step_name(self, suite):
         self.method = None
-        self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
+        self.find_by_doc_string(suite)
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
         doc_string = self.suggest_doc_string()

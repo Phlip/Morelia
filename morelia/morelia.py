@@ -10,21 +10,10 @@
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
 import re
-from itertools import imap, product
 
 #  ERGO  Morelia should raise a form in any state!
 #  ERGO  get Morelia working with more Pythons - virtualenv it!
-
-# ERGO moralia should try the regex first then the step name
-
-
-def _special_range(n):
-    return xrange(n) if n else [0]
-
-
-def _something(arr):  #  TODO  rename that
-    return list(product(*imap(_special_range, arr)))
-      #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
+#  ERGO  moralia should try the regex first then the step name
 
 
 class Parser:
@@ -316,6 +305,15 @@ if __name__ == '__main__':
 
 #  TODO  maximum munch fails - Given must start a line
 
+
+def _special_range(n):
+    return xrange(n) if n else [0]
+
+
+def _something(arr):  #  TODO  rename that
+    from itertools import imap, product
+    return list(product(*imap(_special_range, arr)))
+      #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
 #  TODO  something was wrong with this:
 #~ Scenario: Don't send Clan Membership purchase to Prolog!

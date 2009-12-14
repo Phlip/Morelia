@@ -13,8 +13,6 @@ Scenario: Add two numbers
 # TODO  use or lose feature
   where run-on comments are glommed together
   
-  # TODO trim trailing freaking spaces!!!
-
 #  TODO  display all missing steps not just the first
 
 Scenario: Match prose steps to Python steps by name

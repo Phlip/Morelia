@@ -73,9 +73,10 @@ class Viridis(Morelia):
 
     def suggest(self, predicate = None):
         if not predicate:  predicate = self.predicate
-        predicate = predicate.replace("'", "\\'"). \
-                              replace('\n', '\\n')
+        predicate = predicate.replace("'", "\\'")
+        predicate = predicate.replace('\n', '\\n')
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...
+        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)  #  the irony IS lost on us...
         return "r'" + predicate + "'"  #  TODO automatically insert replitrons!
 
     def find_by_name(self, suite):

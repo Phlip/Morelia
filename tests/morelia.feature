@@ -55,10 +55,9 @@ Scenario: Convert source predicates into their matching regular expressions
        | tastes great  | r'tastes great' |
        | less filling  | r'less filling' |
        | line\nfeed    | r'line\nfeed'   |
-       | quot"e"       | r'quot"e"'      |
        | tick'ed'      | r'tick\'ed\''   |
        | argu<ment>al  | r'argu(.+)al'   |
-#       | str"ing"      | r'str"([^"]+)"' |
+       | str"ing"      | r'str"([^"]+)"' |
        
        
        

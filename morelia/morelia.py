@@ -53,10 +53,14 @@ class Morelia:
         return 0
 
 
+def _suggest(predicate):
+    return '"' + predicate.replace('"', '\\"') + '"'
+
+
 class Viridis(Morelia):
 
     def prefix(self):  return '  '
-        
+
     def find_step_name(self, suite):
         self.method = None
         self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
@@ -66,7 +70,7 @@ class Viridis(Morelia):
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def step_' + re.sub('[^\w]+', '_', self.predicate) + '(self):\n' + \
-                     '        "' + self.predicate.replace('"', '\\"') + '"\n\n' + \
+                     '        ' + _suggest(self.predicate) + '\n\n' + \
                      '        # code\n\n'
 
         suite.fail(diagnostic)
@@ -90,7 +94,7 @@ class Viridis(Morelia):
             doc = method.__doc__
             
             if doc:
-                doc = re.compile('^' + doc + '$', re.MULTILINE)  #  CONSIDER deal with users who put in the ^$
+                doc = re.compile('^' + doc + '$', re.MULTILINE)  #  CONSIDER deal with users who put in the ^$   TODO  is re.MULTILINE needed?
                 m = doc.match(self.augment_predicate())
 
                 if m:

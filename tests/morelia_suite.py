@@ -402,10 +402,27 @@ class MoreliaSuite(TestCase):
         # TODO
 
     def step_the_step_concept_is_(self, concept):
-        r'the step concept is (.*)'
+        r'the step concept is (.+)'
 
         self.assertEqual(concept, self.concept)
         
+    def step_a_source_file_with_a_Given_(self, predicate):
+        r'a source file with a Given (.+)'
+
+        self.predicate = predicate
+        print predicate
+        
+    def step_we_evaluate_the_file(self):
+        r'we evaluate the file'
+
+        # code
+
+    def step_we_convert_it_into_a_(self, suggestion):
+        r'we convert it into a (.+)'
+
+        # code
+
+
 #~ Scenario: Leading # marks comment lines.
     #~ (Warning: Only leading marks are respected for now!)
     #~ Given a feature file with "When something

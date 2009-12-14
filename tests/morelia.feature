@@ -45,3 +45,15 @@ Scenario: when did Bow Wow Wow become classic rock?
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step concept is Given
 
+Scenario: Convert source predicates into their matching regular expressions
+   Given a source file with a Given <predicate>
+   When we evaluate the file
+   Then we convert it into a <suggestion>
+   
+       |   predicate   | suggestion      |
+       
+       | tastes great  | r'tastes great' |
+       | less filling  | r'less filling' |
+       
+       
+       

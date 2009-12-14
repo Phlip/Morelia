@@ -33,14 +33,15 @@ Scenario: When we challenge Morelia with a Step with no matching
     And the second line contains "your nose is on fire"
 
 #  TODO document that we permit matches across one line!
+#  CONSIDER  document that the trailing pipe is cosmetic!
 
 Scenario: when did Bow Wow Wow become classic rock?
     Given: adventure of love - love and <culture>
-        | culture  |
-        | radio    |
-        | g-string |
+        | culture  
+        | radio    
+        | g-string 
         | battery  
-        | driven   |
+        | driven   
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step concept is Given

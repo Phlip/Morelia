@@ -66,12 +66,13 @@ class Viridis(Morelia):
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def step_' + re.sub('[^\w]+', '_', self.predicate) + '(self):\n' + \
-                     '        ' + self.suggest(self.predicate) + '\n\n' + \
+                     '        ' + self.suggest() + '\n\n' + \
                      '        # code\n\n'
 
         suite.fail(diagnostic)
 
-    def suggest(self, predicate):
+    def suggest(self, predicate = None):
+        if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'"). \
                               replace('\n', '\\n')
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...

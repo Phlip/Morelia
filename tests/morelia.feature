@@ -57,6 +57,7 @@ Scenario: Convert source predicates into their matching regular expressions
        | line\nfeed    | r'line\nfeed'   |
        | quot"e"       | r'quot"e"'      |
        | tick'ed'      | r'tick\'ed\''   |
+       | argu<ment>al  | r'argu(.+)al'   |
        
        
        

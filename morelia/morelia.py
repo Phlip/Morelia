@@ -56,6 +56,7 @@ class Morelia:
 def _suggest(predicate):
     predicate = predicate.replace("'", "\\'"). \
                           replace('\n', '\\n')
+    predicate = re.sub(r'\<.+?\>', '(.+)', predicate)  #  the irony IS lost on us...
     return "r'" + predicate + "'"
 
 

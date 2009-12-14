@@ -407,7 +407,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(concept, self.concept)
         
     def step_a_source_file_with_a_Given_(self, predicate):
-        r'a source file with a Given (.+)'
+        r'a source file with a (.+)'
 
         self.predicate = predicate.replace('\\n', '\n')
         print predicate

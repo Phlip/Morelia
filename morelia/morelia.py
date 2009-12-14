@@ -64,10 +64,11 @@ class Viridis(Morelia):
         if self.method:  return self.method_name
         doc_string = self.suggest_doc_string()
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
+        method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
         
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
-                     '    def step_' + re.sub('[^\w]+', '_', self.predicate) + arguments + ':\n' + \
+                     '    def ' + method_name + arguments + ':\n' + \
                      '        ' + doc_string + '\n\n' + \
                      '        # code\n\n'
 

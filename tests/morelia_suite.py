@@ -11,7 +11,7 @@ pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
 from morelia import *
-from morelia import _something
+from morelia import _permute_indices
 
  #  TODO  add Pangolins to the sample data
  #  TODO  cron order already!
@@ -170,11 +170,11 @@ class MoreliaSuite(TestCase):
     def test_permutate(self):
         expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
                         (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
-        self.assertEqual(expect, _something([0,4,3]))
+        self.assertEqual(expect, _permute_indices([0,4,3]))
         expect = [(0, 0, 0)]
-        self.assertEqual(expect, _something([1,1,1]))
+        self.assertEqual(expect, _permute_indices([1,1,1]))
         expect = [(0, 0, 0), (0, 0, 1)]
-        self.assertEqual(expect, _something([1,1,2]))
+        self.assertEqual(expect, _permute_indices([1,1,2]))
 
     def assemble_scene_table_source(self, moar = ''):
         return '''Feature: permute tables
@@ -195,7 +195,7 @@ class MoreliaSuite(TestCase):
         self.table_scene = p.parse_features(scene)
 
     def test_permute_schedule(self):
-        expect = _something([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
+        expect = _permute_indices([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
         self.assemble_scene_table('Step you betcha\n')
         scenario = self.table_scene.steps[0].steps[0]
         schedule = scenario.permute_schedule()

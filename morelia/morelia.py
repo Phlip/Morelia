@@ -235,7 +235,7 @@ class Scenario(Morelia):
 
     def permute_schedule(self):
         dims = self.count_Row_dimensions()
-        return _something(dims)
+        return _permute_indices(dims)
 
     def _embellish(self):
         self.row_indices = []
@@ -327,7 +327,7 @@ def _special_range(n):
     return xrange(n) if n else [0]
 
 
-def _something(arr):  #  TODO  rename that
+def _permute_indices(arr):  #  TODO  rename that
     from itertools import imap, product
     return list(product(*imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!

@@ -98,6 +98,7 @@ class TestVisitor:
 
     def visit(self, node):
         # print node.concept + ': ' + node.predicate # TODO  if verbose
+        self.suite.step = node
         node.evaluate_step(self)
 
 
@@ -218,7 +219,7 @@ class Scenario(Morelia):
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  CONSIDER  if verbose
-        visitor.suite.setUp()
+        visitor.suite.setUp()  #  TODO  does this belong inside the try: ? match what pyunit does (or call the pyunit runner directly)
                 
         try:
             Morelia.evaluate_steps(self, visitor)
@@ -313,3 +314,41 @@ if __name__ == '__main__':
     os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value
 
 #  TODO  maximum munch fails - Given must start a line
+
+
+#  TODO  something was wrong with this:
+#~ Scenario: Don't send Clan Membership purchase to Prolog!
+  #~ Given the prowares_settings file contains MEMBERSHIP = "Clan_Membership"
+   #~ # And a SKU, Clan_Membership, Clan_Membership, $2.00, which is a Clan Item
+   #~ # And my cart contains these SKUs
+   #~ #When I check out my cart
+   #~ #Then no Purchase Order goes to Prolog
+
+#~ Traceback (most recent call last):
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/tests.py", line 696, in test_features
+    #~ morelia.Parser().parse_file('prowares/features/prowares.feature').evaluate(self) # TODO relative path
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 41, in evaluate
+    #~ self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 48, in rip
+    #~ self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 124, in evaluate_steps
+    #~ for step in self.steps:  step.evaluate_steps(v)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 247, in evaluate_steps
+    #~ self.evaluate_test_case(visitor)  #  note this works on reports too!
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 256, in evaluate_test_case
+    #~ Morelia.evaluate_steps(self, visitor)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 124, in evaluate_steps
+    #~ for step in self.steps:  step.evaluate_steps(v)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 123, in evaluate_steps
+    #~ v.visit(self)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 97, in visit
+    #~ node.evaluate_step(self)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 281, in evaluate_step
+    #~ self.find_step_name(v.suite)
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 177, in find_step_name
+    #~ self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 210, in find_by_doc_string
+    #~ m = doc.match(self.augment_predicate())
+  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 159, in augment_predicate
+    #~ for self.title in self.table[0].harvest():
+#~ AttributeError: Comment instance has no attribute 'harvest'

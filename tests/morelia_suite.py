@@ -17,7 +17,21 @@ from morelia import _something
  #  TODO  cron order already!
 
 
-class MoreliaTest(TestCase):
+class MoreliaSuite(TestCase):
+
+    def step_I_have_entered_a_number_into_the_calculator(self, number):
+        r'I have entered (\d+) into the calculator'
+
+        if not hasattr(self, 'stack'):  self.stack = []
+        self.stack.append(int(number))
+
+    def step_I_press_add(self):
+        self.result = self.stack[0] + self.stack[1]
+
+    def step_the_result_should_be_on_the_screen(self, number):
+        "the result should be (\d+) on the screen"
+
+        assert int(number) == self.result
 
     def test_feature(self):
         input = 'Feature: prevent wild animals from eating us'
@@ -44,12 +58,12 @@ class MoreliaTest(TestCase):
         self.assertEqual(step.predicate, 'with spacies')
 
     def test_given_a_string_with_given_in_it(self):
-        input = 'Given a string with Given in it\nAnd another string'
-        steps = Parser().parse_feature(input)
+        input = 'Given a string with Given in it   \nAnd another string'
+        steps = Parser().parse_feature(input)  #  ^ note the spacies
         step = steps[0]
         assert step.__class__ == Given
         self.assertEqual(step.concept, 'Given')
-        self.assertEqual(step.predicate, 'a string with Given in it')
+        self.assertEqual(step.predicate, 'a string with Given in it')  # <-- note spacies are gone
 
     def test_feature_with_scenario(self):
         input = '''Feature: Civi-lie-zation
@@ -325,6 +339,7 @@ class MoreliaTest(TestCase):
         r'adventure of love - love and (.+)'
         
         self.culture.append(culture)
+        self.concept = self.step.concept
 
     def step_Moralia_evaluates_this(self):  pass
 
@@ -349,12 +364,15 @@ class MoreliaTest(TestCase):
         
     def step_Moralia_evaluates_the_file(self):
         self.diagnostic = None
-        
+        self.steps = []
+        5
         try:
             p = Parser()
+            self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
             p.parse_features(self.file_contents).evaluate(self)
             self.steps = p.steps
         except AssertionError, e: 
+            #~ print str(e)
             self.diagnostic = str(e)
 
     def step_it_prints_a_diagnostic(self, sample):
@@ -368,14 +386,25 @@ class MoreliaTest(TestCase):
         
         self.diagnostic.split('\n')[4].index(docstring)
 
+    def step_it_contains_1_step(self):
+        r'it contains 1 step'
 
-#~ TODO Scenario: Leading # marks comment lines.
+        self.assertEqual(1, len(self.steps))
+        # TODO
+
+    def step_the_step_concept_is_(self, concept):
+        r'the step concept is (.*)'
+
+        self.assertEqual(concept, self.concept)
+        
+#~ Scenario: Leading # marks comment lines.
     #~ (Warning: Only leading marks are respected for now!)
     #~ Given a feature file with "When something
-                               #~ # Given nothing"
+                               #~ \# Given nothing"
     #~ When Moralia evaluates the file
     #~ Then it contains 1 step
     #~ And the first step contains "something"
+    #~ And the first step does not contain "nothing"
 
 #  TODO  count test cases correctly regarding entire batch
 #  TODO  auto-tables

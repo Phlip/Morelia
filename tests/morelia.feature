@@ -4,6 +4,13 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
+# TODO  use or lose feature
+  where run-on comments are glommed together
+  
+  # TODO trim trailing freaking spaces!!!
+
+#  TODO  display all missing steps not just the first
+
 Scenario: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string
 
@@ -19,6 +26,8 @@ Scenario: When we challenge Morelia with a Step with no matching
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
+#  TODO document that we permit matches across one line!
+
 Scenario: when did Bow Wow Wow become classic rock?
     Given: adventure of love - love and <culture>
         | culture  |
@@ -28,4 +37,10 @@ Scenario: when did Bow Wow Wow become classic rock?
         | driven   |
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
+      And the step concept is Given
 
+Scenario: Add two numbers
+  Given I have entered 50 into the calculator
+    And I have entered 70 into the calculator
+  When I press add
+   Then the result should be 120 on the screen

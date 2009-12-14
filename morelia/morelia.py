@@ -62,7 +62,7 @@ class Viridis(Morelia):
         self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
-        doc_string = self.suggest()  #  TODO  rename to doc_string
+        doc_string = self.suggest_doc_string()
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
@@ -71,9 +71,9 @@ class Viridis(Morelia):
                      '        ' + doc_string + '\n\n' + \
                      '        # code\n\n'
 
-        suite.fail(diagnostic)
+        suite.fail(diagnostic)  #  TODO  are linefeeds tooken out of the method_name?
 
-    def suggest(self, predicate = None):  #  TODO  invent Ruby scan here, to dazzle the natives
+    def suggest_doc_string(self, predicate = None):  #  TODO  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''
         if not predicate:  predicate = self.predicate
         predicate = predicate.replace("'", "\\'")
@@ -327,7 +327,7 @@ def _special_range(n):
     return xrange(n) if n else [0]
 
 
-def _permute_indices(arr):  #  TODO  rename that
+def _permute_indices(arr):
     from itertools import imap, product
     return list(product(*imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!

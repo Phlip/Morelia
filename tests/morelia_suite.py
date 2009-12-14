@@ -415,7 +415,7 @@ class MoreliaSuite(TestCase):
         r'we evaluate the file'
 
         self.viridis = Viridis()
-        self.suggestion = self.viridis.suggest(self.predicate)
+        self.suggestion = self.viridis.suggest_doc_string(self.predicate)
 
     def step_we_convert_it_into_a_(self, suggestion):
         r'we convert it into a (.+)'

@@ -331,7 +331,7 @@ def _special_range(n):
 
 
 def _permute_indices(arr):
-    from itertools import imap, product
+    from itertools import imap
     return list(product(*imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
@@ -371,3 +371,13 @@ def _permute_indices(arr):
   #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 159, in augment_predicate
     #~ for self.title in self.table[0].harvest():
 #~ AttributeError: Comment instance has no attribute 'harvest'
+
+def product(*args, **kwds):
+    # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
+    # product(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
+    pools = map(tuple, args) * kwds.get('repeat', 1)
+    result = [[]]
+    for pool in pools:
+        result = [x+[y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod) 

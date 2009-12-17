@@ -239,6 +239,16 @@ class MoreliaSuite(TestCase):
         self.assertEqual([ 'work',   'mall',  'jail',  'work',  'mall',  'jail' ], crunks)
         self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
 
+    def test_harvest(self):
+        r = Row()
+        
+        def harvest(predicate):
+           r.predicate = predicate
+           return r.harvest()
+           
+        self.assertEqual(['crock', 'of'], harvest('crock | of'))
+        self.assertEqual(['crock', 'of'], harvest('crock | of |'))
+
     def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
         r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too
 

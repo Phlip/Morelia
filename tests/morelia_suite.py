@@ -356,7 +356,9 @@ class MoreliaSuite(TestCase):
         #~ Parser().parse_file(pwd + '/nada.feature').evaluate(self)
         
     def test_evaluate_file(self):
-        Parser().parse_file(pwd + '/morelia.feature').evaluate(self)
+        thang = Parser().parse_file(pwd + '/morelia.feature')
+        print [s for s in thang.steps[0].steps] #[-2].steps]
+        #~ thang.evaluate(self)
 
     def setUp(self):
         self.culture = []

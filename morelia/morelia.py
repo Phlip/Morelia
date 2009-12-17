@@ -303,6 +303,8 @@ class Step(Viridis):
         at = self.parent.row_indices[x] + 1
         if at >= len(self.table):  return  #  TODO  this should never happen
         stick = self.table[at].harvest()
+        #~ print stick
+        #~ print q
         found = stick[q]
             #  TODO  only if it's not nothing?
         self.copy = self.copy.replace('<'+self.replitron+'>', found)

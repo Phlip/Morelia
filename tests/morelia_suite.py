@@ -357,8 +357,7 @@ class MoreliaSuite(TestCase):
         
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')
-        print thang
-        #~ thang.evaluate(self)
+        thang.evaluate(self)
 
     def setUp(self):
         self.culture = []
@@ -445,8 +444,14 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(extra, self.viridis.extra_arguments)
 
-    def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
+    def step_a_file_contains_statements_produce_diagnostics_(self, statements = None, diagnostics = None):
         r'a file contains (.+), produce (.+)'
+
+        print statements
+
+        if not statements:
+            print self.step.steps[1].predicate
+            return
 
         try:
             #statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage

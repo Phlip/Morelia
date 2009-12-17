@@ -308,9 +308,13 @@ class Step(Viridis):
     def replace_replitron(self, x, q):
         if self.title != self.replitron:  return
         at = self.parent.row_indices[x] + 1
-        if at >= len(self.table):  return  #  TODO  this should never happen
+        
+        if at >= len(self.table):  
+            print 'this should never happen'
+            return  #  TODO  this should never happen
+
         stick = self.table[at].harvest()
-        #~ print stick
+        print stick
         #~ print q
         found = stick[q]  #  TODO  this array overrun is what you get when your table is ragged
             #  TODO  only if it's not nothing?

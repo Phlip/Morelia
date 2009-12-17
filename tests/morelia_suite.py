@@ -6,7 +6,6 @@ from unittest import TestCase
 import re
 import sys
 import os
-from mock import Mock
 pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)

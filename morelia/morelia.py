@@ -331,7 +331,7 @@ def _special_range(n):
 
 
 def _permute_indices(arr):
-    return list(product(*imap(_special_range, arr)))
+    return list(_product(*_imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
 #  TODO  something was wrong with this:
@@ -371,7 +371,7 @@ def _permute_indices(arr):
     #~ for self.title in self.table[0].harvest():
 #~ AttributeError: Comment instance has no attribute 'harvest'
 
-def product(*args, **kwds):
+def _product(*args, **kwds):
     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
     # product(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
     pools = map(tuple, args) * kwds.get('repeat', 1)
@@ -381,7 +381,7 @@ def product(*args, **kwds):
     for prod in result:
         yield tuple(prod) 
         
-def imap(function, *iterables):
+def _imap(function, *iterables):
     iterables = map(iter, iterables)
     while True:
         args = [i.next() for i in iterables]

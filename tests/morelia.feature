@@ -61,8 +61,7 @@ Scenario: Convert source predicates into their matching regular expressions
        
 #      | pipe \| me      | r'pipe \\\| me'        |             |
        
-#  TODO escape a pipe!
-    # TODO , |, or #
+# TODO line numbers!
 
 Scenario: Raise useful errors with incomplete files
   When a file contains <statements>, produce <diagnostics>
@@ -72,7 +71,7 @@ Scenario: Raise useful errors with incomplete files
     |  Feature yo        | Feature without Scenario(s)
     
     |  Feature yo
-         \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And
+         \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And, \|, or #
     
     |  Feature comp-
       \Feature placent   | Only one Feature per file!

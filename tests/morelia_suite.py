@@ -248,7 +248,9 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
+           
            #  TODO  document you gotta take the \ out yourself
+           
         self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
 
     def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
@@ -462,6 +464,7 @@ class MoreliaSuite(TestCase):
         try:
             statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  TODO  document this is how you paint reserved words
+            diagnostics = diagnostics.replace('\\', '')  #  TODO  document this is how you paint reserved words
             p = Parser().parse_features(statements)
             p.evaluate(self)
             assert False  #  we expect syntax errors here

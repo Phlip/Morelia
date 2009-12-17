@@ -313,11 +313,37 @@ class Step(Viridis):
             print 'this should never happen'
             return  #  TODO  this should never happen
 
+        #  CONSIDER  we hit this too many times - hit once and stash the result
+
         stick = self.table[at].harvest()
-        print stick
-        #~ print q
+        yo = False
+        if not stick.count('Glyptodon') and \
+            not stick.count('beach') and \
+            not stick.count('work') and \
+            not stick.count('mall') and \
+            not stick.count('jail') and \
+            not stick.count('hotel') and \
+            not stick.count('battery') and \
+            not stick.count('driven') and \
+            not stick.count('g-string') and \
+            not stick.count('tastes great') and \
+            not stick.count('radio') and \
+            not stick.count('less filling') and \
+            not stick.count('line\\nfeed') and \
+            not stick.count('tick\'ed\'') and \
+            not stick.count('argu<ment>al') and \
+            not stick.count('Pangolin') and \
+            not stick.count('arg<u>ment<al>') and \
+            not stick.count('str"ing"') and \
+            not stick.count('"str"i"ngs"') and \
+            not stick.count('Feature yo') and \
+            not stick.count('Feature yo\n\\Scenario dude'):
+            yo = True
+            print stick
+            print q
         found = stick[q]  #  TODO  this array overrun is what you get when your table is ragged
             #  TODO  only if it's not nothing?
+        if yo:  print found
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # TODO  mix replitrons and matchers!

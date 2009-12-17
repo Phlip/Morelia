@@ -445,7 +445,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(extra, self.viridis.extra_arguments)
 
     def step_a_file_contains_statements_produce_diagnostics_(self, statements = None, diagnostics = None):
-        r'a file contains (.+), produce (.+)'
+        r'a file contains ([.\n]+), produce (.+)'
 
         print statements
 

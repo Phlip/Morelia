@@ -74,5 +74,5 @@ Scenario: Raise useful errors with incomplete files
     |  Feature yo
          \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And
     
-#    |  Feature comp-
-#      \Feature placent   | Only one Feature per file!
+    |  Feature comp-
+      \Feature placent   | Only one Feature per file!

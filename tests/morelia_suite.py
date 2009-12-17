@@ -245,9 +245,11 @@ class MoreliaSuite(TestCase):
         def harvest(predicate):
            r.predicate = predicate
            return r.harvest()
-           
+
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
+           #  TODO  document you gotta take the \ out yourself
+        self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
 
     def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
         r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too

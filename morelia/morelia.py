@@ -339,7 +339,8 @@ class Row(Morelia):
         return 1  #  TODO  raise an error (if the table has one row!)
 
     def harvest(self):
-        row = [s.strip() for s in re.sub(r'\|$', '', self.predicate).split('|')]
+        row = re.split(r' \|', re.sub(r'\|$', '', self.predicate))
+        row = [s.strip() for s in row]
         return row
 
 #  TODO  sample data with "post-it haiku"

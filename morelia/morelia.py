@@ -242,7 +242,7 @@ class Scenario(Morelia):
         if 0 == len(self.steps):  #  TODO  simplify!
             raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, |, or #')
 
-        name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
+        name = self.steps[0].find_step_name(visitor.suite)
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  CONSIDER  if verbose
         visitor.suite.setUp()  #  TODO  does this belong inside the try: ? match what pyunit does (or call the pyunit runner directly)

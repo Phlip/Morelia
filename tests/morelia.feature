@@ -66,7 +66,10 @@ Scenario: Convert source predicates into their matching regular expressions
 Scenario: Raise useful errors with incomplete files
   When a file contains <statements>, produce <diagnostics>
   
-    |  statements               |  diagnostics
+    |  statements                 |  diagnostics
 
-    |  Feature yo               | Feature without Scenario(s)
+    |  Feature yo                 | Feature without Scenario(s)
+   # |  Feature yo\nScenario dude  | Scenario without step(s) - Step, Given, When, Then, And
+    
+    # TODO , |, or #
   

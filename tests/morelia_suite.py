@@ -447,11 +447,12 @@ class MoreliaSuite(TestCase):
         r'a file contains (.+), produce (.+)'
 
         try:
+            statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
             thing = Parser().parse_features(statements)
             thing.evaluate(self)
             assert False  #  we expect syntax errors here
         except SyntaxError, e:
-            self.assertEqual(1, str(e).count(diagnostics))
+            self.assertEqual(1, str(e).count(diagnostics), diagnostics + ' - not found in - ' + str(e))
 
 
 #~ Scenario: Leading # marks comment lines.

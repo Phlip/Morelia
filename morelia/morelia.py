@@ -230,14 +230,6 @@ class Feature(Morelia):
 class Scenario(Morelia):
     def my_parent_type(self):  return Feature
 
-    #~ def evaluate_step(self, v):  
-        #~ print len(self.steps)
-        #~ print [s.concept for s in self.steps]
-        #~ print [s.predicate for s in self.steps]
-        #~ if 0 == len(self.steps):  #  TODO  simplify!
-            #~ raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, |, or # in ' + self.concept + ' ' + self.predicate)
-        #~ Morelia.evaluate_step(self, v)
-
     def evaluate_steps(self, visitor):
         schedule = self.permute_schedule()
         

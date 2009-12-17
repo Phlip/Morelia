@@ -108,13 +108,11 @@ class MoreliaSuite(TestCase):
         except SyntaxError, e:
             self.assertEqual(1, str(e).count('linefeed in comment!'))
             
-        steps = p.steps  #  TODO  test them anyway!
-        #~ assert steps[0].__class__ == Feature
-        
-        #~ step = steps[1]
-        #~ assert step.__class__ == Comment
-        #~ self.assertEqual(step.concept, 'Comment')
-        #~ self.assertEqual(step.predicate, 'at http://www.onagocag.com/nazbird.jpg')
+        steps = p.steps
+        assert steps[0].__class__ == Feature
+        step = steps[1]
+        assert step.__class__ == Comment
+        self.assertEqual(step.concept, 'Comment')
 
     def pet_scenario(self):
         return '''Scenario: See all vendors

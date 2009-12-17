@@ -85,7 +85,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Scenario')
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-    def test_feature_with_scenario(self):
+    def test_feature_with_comment(self):
         input = '''Feature: The Sacred White Llama of the Inca
                    #  I are a comment'''
         steps = Parser().parse_feature(input)

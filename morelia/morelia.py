@@ -172,7 +172,7 @@ class Parser:
             if not self._parse_line() and \
                     0 < len(self.steps):
                 self._append_to_previous_node()
-            
+        
         return self.steps
         
     def _parse_line(self):
@@ -221,7 +221,7 @@ class TestVisitor:
 
 class Feature(Morelia):
     def my_parent_type(self):  return None
-
+        
     def evaluate_step(self, v):  
         if 0 == len(self.steps):
             raise SyntaxError('Feature without Scenario(s)')
@@ -229,6 +229,14 @@ class Feature(Morelia):
 
 class Scenario(Morelia):
     def my_parent_type(self):  return Feature
+
+    #~ def evaluate_step(self, v):  
+        #~ print len(self.steps)
+        #~ print [s.concept for s in self.steps]
+        #~ print [s.predicate for s in self.steps]
+        #~ if 0 == len(self.steps):  #  TODO  simplify!
+            #~ raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, |, or # in ' + self.concept + ' ' + self.predicate)
+        #~ Morelia.evaluate_step(self, v)
 
     def evaluate_steps(self, visitor):
         schedule = self.permute_schedule()
@@ -238,11 +246,15 @@ class Scenario(Morelia):
             self.evaluate_test_case(visitor)  #  note this works on reports too!
         
     def evaluate_test_case(self, visitor):  #  note this permutes reports too!
+        
+        if 0 == len(self.steps):  #  TODO  simplify!
+            raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, |, or #')
+
         name = self.steps[0].find_step_name(visitor.suite)  #  TODO  squeak if there are none
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  CONSIDER  if verbose
         visitor.suite.setUp()  #  TODO  does this belong inside the try: ? match what pyunit does (or call the pyunit runner directly)
-                
+
         try:
             Morelia.evaluate_steps(self, visitor)
         finally:

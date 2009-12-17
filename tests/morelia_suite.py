@@ -97,15 +97,24 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.predicate, 'I are a comment')
 
     def test_feature_with_comment(self):
-        input = '''Feature: The Sacred Giant Mosquito of the Andes
-                   #  at http://www.onagocag.com/nazbird.jpg  '''
-        steps = Parser().parse_feature(input)
-        assert steps[0].__class__ == Feature
+        p = Parser()
         
-        step = steps[1]
-        assert step.__class__ == Comment
-        self.assertEqual(step.concept, 'Comment')
-        self.assertEqual(step.predicate, 'at http://www.onagocag.com/nazbird.jpg')
+        input = '''Feature: The Sacred Giant Mosquito of the Andes
+                   #  at http://www.onagocag.com/nazbird.jpg 
+                           so pay no attention to the skeptics!'''
+        try:
+            p.parse_feature(input)
+            assert False  #  should raise a SyntaxError
+        except SyntaxError, e:
+            self.assertEqual(1, str(e).count('linefeed in comment!'))
+            
+        steps = p.steps  #  TODO  test them anyway!
+        #~ assert steps[0].__class__ == Feature
+        
+        #~ step = steps[1]
+        #~ assert step.__class__ == Comment
+        #~ self.assertEqual(step.concept, 'Comment')
+        #~ self.assertEqual(step.predicate, 'at http://www.onagocag.com/nazbird.jpg')
 
     def pet_scenario(self):
         return '''Scenario: See all vendors

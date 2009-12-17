@@ -9,10 +9,7 @@ Scenario: Add two numbers
     And I have entered 70 into the calculator
   When I press add
    Then the result should be 120 on the screen
-   
-# TODO  use or lose feature
-  where run-on comments are glommed together
-  
+     
 #  TODO  display all missing steps not just the first
 
 Scenario: Match prose steps to Python steps by name

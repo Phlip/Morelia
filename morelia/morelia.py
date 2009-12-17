@@ -52,6 +52,8 @@ class Morelia:
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
 
+    def validate_predicate(self):  return  # looks good! (-:
+
 
 class Viridis(Morelia):
 
@@ -192,6 +194,7 @@ class Parser:
         previous = self.steps[-1]
         previous.predicate += '\n' + self.line.strip()
         previous.predicate = previous.predicate.strip()
+        previous.validate_predicate()
 
 
 class ReportVisitor:
@@ -317,6 +320,10 @@ class Row(Morelia):
 class Comment(Morelia):
     def i_look_like(self):  return r'\#'
     def my_parent_type(self):  return Morelia # aka "any"
+
+    def validate_predicate(self):
+        if self.predicate.count('\n') > 0:
+            raise SyntaxError('linefeed in comment!')  #  TODO  uh, on what line???
 
 
 if __name__ == '__main__':

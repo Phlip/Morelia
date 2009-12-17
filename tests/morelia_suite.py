@@ -464,7 +464,7 @@ class MoreliaSuite(TestCase):
         try:
             statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  TODO  document this is how you paint reserved words
-            diagnostics = diagnostics.replace('\\', '')  #  TODO  document this is how you paint reserved words
+            diagnostics = diagnostics.replace('\\', '')  #  TODO  document this is how you escape pipes
             p = Parser().parse_features(statements)
             p.evaluate(self)
             assert False  #  we expect syntax errors here

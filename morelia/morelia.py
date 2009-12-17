@@ -343,7 +343,7 @@ class Step(Viridis):
             print q
         found = stick[q]  #  TODO  this array overrun is what you get when your table is ragged
             #  TODO  only if it's not nothing?
-        if yo:  print found
+        found = found.replace('\n', '\\n')  #  TODO  crack the multi-line argument bug, and take this hack out!
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # TODO  mix replitrons and matchers!

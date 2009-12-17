@@ -444,8 +444,8 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(extra, self.viridis.extra_arguments)
 
-    def step_a_file_contains_statements_produce_diagnostics_(self, statements = None, diagnostics = None):
-        r'a file contains ([.\n]+), produce (.+)'
+    def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
+        r'a file contains (.+), produce (.+)'
 
         print statements
 
@@ -454,8 +454,8 @@ class MoreliaSuite(TestCase):
             return
 
         try:
-            #statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
-            statements = statements.replace('\\', '')  #  TODO  document this is how you paint linefeedage
+            statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
+            statements = statements.replace('\\', '')  #  TODO  document this is how you paint reserved words
             p = Parser().parse_features(statements)
             p.evaluate(self)
             assert False  #  we expect syntax errors here

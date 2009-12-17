@@ -357,7 +357,7 @@ class MoreliaSuite(TestCase):
         
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')
-        print [s for s in thang.steps[0].steps] #[-2].steps]
+        print thang
         #~ thang.evaluate(self)
 
     def setUp(self):
@@ -449,9 +449,10 @@ class MoreliaSuite(TestCase):
         r'a file contains (.+), produce (.+)'
 
         try:
-            statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
-            thing = Parser().parse_features(statements)
-            thing.evaluate(self)
+            #statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
+            statements = statements.replace('\\', '')  #  TODO  document this is how you paint linefeedage
+            p = Parser().parse_features(statements)
+            p.evaluate(self)
             assert False  #  we expect syntax errors here
         except SyntaxError, e:
             self.assertEqual(1, str(e).count(diagnostics), diagnostics + ' - not found in - ' + str(e))

@@ -27,16 +27,23 @@ class Morelia:
         self.line_number = line_number
 
         for s in list[::-1]:
-            if issubclass(s.__class__, self.my_parent_type()):
-                s.steps.append(self)  #  TODO  squeek if can't find parent
-                self.parent = s
-                break
-
+            #~ if s.__class__ == Feature:  raise SyntaxError('Only one Feature per file!')
+            mpt = self.my_parent_type()
+            #~ print mpt
+            try:
+                if issubclass(s.__class__, mpt):
+                    #~ print 'survive'
+                    s.steps.append(self)  #  TODO  squeek if can't find parent
+                    self.parent = s
+                    break
+            except TypeError, e:
+                raise SyntaxError('Only one Feature per file!')  #  TODO  prevent it don't trap it!!!
+        #~ print 'survive'
         return self
 
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
     def prefix(self):  return ''
-    def my_parent_type(self):  None
+    def my_parent_type(self):  return None
 
         #  TODO  all files must start with a Feature and contain only one
 
@@ -305,7 +312,7 @@ class Step(Viridis):
         stick = self.table[at].harvest()
         #~ print stick
         #~ print q
-        found = stick[q]
+        found = stick[q]  #  TODO  this array overrun is what you get when your table is ragged
             #  TODO  only if it's not nothing?
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 

@@ -447,12 +447,6 @@ class MoreliaSuite(TestCase):
     def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
         r'a file contains (.+), produce (.+)'
 
-        print statements
-
-        if not statements:
-            print self.step.steps[1].predicate
-            return
-
         try:
             statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  TODO  document this is how you paint reserved words

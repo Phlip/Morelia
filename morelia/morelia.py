@@ -331,7 +331,6 @@ def _special_range(n):
 
 
 def _permute_indices(arr):
-    from itertools import imap
     return list(product(*imap(_special_range, arr)))
       #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
 
@@ -381,3 +380,12 @@ def product(*args, **kwds):
         result = [x+[y] for x in result for y in pool]
     for prod in result:
         yield tuple(prod) 
+        
+def imap(function, *iterables):
+    iterables = map(iter, iterables)
+    while True:
+        args = [i.next() for i in iterables]
+        if function is None:
+            yield tuple(args)
+        else:
+            yield function(*args)

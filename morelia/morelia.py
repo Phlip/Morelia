@@ -332,7 +332,7 @@ def _special_range(n):
 
 def _permute_indices(arr):
     return list(_product(*_imap(_special_range, arr)))
-      #  tx to Chris Rebert on the Python newsgroup for curing my brainlock here!!
+      #  tx to Chris Rebert, et al, on the Python newsgroup for curing my brainlock here!!
 
 #  TODO  something was wrong with this:
 #~ Scenario: Don't send Clan Membership purchase to Prolog!

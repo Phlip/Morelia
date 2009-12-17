@@ -20,10 +20,11 @@ class Morelia:
 
     def __init__(self):  self.parent = None
 
-    def _parse(self, predicate, list = []):
+    def _parse(self, predicate, list = [], line_number = 0):
         self.concept = self.my_class_name()
         self.predicate = predicate
         self.steps = []
+        self.line_number = line_number
 
         for s in list[::-1]:
             if issubclass(s.__class__, self.my_parent_type()):
@@ -52,7 +53,8 @@ class Morelia:
     def count_dimension(self):    # TODO  beautify this crud!
         return 0
 
-    def validate_predicate(self):  return  # looks good! (-:
+    def validate_predicate(self):
+        return  # looks good! (-:
 
 
 class Viridis(Morelia):
@@ -129,9 +131,9 @@ class Viridis(Morelia):
 
         return list
 
-    def evaluate_step(self, v):  pass  #  TODO retire me!
+    def evaluate_step(self, v):  pass  #  TODO rename me!
 
-    def evaluate(self, suite):  #  TODO  retire me, and quit passing suite around
+    def evaluate(self, suite):
         self.find_step_name(suite)
         self.method(*self.matches)
 
@@ -162,7 +164,11 @@ class Parser:
             self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
 
     def parse_feature(self, lines):    #  TODO  preserve and use line numbers
+        self.line_number = 0
+        
         for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
+            self.line_number += 1
+            
             if not self._parse_line() and \
                     0 < len(self.steps):
                 self._append_to_previous_node()
@@ -186,7 +192,7 @@ class Parser:
         predicate = ''
         if len(groups) > 1:  predicate = groups[1]
         node = self.thang
-        node._parse(predicate, self.steps)
+        node._parse(predicate, self.steps, self.line_number)
         self.steps.append(node)
         return node
 
@@ -215,7 +221,10 @@ class TestVisitor:
 
 class Feature(Morelia):
     def my_parent_type(self):  return None
-    def evaluate_step(self, v):  pass
+
+    def evaluate_step(self, v):  
+        if 0 == len(self.steps):
+            raise SyntaxError('Feature without Scenario(s)')
 
 
 class Scenario(Morelia):
@@ -258,7 +267,7 @@ class Scenario(Morelia):
 
 class Step(Viridis):
     def my_parent_type(self):  return Scenario
-        
+
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
         self.method(*self.matches)
@@ -323,7 +332,8 @@ class Comment(Morelia):
 
     def validate_predicate(self):
         if self.predicate.count('\n') > 0:
-            raise SyntaxError('linefeed in comment!')  #  TODO  uh, on what line???
+            complaint = 'linefeed in comment! Line %i' % self.line_number
+            raise SyntaxError(complaint)  #  CONSIDER format in editor-ready syntax??
 
 
 if __name__ == '__main__':
@@ -333,13 +343,14 @@ if __name__ == '__main__':
 #  TODO  maximum munch fails - Given must start a line
 
 
-def _special_range(n):
+def _special_range(n):  #  TODO  better name
     return xrange(n) if n else [0]
 
 
 def _permute_indices(arr):
     return list(_product(*_imap(_special_range, arr)))
       #  tx to Chris Rebert, et al, on the Python newsgroup for curing my brainlock here!!
+
 
 #  TODO  something was wrong with this:
 #~ Scenario: Don't send Clan Membership purchase to Prolog!

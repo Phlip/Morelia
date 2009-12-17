@@ -62,3 +62,11 @@ Scenario: Convert source predicates into their matching regular expressions
 #      | pipe \| me      | r'pipe \\\| me'        |             |
        
 #  TODO escape a pipe!
+
+Scenario: Raise useful errors with incomplete files
+  When a file contains <statements>, produce <diagnostics>
+  
+    |  statements               |  diagnostics
+
+    |  Feature yo               | Feature without Scenario(s)
+  

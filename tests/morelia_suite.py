@@ -106,7 +106,7 @@ class MoreliaSuite(TestCase):
             p.parse_feature(input)
             assert False  #  should raise a SyntaxError
         except SyntaxError, e:
-            self.assertEqual(1, str(e).count('linefeed in comment!'))
+            self.assertEqual(1, str(e).count('linefeed in comment! Line 2'))
             
         steps = p.steps
         assert steps[0].__class__ == Feature
@@ -442,6 +442,16 @@ class MoreliaSuite(TestCase):
         r'add (.+) arguments'
 
         self.assertEqual(extra, self.viridis.extra_arguments)
+
+    def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
+        r'a file contains (.+), produce (.+)'
+
+        try:
+            thing = Parser().parse_features(statements)
+            thing.evaluate(self)
+            assert False  #  we expect syntax errors here
+        except SyntaxError, e:
+            self.assertEqual(1, str(e).count(diagnostics))
 
 
 #~ Scenario: Leading # marks comment lines.

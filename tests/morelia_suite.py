@@ -96,6 +96,17 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Comment')
         self.assertEqual(step.predicate, 'I are a comment')
 
+    def test_feature_with_comment(self):
+        input = '''Feature: The Sacred Giant Mosquito of the Andes
+                   #  at http://www.onagocag.com/nazbird.jpg  '''
+        steps = Parser().parse_feature(input)
+        assert steps[0].__class__ == Feature
+        
+        step = steps[1]
+        assert step.__class__ == Comment
+        self.assertEqual(step.concept, 'Comment')
+        self.assertEqual(step.predicate, 'at http://www.onagocag.com/nazbird.jpg')
+
     def pet_scenario(self):
         return '''Scenario: See all vendors
                       Given I am logged in as a user in the administrator role

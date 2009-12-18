@@ -12,9 +12,6 @@ sys.path.insert(0, morelia_path)
 from morelia import *
 from morelia import _permute_indices
 
- #  TODO  add Pangolins to the sample data
- #  TODO  cron order already!
-
 
 class MoreliaSuite(TestCase):
 
@@ -249,12 +246,12 @@ class MoreliaSuite(TestCase):
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
            
-           #  TODO  document you gotta take the \ out yourself
+           #  CONSIDER  document you gotta take the \ out yourself
            
         self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
 
-    def step_party_zone(self, zone):  #  TODO  prevent collision with another "step_party"
-        r'party (\w+)'  #  TODO  illustrate how the patterns here form testage too
+    def step_party_zone(self, zone):  #  CONSIDER  prevent collision with another "step_party"
+        r'party (\w+)'  #  CONSIDER  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
         global zones
@@ -269,8 +266,8 @@ class MoreliaSuite(TestCase):
         crunks.append(crunk)
         self.got_crunk = crunk
 
-#  TODO  note that default arguments on steps are permitted!
-#  TODO  squeak if the table has no | in the middle or on the end etc, or if item not found
+#  CONSIDER  note that default arguments on steps are permitted!
+#  TODO  squeak if the table item ain't found
 #  TODO  parse the || as Json/Yaml? - permit gaps & comments in tables
 #  TODO  decorate exceptions failures with their source feature lines
 #  TODO  respect the tests' verbosity levels
@@ -464,7 +461,7 @@ class MoreliaSuite(TestCase):
         try:
             statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  TODO  document this is how you paint reserved words
-            diagnostics = diagnostics.replace('\\', '')  #  TODO  document this is how you escape pipes
+            diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
             p = Parser().parse_features(statements)
             p.evaluate(self)
             assert False  #  we expect syntax errors here
@@ -482,8 +479,6 @@ class MoreliaSuite(TestCase):
     #~ And the first step does not contain "nothing"
 
 #  TODO  count test cases correctly regarding entire batch
-#  TODO  auto-tables
-#  TODO  escape string catch
 
 if __name__ == '__main__':
       unittest.main()  #  NOTE  this seems to return the correct shell value

@@ -268,7 +268,7 @@ class MoreliaSuite(TestCase):
 
 #  CONSIDER  note that default arguments on steps are permitted!
 #  TODO  squeak if the table item ain't found
-#  TODO  parse the || as Json/Yaml? - permit gaps & comments in tables
+#  CONSIDER  parse the || as Json/Yaml? - permit gaps & comments in tables
 #  TODO  decorate exceptions failures with their source feature lines
 #  TODO  respect the tests' verbosity levels
 

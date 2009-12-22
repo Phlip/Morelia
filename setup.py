@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup, find_packages
+from distutils.core import setup # , find_packages
 
 setup(name='Morelia',
       version='0.0.5',

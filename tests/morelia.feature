@@ -19,7 +19,7 @@ Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string
     
-    #  Note: comments don't suck!
+#  Note: comments don't suck!
 
 Scenario: When we challenge Morelia with a Step with no matching
           entry in your test suite, supply a helpful error message

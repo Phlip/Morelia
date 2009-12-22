@@ -7,7 +7,7 @@ import re
 import sys
 import os
 pwd = os.path.dirname(os.path.realpath(__file__))
-morelia_path = os.path.join(pwd, '../morelia')
+morelia_path = os.path.join(pwd, '../src')
 sys.path.insert(0, morelia_path)
 from morelia import *
 from morelia import _permute_indices

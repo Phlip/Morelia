@@ -4,6 +4,9 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
+#  TODO  provide filename and line number of the *.feature file at fault time already!
+#     (and call them "faults" everywhere)
+
 Scenario: Add two numbers
   Given I have entered 50 into the calculator
     And I have entered 70 into the calculator

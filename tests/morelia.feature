@@ -82,4 +82,4 @@ Scenario: Raise useful errors with incomplete files
       \Feature placent   | Only one Feature per file, line 2
 
     |  Feature in da
-         \Step zone      | Feature without Scenario(s)
+         \Step zone      | Feature without Scenario(s), line 1

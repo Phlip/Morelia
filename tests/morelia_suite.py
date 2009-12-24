@@ -103,7 +103,7 @@ class MoreliaSuite(TestCase):
             p.parse_feature(input)
             assert False  #  should raise a SyntaxError
         except SyntaxError, e:
-            self.assertEqual(1, str(e).count('linefeed in comment! Line 2'))
+            self.assertEqual(1, str(e).count('linefeed in comment, line 2'))
             
         steps = p.steps
         assert steps[0].__class__ == Feature

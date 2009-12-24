@@ -35,7 +35,7 @@ class Morelia:
                     self.parent = s
                     break
             except TypeError, e:
-                raise SyntaxError('Only one Feature per file, line %i' % self.line_number)  #  TODO  prevent it don't trap it!!!
+                self.enforce(False, 'Only one Feature per file')  #  CONSIDER  prevent it don't trap it!!!
 
         return self
 
@@ -43,19 +43,17 @@ class Morelia:
     def prefix(self):  return ''
     def my_parent_type(self):  return None
 
-        #  TODO  all files must start with a Feature and contain only one
-
     def evaluate_steps(self, v):
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
 
-    def evaluate_step(self, v):  pass  #  TODO  rename
+    def evaluate_step(self, v):  pass  #  CONSIDER  rename
     def i_look_like(self):  return self.my_class_name()
 
     def count_dimensions(self):  
         return sum([step.count_dimension() for step in self.steps])
 
-    def count_dimension(self):    # TODO  beautify this crud!
+    def count_dimension(self):    # CONSIDER  beautify this crud!
         return 0
 
     def validate_predicate(self):
@@ -63,7 +61,7 @@ class Morelia:
         
     def enforce(self, condition, diagnostic):
         if not condition:
-            raise SyntaxError('%s, line %i' % (diagnostic, self.line_number))
+            raise SyntaxError('%s, line %i' % (diagnostic, self.line_number)) #  CONSIDER format in editor-ready syntax??
 
 
 class Viridis(Morelia):
@@ -353,9 +351,7 @@ class Comment(Morelia):
     def my_parent_type(self):  return Morelia # aka "any"
 
     def validate_predicate(self):
-        if self.predicate.count('\n') > 0:
-            complaint = 'linefeed in comment! Line %i' % self.line_number
-            raise SyntaxError(complaint)  #  CONSIDER format in editor-ready syntax??
+        self.enforce(self.predicate.count('\n') == 0, 'linefeed in comment')
 
 
 if __name__ == '__main__':

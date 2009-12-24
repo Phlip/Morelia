@@ -80,3 +80,6 @@ Scenario: Raise useful errors with incomplete files
     
     |  Feature comp-
       \Feature placent   | Only one Feature per file!
+
+    |  Feature in da
+         \Step zone      | Feature without Scenario(s)

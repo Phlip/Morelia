@@ -121,7 +121,7 @@ class Viridis(Morelia):
             doc = method.__doc__
             
             if doc:
-                doc = re.compile('^' + doc + '$', re.MULTILINE)  #  CONSIDER deal with users who put in the ^$   TODO  is re.MULTILINE needed?
+                doc = re.compile('^' + doc + '$')  #  CONSIDER deal with users who put in the ^$
                 m = doc.match(self.augment_predicate())
 
                 if m:
@@ -137,8 +137,6 @@ class Viridis(Morelia):
             if matcher.match(s):  list.append(s)
 
         return list
-
-    def evaluate_step(self, v):  pass  #  TODO rename me!
 
     def evaluate(self, suite):
         self.find_step_name(suite)

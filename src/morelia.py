@@ -235,8 +235,7 @@ class Feature(Morelia):
     def my_parent_type(self):  return None
         
     def evaluate_step(self, v):  
-        if 0 == len(self.steps):
-            raise SyntaxError('Feature without Scenario(s), line %i' % self.line_number)
+        self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
 
 class Scenario(Morelia):

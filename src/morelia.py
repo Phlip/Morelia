@@ -60,6 +60,10 @@ class Morelia:
 
     def validate_predicate(self):
         return  # looks good! (-:
+        
+    def enforce(self, condition, diagnostic):
+        if not condition:
+            raise SyntaxError('%s, line %i' % (diagnostic, self.line_number))
 
 
 class Viridis(Morelia):
@@ -244,10 +248,6 @@ class Scenario(Morelia):
         for indices in schedule:
             self.row_indices = indices
             self.evaluate_test_case(visitor)  #  note this works on reports too!
-    
-    def enforce(self, condition, diagnostic):
-        if not condition:
-            raise SyntaxError('%s, line %i' % (diagnostic, self.line_number))
     
     def evaluate_test_case(self, visitor):  #  note this permutes reports too!
         self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')

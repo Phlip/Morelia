@@ -27,18 +27,16 @@ class Morelia:
         self.line_number = line_number
 
         for s in list[::-1]:
-            #~ if s.__class__ == Feature:  raise SyntaxError('Only one Feature per file!')
             mpt = self.my_parent_type()
-            #~ print mpt
+
             try:
                 if issubclass(s.__class__, mpt):
-                    #~ print 'survive'
                     s.steps.append(self)  #  TODO  squeek if can't find parent
                     self.parent = s
                     break
             except TypeError, e:
-                raise SyntaxError('Only one Feature per file!')  #  TODO  prevent it don't trap it!!!
-        #~ print 'survive'
+                raise SyntaxError('Only one Feature per file, line %i' % self.line_number)  #  TODO  prevent it don't trap it!!!
+
         return self
 
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
@@ -144,6 +142,9 @@ class Viridis(Morelia):
         self.find_step_name(suite)
         self.method(*self.matches)
 
+# TODO tweet "Ashley: Our cross-street neighbors gave us a little cookie
+#                     basket. They are SO GOOD! Me: We must retaliate next year.
+#                     We can top them. Ashley: It's on now!
 
 class Parser:  
     def __init__(self):  
@@ -168,7 +169,7 @@ class Parser:
 
     def rip(self, v):
         if self.steps != []:
-            self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
+            self.steps[0].evaluate_steps(v)
 
     def parse_feature(self, lines):    #  TODO  preserve and use line numbers
         self.line_number = 0

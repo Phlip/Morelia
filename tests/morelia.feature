@@ -79,7 +79,7 @@ Scenario: Raise useful errors with incomplete files
          \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And, \|, or #
     
     |  Feature comp-
-      \Feature placent   | Only one Feature per file!
+      \Feature placent   | Only one Feature per file, line 2
 
     |  Feature in da
          \Step zone      | Feature without Scenario(s)

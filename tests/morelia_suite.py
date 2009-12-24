@@ -466,6 +466,7 @@ class MoreliaSuite(TestCase):
             p.evaluate(self)
             assert False  #  we expect syntax errors here
         except SyntaxError, e:
+            #print str(e)
             self.assertEqual(1, str(e).count(diagnostics), diagnostics + ' - not found in - ' + str(e))
 
 

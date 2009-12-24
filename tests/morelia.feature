@@ -73,7 +73,7 @@ Scenario: Raise useful errors with incomplete files
   
     |    statements      |   diagnostics
 
-    |  Feature yo        | Feature without Scenario(s)
+    |  Feature yo        | Feature without Scenario(s), line 1
     
     |  Feature yo
          \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2

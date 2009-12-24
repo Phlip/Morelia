@@ -248,7 +248,7 @@ class Scenario(Morelia):
     def evaluate_test_case(self, visitor):  #  note this permutes reports too!
         
         if 0 == len(self.steps):  #  TODO  simplify!
-            raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, or #')
+            raise SyntaxError('Scenario without step(s) - Step, Given, When, Then, And, or #, line %i' % self.line_number)
 
         name = self.steps[0].find_step_name(visitor.suite)
         visitor.suite = visitor.suite.__class__(name)

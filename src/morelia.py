@@ -142,10 +142,6 @@ class Viridis(Morelia):
         self.find_step_name(suite)
         self.method(*self.matches)
 
-# TODO tweet "Ashley: Our cross-street neighbors gave us a little cookie
-#                     basket. They are SO GOOD! Me: We must retaliate next year.
-#                     We can top them. Ashley: It's on now!
-
 class Parser:  
     def __init__(self):  
         self.thangs = [ Feature, Scenario,

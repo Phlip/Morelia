@@ -4,8 +4,8 @@
 from distutils.core import setup # , find_packages
 
 setup(name='Morelia',
-      version='0.0.11',
-      description='squeeze your features',
+      version='0.0.1',
+      description='put the squeeze on your features',
       author='Phlip',
       author_email='phlip2005@gmail.com',
       url='TODO',

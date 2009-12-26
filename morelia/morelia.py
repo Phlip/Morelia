@@ -61,7 +61,10 @@ class Morelia:
         
     def enforce(self, condition, diagnostic):
         if not condition:
-            raise SyntaxError('%s, line %i' % (diagnostic, self.line_number)) #  CONSIDER format in editor-ready syntax??
+            raise SyntaxError(self.format_diagnostic(diagnostic)) #  CONSIDER format in editor-ready syntax??
+
+    def format_diagnostic(self, diagnostic):
+        return '%s, line %i' % (diagnostic, self.line_number)
 
     def get_filename(self):
         node = self

@@ -376,8 +376,24 @@ class MoreliaSuite(TestCase):
         assert filename == step.get_filename()
         return
         self.assertTrue(False)
-        
-        
+
+    def test_format_diagnostics_like_python_errors(self): # TODO
+        filename = pwd + '/morelia.feature'
+        thang = Parser().parse_file(filename)
+        step = thang.steps[0].steps[3].steps[1]
+        assert filename == step.get_filename()
+        print step.format_diagnostic('The Alpine glaciers move')
+        print step.line_number
+        print step.concept
+        print step.predicate
+        reconstruction = step.parent.concept + ': ' + step.parent.predicate # TODO  methodize me
+        #~ return
+        #~ self.assertTrue(False)
+        expect = '''  File "%s", line %s, in %s
+    self.assertTrue(False)
+AssertionError''' % (step.get_filename(), step.line_number, reconstruction)
+        print expect
+
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')
         thang.evaluate(self)

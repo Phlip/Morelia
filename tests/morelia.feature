@@ -4,6 +4,8 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
+#  Note: comments don't suck!
+
 #  TODO  provide filename and line number of the *.feature file at fault time already!
 #     (and call them "faults" everywhere)
 
@@ -20,12 +22,6 @@ Scenario: Add two numbers
 Scenario: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string
 
-Scenario: Fail to match prose if feature file has bad strings
-    Step: fail_without_enough_function_name
-    Step: fail_step_without_enough_doc_string
-    
-#  Note: comments don't suck!
-
 Scenario: When we challenge Morelia with a Step with no matching
           entry in your test suite, supply a helpful error message
     Given a feature file with "Given your nose is on fire"
@@ -36,6 +32,10 @@ Scenario: When we challenge Morelia with a Step with no matching
 #  TODO document that we permit matches across one line!
 #  CONSIDER  document that the trailing pipe is cosmetic!
 
+Scenario: Fail to match prose if feature file has bad strings
+    Step: fail_without_enough_function_name
+    Step: fail_step_without_enough_doc_string
+    
 Scenario: when did Bow Wow Wow become classic rock?
     Given: adventure of love - love and <culture>
         | culture  

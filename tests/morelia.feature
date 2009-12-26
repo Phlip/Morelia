@@ -79,17 +79,17 @@ Scenario: Raise useful errors with incomplete files
     |  Feature comp-      \
        Feature placent    | Only one Feature per file, line 2
 
-    |  Feature in da
-         \Step zone       | Feature without Scenario(s), line 1
+    |  Feature in da      \
+         Step zone        | Feature without Scenario(s), line 1
 
-    |  Feature    resist
-        \Scenario syntax
-          \Step   errors  | Scenario: syntax, line 3
+    |  Feature    resist  \
+        Scenario syntax   \
+          Step   errors   | Scenario: syntax, line 3
 
-    |  Scenario: Add two numbers
-        \Given I have entered 50 into the calculator
-          \And I have entered 70 into the calculator
-         \When I press add
-         \Then the result should be 121 on the screen | the result should be, line 5
+    |  Scenario: Add two numbers                     \
+        Given I have entered 50 into the calculator  \
+          And I have entered 70 into the calculator  \
+         When I press add                            \
+         Then the result should be 121 on the screen | the result should be, line 5
 
 #  TODO  gotta use \ line joiner notation!

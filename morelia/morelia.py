@@ -197,6 +197,13 @@ class Parser:
         for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
             self.line_number += 1
             
+            #~ if self.steps != [] and len(self.steps[-1].predicate):
+                #~ print self.steps[-1].predicate[-1]
+            
+            if self.steps != [] and len(self.steps[-1].predicate) and self.steps[-1].predicate[-1] == '\\':
+                self.steps[-1].predicate += '\n' + self.line
+                return self.steps
+            
             if not self._parse_line() and \
                     0 < len(self.steps):
                 self._append_to_previous_node()

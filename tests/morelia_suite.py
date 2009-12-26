@@ -72,6 +72,7 @@ class MoreliaSuite(TestCase):
     def test_given_a_string_with_a_line_breaker_followed_by_a_keyword(self): # TODO
         input = 'Given a string \\\n And another string'
         return
+        
         steps = Parser().parse_feature(input)
         assert 1 == len(steps)
         step = steps[0]

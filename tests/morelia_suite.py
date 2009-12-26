@@ -27,7 +27,7 @@ class MoreliaSuite(TestCase):
     def step_the_result_should_be_on_the_screen(self, number):
         "the result should be (\d+) on the screen"
 
-        assert int(number) == self.result
+        self.assertEqual(int(number), self.result)
 
     def test_feature(self):
         input = 'Feature: prevent wild animals from eating us'
@@ -92,10 +92,6 @@ class MoreliaSuite(TestCase):
         assert step.__class__ == Comment
         self.assertEqual(step.concept, 'Comment')
         self.assertEqual(step.predicate, 'I are a comment')
-
-    def assert_regex_contains(self, pattern, string, flags=None):  #  TODO  use more!
-        flags = flags or 0
-        self.assertTrue(re.search(pattern, string, flags) != None, pattern + ' not found in ' + string)  #  CONSIDER  the next version of django-test-extensions will provide this w/o a bug
 
     def test_feature_with_long_comment(self):   #  ERGO how to detect shadowed test cases??
         p = Parser()
@@ -397,7 +393,8 @@ class MoreliaSuite(TestCase):
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
         
-        expect = '''  File "%s", line %s, in %s
+        expect = '''
+  File "%s", line %s, in %s
     %s
 %s''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
         assert expect == diagnostic
@@ -439,7 +436,7 @@ class MoreliaSuite(TestCase):
     def step_Moralia_evaluates_the_file(self):
         self.diagnostic = None
         self.steps = []
-        5
+
         try:
             p = Parser()
             self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
@@ -500,13 +497,20 @@ class MoreliaSuite(TestCase):
             diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
             p = Parser().parse_features(statements)
             p.evaluate(self)
-            assert False  #  we expect syntax errors here
-        except SyntaxError, e:
+            assert False  #  we expect syntax errors here (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
+        except (SyntaxError, AssertionError), e:
             beef, squeak = diagnostics.split(', line ')
             squeak = 'line ' + squeak
+            #~ print self.step.line_number
+            #~ print str(e)
+            #~ print 'end of e'
             self.assert_regex_contains(re.escape(beef), str(e))
             self.assert_regex_contains(re.escape(squeak), str(e))
 
+    def assert_regex_contains(self, pattern, string, flags=None):  #  TODO  use more!
+        flags = flags or 0
+        diagnostic = '"%s" not found in "%s"' % (pattern, string)
+        self.assertTrue(re.search(pattern, string, flags) != None, diagnostic)
 
 #~ Scenario: Leading # marks comment lines.
     #~ (Warning: Only leading marks are respected for now!)

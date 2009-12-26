@@ -63,12 +63,13 @@ class Morelia:
         if not condition:
             raise SyntaxError(self.format_diagnostic(diagnostic)) #  CONSIDER format in editor-ready syntax??
 
-    def format_diagnostic(self, diagnostic):
+    def format_diagnostic(self, diagnostic):  #  TODO  move down to Step
         parent_reconstruction = ''
         if self.parent:
             parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')
-        expect = '''  File "%s", line %s, in %s
+        expect = '''
+  File "%s", line %s, in %s
     %s
 %s''' % (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
 
@@ -298,7 +299,17 @@ class Step(Viridis):
 
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
-        self.method(*self.matches)
+        #~ self.method(*self.matches)
+        #~ return
+        try:
+            self.method(*self.matches)
+        except AssertionError, e:  #  TODO  also SyntaxError ?
+            print dir(e)
+            print str(e)
+            args = list(e.args)
+            args[0] = self.format_diagnostic(e.args[0])
+            e.args = tuple(e.args)
+            raise e.__class__(*args)
 
     def augment_predicate(self):  #  TODO  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate
@@ -386,43 +397,6 @@ def _permute_indices(arr):
     return list(_product(*_imap(_special_range, arr)))
       #  tx to Chris Rebert, et al, on the Python newsgroup for curing my brainlock here!!
 
-
-#  TODO  something was wrong with this:
-#~ Scenario: Don't send Clan Membership purchase to Prolog!
-  #~ Given the prowares_settings file contains MEMBERSHIP = "Clan_Membership"
-   #~ # And a SKU, Clan_Membership, Clan_Membership, $2.00, which is a Clan Item
-   #~ # And my cart contains these SKUs
-   #~ #When I check out my cart
-   #~ #Then no Purchase Order goes to Prolog
-
-#~ Traceback (most recent call last):
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/tests.py", line 696, in test_features
-    #~ morelia.Parser().parse_file('prowares/features/prowares.feature').evaluate(self) # TODO relative path
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 41, in evaluate
-    #~ self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 48, in rip
-    #~ self.steps[0].evaluate_steps(v)  #  TODO  fail if it's not a Feature or Scenario
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 124, in evaluate_steps
-    #~ for step in self.steps:  step.evaluate_steps(v)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 247, in evaluate_steps
-    #~ self.evaluate_test_case(visitor)  #  note this works on reports too!
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 256, in evaluate_test_case
-    #~ Morelia.evaluate_steps(self, visitor)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 124, in evaluate_steps
-    #~ for step in self.steps:  step.evaluate_steps(v)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 123, in evaluate_steps
-    #~ v.visit(self)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 97, in visit
-    #~ node.evaluate_step(self)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 281, in evaluate_step
-    #~ self.find_step_name(v.suite)
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 177, in find_step_name
-    #~ self.method = self.find_by_doc_string(suite)  #  TODO  move self.method= inside the finders
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 210, in find_by_doc_string
-    #~ m = doc.match(self.augment_predicate())
-  #~ File "/Users/philipplumlee/projects/celtek/prowares/features/morelia.py", line 159, in augment_predicate
-    #~ for self.title in self.table[0].harvest():
-#~ AttributeError: Comment instance has no attribute 'harvest'
 
 def _product(*args, **kwds):
     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy

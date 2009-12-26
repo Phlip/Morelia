@@ -10,7 +10,7 @@ setup(name='Morelia',
       author_email='phlip2005@gmail.com',
       url='TODO',
 
-      py_modules=['morelia.py'],
+      py_modules=['morelia'],
   #  packages = find_packages('src'),
     #package_dir = {'':'morelia'},
     keywords = "django testing bdd",

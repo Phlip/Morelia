@@ -76,8 +76,8 @@ Scenario: Raise useful errors with incomplete files
 
 #  TODO  a row may be a member of a step never a scenario or feature
 
-    |  Feature comp-
-      \Feature placent    | Only one Feature per file, line 2
+    |  Feature comp-      \
+       Feature placent    | Only one Feature per file, line 2
 
     |  Feature in da
          \Step zone       | Feature without Scenario(s), line 1

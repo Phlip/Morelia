@@ -497,12 +497,15 @@ class MoreliaSuite(TestCase):
             diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
             p = Parser().parse_features(statements)
             p.evaluate(self)
-            assert False  #  we expect syntax errors here (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
+            assert False, 'we expect syntax errors here' # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
         except (SyntaxError, AssertionError), e:
             beef, squeak = diagnostics.split(', line ')
             squeak = 'line ' + squeak
             self.assert_regex_contains(re.escape(beef), str(e))
             self.assert_regex_contains(re.escape(squeak), str(e))
+
+    def step_errors(self):
+        raise SyntaxError('no, you!')
 
     def assert_regex_contains(self, pattern, string, flags=None):  #  TODO  use more!
         flags = flags or 0

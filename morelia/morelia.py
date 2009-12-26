@@ -299,17 +299,15 @@ class Step(Viridis):
 
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
-        #~ self.method(*self.matches)
-        #~ return
         try:
             self.method(*self.matches)
-        except AssertionError, e:  #  TODO  also SyntaxError ?
+        except (AssertionError, SyntaxError), e:
             args = list(e.args)
             args[0] = self.format_diagnostic(e.args[0])
             e.args = tuple(e.args)
             raise e.__class__(*args)
 
-    def augment_predicate(self):  #  TODO  unsucktacularize me pleeeeeeze
+    def augment_predicate(self):  #  CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate
         dims = self.parent.count_Row_dimensions()
         if set(dims) == set([0]):  return self.predicate

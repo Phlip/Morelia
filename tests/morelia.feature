@@ -63,25 +63,28 @@ Scenario: Convert source predicates into their matching regular expressions
        | "str"i"ngs"     | r'"([^"]+)"i"([^"]+)"' | , str, ngs  |
        
 #      | pipe \| me      | r'pipe \\\| me'        |             |
-       
 
 Scenario: Raise useful errors with incomplete files
   When a file contains <statements>, produce <diagnostics>
   
-    |    statements      |   diagnostics
+    |    statements       |   diagnostics
 
-    |  Feature yo        | Feature without Scenario(s), line 1
+    |  Feature yo         | Feature without Scenario(s), line 1
     
     |  Feature yo
-         \Scenario dude  | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
+         \Scenario dude   | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
 
 #  TODO  a row may be a member of a step never a scenario or feature
 
     |  Feature comp-
-      \Feature placent   | Only one Feature per file, line 2
+      \Feature placent    | Only one Feature per file, line 2
 
     |  Feature in da
-         \Step zone      | Feature without Scenario(s), line 1
+         \Step zone       | Feature without Scenario(s), line 1
+
+    |  Feature    resist
+        \Scenario syntax
+          \Step   errors  | Scenario: syntax, line 3
 
     |  Scenario: Add two numbers
         \Given I have entered 50 into the calculator

@@ -387,16 +387,14 @@ class MoreliaSuite(TestCase):
         thang = Parser().parse_file(filename)
         step = thang.steps[0].steps[3].steps[1]
         assert filename == step.get_filename()
-        print step.format_diagnostic('The Alpine glaciers move')
-        print step.line_number
-        print step.concept
-        print step.predicate
+        omen = 'The Alpine glaciers move'
+        print step.format_diagnostic(omen)
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
         
         expect = '''  File "%s", line %s, in %s
     %s
-''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction)
+%s''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
         print expect
 
     def test_evaluate_file(self):

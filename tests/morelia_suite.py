@@ -501,9 +501,6 @@ class MoreliaSuite(TestCase):
         except (SyntaxError, AssertionError), e:
             beef, squeak = diagnostics.split(', line ')
             squeak = 'line ' + squeak
-            #~ print self.step.line_number
-            #~ print str(e)
-            #~ print 'end of e'
             self.assert_regex_contains(re.escape(beef), str(e))
             self.assert_regex_contains(re.escape(squeak), str(e))
 

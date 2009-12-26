@@ -304,8 +304,6 @@ class Step(Viridis):
         try:
             self.method(*self.matches)
         except AssertionError, e:  #  TODO  also SyntaxError ?
-            print dir(e)
-            print str(e)
             args = list(e.args)
             args[0] = self.format_diagnostic(e.args[0])
             e.args = tuple(e.args)

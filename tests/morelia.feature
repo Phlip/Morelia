@@ -91,5 +91,3 @@ Scenario: Raise useful errors with incomplete files
           And I have entered 70 into the calculator  \
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
-
-#  TODO  gotta use \ line joiner notation!

@@ -509,7 +509,7 @@ class MoreliaSuite(TestCase):
         r'a file contains (.+), produce (.+)'
 
         try:
-            statements = statements.replace('\\n', '\n')  #  TODO  document this is how you paint linefeedage
+            statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
             #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
             p = Parser().parse_features(statements)

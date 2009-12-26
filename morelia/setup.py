@@ -4,15 +4,13 @@
 from distutils.core import setup # , find_packages
 
 setup(name='Morelia',
-      version='0.0.1',
+      version='0.0.2',
       description='put the squeeze on your features',
       author='Phlip',
       author_email='phlip2005@gmail.com',
-      url='TODO',
+      url='http://c2.com/cgi/wiki?MoreliaViridis',
 
       py_modules=['morelia'],
-  #  packages = find_packages('src'),
-    #package_dir = {'':'morelia'},
     keywords = "django testing bdd",
     install_requires=[],
     classifiers = [

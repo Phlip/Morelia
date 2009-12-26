@@ -197,11 +197,7 @@ class Parser:
         for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
             self.line_number += 1
             
-            #~ if self.steps != [] and len(self.steps[-1].predicate):
-                #~ print self.steps[-1].predicate[-1]
-            
-            if self.steps != [] and len(self.steps[-1].predicate) and self.steps[-1].predicate[-1] == '\\':
-                self.steps[-1].predicate += '\n' + self.line
+            if self.anneal_last_broken_line():
                 return self.steps
             
             if not self._parse_line() and \
@@ -209,6 +205,14 @@ class Parser:
                 self._append_to_previous_node()
         
         return self.steps
+    
+    def anneal_last_broken_line(self):
+        if self.steps == []:  return False
+        last = self.steps[-1]
+
+        if len(last.predicate) and last.predicate[-1] == '\\':
+                last.predicate += '\n' + self.line
+                return True
         
     def _parse_line(self):
         self.line = self.line.rstrip()

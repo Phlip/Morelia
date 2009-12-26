@@ -71,8 +71,8 @@ Scenario: Raise useful errors with incomplete files
 
     |  Feature yo         | Feature without Scenario(s), line 1
     
-    |  Feature yo
-         \Scenario dude   | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
+    |  Feature yo         \
+         Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
 
 #  TODO  a row may be a member of a step never a scenario or feature
 

@@ -267,11 +267,10 @@ class MoreliaSuite(TestCase):
         crunks.append(crunk)
         self.got_crunk = crunk
 
-#  CONSIDER  note that default arguments on steps are permitted!
 #  TODO  squeak if the table item ain't found
-#  CONSIDER  parse the || as Json/Yaml? - permit gaps & comments in tables
-#  TODO  decorate exceptions failures with their source feature lines
 #  TODO  respect the tests' verbosity levels
+#  CONSIDER  note that default arguments on steps are permitted!
+#  CONSIDER  parse the || as Json/Yaml? - permit gaps & comments in tables
 
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()

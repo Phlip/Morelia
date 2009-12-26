@@ -6,8 +6,7 @@ Feature: Morelia Viridis puts the squeeze on your features.
 
 #  Note: comments don't suck!
 
-#  TODO  provide filename and line number of the *.feature file at fault time already!
-#     (and call them "faults" everywhere)
+#  TODO  call them "faults" everywhere
 
 # ERGO use "cutensile" somewhere; and "blink hogs"
 
@@ -16,8 +15,6 @@ Scenario: Add two numbers
     And I have entered 70 into the calculator
   When I press add
    Then the result should be 120 on the screen
-     
-#  TODO  display all missing steps not just the first
 
 Scenario: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string
@@ -29,8 +26,9 @@ Scenario: When we challenge Morelia with a Step with no matching
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
-#  TODO document that we permit matches across one line!
+#  TODO  document that we permit matches across one line!
 #  CONSIDER  document that the trailing pipe is cosmetic!
+#  CONSIDER  display all missing steps not just the first
 
 Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name

@@ -191,7 +191,7 @@ class Parser:
         if self.steps != []:
             self.steps[0].evaluate_steps(v)
 
-    def parse_feature(self, lines):    #  TODO  preserve and use line numbers
+    def parse_feature(self, lines):
         self.line_number = 0
         
         for self.line in lines.split('\n'):      #  TODO  deal with pesky \r

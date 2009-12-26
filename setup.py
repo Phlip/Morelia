@@ -12,7 +12,7 @@ setup(name='Morelia',
 
 #      packages=['morelia'],
   #  packages = find_packages('src'),
-    package_dir = {'':'morelia'},
+    # package_dir = {'':'morelia'},
     keywords = "django testing bdd",
     install_requires=[],
     classifiers = [

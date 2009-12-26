@@ -363,8 +363,19 @@ class MoreliaSuite(TestCase):
         steps = Parser().parse_feature(feature)
         steps[0].evaluate(self)
 
-    #~ def test_evaluate_unfound(self):
+    #~ def test_evaluate_unfound(self):  TODO   real test outa this
         #~ Parser().parse_file(pwd + '/nada.feature').evaluate(self)
+        
+    def test_record_filename(self):
+        filename = pwd + '/morelia.feature'
+        thang = Parser().parse_file(filename)
+        feature = thang.steps[0]
+        assert feature.__class__ == Feature
+        return
+        print dir(step)
+        print step.parent
+        self.assertTrue(False)
+        
         
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')

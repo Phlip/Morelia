@@ -386,12 +386,14 @@ class MoreliaSuite(TestCase):
         print step.line_number
         print step.concept
         print step.predicate
-        reconstruction = step.parent.concept + ': ' + step.parent.predicate # TODO  methodize me
+        parent_reconstruction = step.parent.concept + ': ' + step.parent.predicate # TODO  methodize me
+        reconstruction = step.concept + ': ' + step.predicate
+        
         #~ return
         #~ self.assertTrue(False)
         expect = '''  File "%s", line %s, in %s
-    self.assertTrue(False)
-AssertionError''' % (step.get_filename(), step.line_number, reconstruction)
+    %s
+''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction)
         print expect
 
     def test_evaluate_file(self):

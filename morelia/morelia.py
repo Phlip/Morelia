@@ -65,6 +65,9 @@ class Morelia:
 
     def format_diagnostic(self, diagnostic):
         return '%s, line %i' % (diagnostic, self.line_number)
+    
+    def reconstruction(self):
+        return self.concept + ': ' + self.predicate  #  TODO does anyone else need this?
 
     def get_filename(self):
         node = self

@@ -299,6 +299,11 @@ class MoreliaSuite(TestCase):
         Parser().parse_features(self.assemble_short_scene_table()).evaluate(self)
         self.assertEqual([['Pangolin', 'Glyptodon'], ['Pangea', 'Laurasia']], [factions, elements])
 
+    def test_two_dimensional_table(self):
+        p = Parser().parse_features(self.assemble_short_scene_table())
+        step = p.steps[0].steps[0].steps[0]
+        self.assertEqual(step.concept + ': ' + step.predicate, step.reconstruction())
+
     def step_party_element_from_faction(self, element, faction):
         r'party (\w+) from (\w+)'
             #  TODO  don't default to this "party <element> in <faction>"  

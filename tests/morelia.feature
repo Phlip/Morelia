@@ -85,10 +85,10 @@ Scenario: Raise useful errors with incomplete files
     |  Feature in da
          \Step zone      | Feature without Scenario(s), line 1
 
-#    |  Scenario: Add two numbers
-#        \Given I have entered 50 into the calculator
-#          \And I have entered 70 into the calculator
-#         \When I press add
-#         \Then the result should be 121 on the screen | the result should be, line 5
+    |  Scenario: Add two numbers
+        \Given I have entered 50 into the calculator
+          \And I have entered 70 into the calculator
+         \When I press add
+         \Then the result should be 121 on the screen | the result should be, line 5
 
 #  TODO  gotta use \ line joiner notation!

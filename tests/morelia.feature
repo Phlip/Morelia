@@ -65,7 +65,7 @@ Scenario: Convert source predicates into their matching regular expressions
 #      | pipe \| me      | r'pipe \\\| me'        |             |
 
 Scenario: Raise useful errors with incomplete files
-  When a file contains <statements>, produce <diagnostics>
+  When a file contains <statements>, it produces <diagnostics>
   
     |    statements       |   diagnostics
 
@@ -77,6 +77,8 @@ Scenario: Raise useful errors with incomplete files
     |  Feature yo         \
          Scenario dude    \
            Givenfoo       | Scenario without step, line 2
+
+    |  nada               |  wtf, line 1
 
 #  TODO  a row may be a member of a step never a scenario or feature
 

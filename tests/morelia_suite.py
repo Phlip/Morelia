@@ -506,20 +506,28 @@ class MoreliaSuite(TestCase):
         self.assertEqual(extra, self.viridis.extra_arguments)
 
     def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
-        r'a file contains (.+), produce (.+)'
-
+        r'a file contains (.+), it produces (.+)'
+        
+        print statements, diagnostics
+        
         try:
-            statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
-            statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
-            #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
-            p = Parser().parse_features(statements)
-            p.evaluate(self)
-            assert False, 'we expect syntax errors here' # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
-        except (SyntaxError, AssertionError), e:
-            beef, squeak = diagnostics.split(', line ')
-            squeak = 'line ' + squeak
-            self.assert_regex_contains(re.escape(beef), str(e))
-            self.assert_regex_contains(re.escape(squeak), str(e))
+            try:
+                statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
+                statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
+                #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
+                p = Parser().parse_features(statements)
+                p.evaluate(self)
+                
+                assert False, 'we expect syntax errors here' # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
+            except (SyntaxError, AssertionError), e:
+                beef, squeak = diagnostics.split(', line ')
+                squeak = 'line ' + squeak
+                #print beef, squeak
+                self.assert_regex_contains(re.escape(beef), str(e))
+                self.assert_regex_contains(re.escape(squeak), str(e))
+        except e:
+            print e
+            raise e
 
     def step_errors(self):
         raise SyntaxError('no, you!')

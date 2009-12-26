@@ -220,7 +220,7 @@ class Parser:
         for klass in self.thangs:
             self.thang = klass()
             name = self.thang.i_look_like()
-            rx = '\s*(' + name + '):?\s*(.*)'  #  TODO  Givenfoo is wrong
+            rx = '\s*(' + name + '):?\s*(.*)'
             
             m = re.compile(rx).match(self.line)
 

@@ -4,12 +4,12 @@
 from distutils.core import setup # , find_packages
 
 setup(name='Morelia',
-      version='0.0.9',
+      version='0.0.10',
       description='squeeze your features',
       author='Phlip',
       author_email='phlip2005@gmail.com',
       url='TODO',
-      packages=['morelia'],
+#      packages=['morelia'],
   #  packages = find_packages('src'),
     # package_dir = {'':'src'},
     keywords = "django testing bdd",

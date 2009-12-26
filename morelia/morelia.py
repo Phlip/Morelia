@@ -210,7 +210,7 @@ class Parser:
         if self.steps == []:  return False
         last = self.steps[-1]
 
-        if len(last.predicate) and last.predicate[-1] == '\\':
+        if len(last.predicate) and re.match(r'\\\s*$', last.predicate[-1]):
                 last.predicate += '\n' + self.line
                 return True
         

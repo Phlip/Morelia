@@ -4,7 +4,7 @@
 from distutils.core import setup # , find_packages
 
 setup(name='Morelia',
-      version='0.0.10',
+      version='0.0.11',
       description='squeeze your features',
       author='Phlip',
       author_email='phlip2005@gmail.com',
@@ -12,7 +12,7 @@ setup(name='Morelia',
 
 #      packages=['morelia'],
   #  packages = find_packages('src'),
-    # package_dir = {'':'src'},
+    package_dir = {'':'morelia'},
     keywords = "django testing bdd",
     install_requires=[],
     classifiers = [

@@ -372,9 +372,9 @@ class MoreliaSuite(TestCase):
         feature = thang.steps[0]
         assert feature.__class__ == Feature
         assert feature.filename == filename
+        step = feature.steps[3].steps[1]
+        assert filename == step.get_filename()
         return
-        print dir(step)
-        print step.parent
         self.assertTrue(False)
         
         

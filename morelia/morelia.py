@@ -63,6 +63,12 @@ class Morelia:
         if not condition:
             raise SyntaxError('%s, line %i' % (diagnostic, self.line_number)) #  CONSIDER format in editor-ready syntax??
 
+    def get_filename(self):
+        node = self
+        
+        while node:
+            if not node.parent:  return node.filename
+            node = node.parent
 
 class Viridis(Morelia):
 

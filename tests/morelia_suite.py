@@ -391,11 +391,9 @@ class MoreliaSuite(TestCase):
         print step.line_number
         print step.concept
         print step.predicate
-        parent_reconstruction = step.parent.concept + ': ' + step.parent.predicate # TODO  methodize me
-        reconstruction = step.concept + ': ' + step.predicate
+        parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
+        reconstruction = step.reconstruction().replace('\n', '\\n')
         
-        #~ return
-        #~ self.assertTrue(False)
         expect = '''  File "%s", line %s, in %s
     %s
 ''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction)

@@ -299,6 +299,7 @@ class Step(Viridis):
 
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
+
         try:
             self.method(*self.matches)
         except (AssertionError, SyntaxError), e:

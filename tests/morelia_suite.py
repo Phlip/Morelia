@@ -82,7 +82,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Scenario')
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-    def test_feature_with_comment(self):
+    def test_feature_with_lone_comment(self):
         input = '''Feature: The Sacred White Llama of the Inca
                    #  I are a comment'''
         steps = Parser().parse_feature(input)
@@ -93,7 +93,11 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Comment')
         self.assertEqual(step.predicate, 'I are a comment')
 
-    def test_feature_with_comment(self):
+    def assert_regex_contains(self, pattern, string, flags=None):  #  TODO  use more!
+        flags = flags or 0
+        self.assertTrue(re.search(pattern, string, flags) != None, pattern + ' not found in ' + string)  #  CONSIDER  the next version of django-test-extensions will provide this w/o a bug
+
+    def test_feature_with_long_comment(self):   #  ERGO how to detect shadowed test cases??
         p = Parser()
         
         input = '''Feature: The Sacred Giant Mosquito of the Andes
@@ -103,7 +107,8 @@ class MoreliaSuite(TestCase):
             p.parse_feature(input)
             assert False  #  should raise a SyntaxError
         except SyntaxError, e:
-            self.assertEqual(1, str(e).count('linefeed in comment, line 2'))
+            self.assert_regex_contains('linefeed in comment', str(e))
+            self.assert_regex_contains('line 2', str(e))
             
         steps = p.steps
         assert steps[0].__class__ == Feature
@@ -388,14 +393,14 @@ class MoreliaSuite(TestCase):
         step = thang.steps[0].steps[3].steps[1]
         assert filename == step.get_filename()
         omen = 'The Alpine glaciers move'
-        print step.format_diagnostic(omen)
+        diagnostic = step.format_diagnostic(omen)
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
         
         expect = '''  File "%s", line %s, in %s
     %s
 %s''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
-        print expect
+        assert expect == diagnostic
 
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')
@@ -497,8 +502,10 @@ class MoreliaSuite(TestCase):
             p.evaluate(self)
             assert False  #  we expect syntax errors here
         except SyntaxError, e:
-            #print str(e)
-            self.assertEqual(1, str(e).count(diagnostics), diagnostics + ' - not found in - ' + str(e))
+            beef, squeak = diagnostics.split(', line ')
+            squeak = 'line ' + squeak
+            self.assert_regex_contains(re.escape(beef), str(e))
+            self.assert_regex_contains(re.escape(squeak), str(e))
 
 
 #~ Scenario: Leading # marks comment lines.

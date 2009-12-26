@@ -64,7 +64,15 @@ class Morelia:
             raise SyntaxError(self.format_diagnostic(diagnostic)) #  CONSIDER format in editor-ready syntax??
 
     def format_diagnostic(self, diagnostic):
-        return '%s, line %i' % (diagnostic, self.line_number)
+        parent_reconstruction = ''
+        if self.parent:
+            parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
+        reconstruction = self.reconstruction().replace('\n', '\\n')
+        expect = '''  File "%s", line %s, in %s
+    %s
+%s''' % (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
+
+        return expect
     
     def reconstruction(self):
         return self.concept + ': ' + self.predicate  #  TODO does anyone else need this?
@@ -73,7 +81,7 @@ class Morelia:
         node = self
         
         while node:
-            if not node.parent:  return node.filename
+            if not node.parent and hasattr(node, 'filename'):  return node.filename
             node = node.parent
 
 

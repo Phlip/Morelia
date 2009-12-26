@@ -371,6 +371,7 @@ class MoreliaSuite(TestCase):
         thang = Parser().parse_file(filename)
         feature = thang.steps[0]
         assert feature.__class__ == Feature
+        assert feature.filename == filename
         return
         print dir(step)
         print step.parent

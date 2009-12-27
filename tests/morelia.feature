@@ -12,19 +12,12 @@ Scenario: Add two numbers
   When I press add
    Then the result should be 120 on the screen
 
-Scenario: Match prose steps to Python steps by name
-    Step: evaluate_step_by_doc_string
-
 Scenario: When we challenge Morelia with a Step with no matching
           entry in your test suite, supply a helpful error message
     Given a feature file with "Given your nose is on fire"
     When Moralia evaluates the file
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
-
-#  TODO  document that we permit matches across one line!
-#  CONSIDER  document that the trailing pipe is cosmetic!
-#  CONSIDER  display all missing steps not just the first
 
 Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
@@ -94,6 +87,14 @@ Scenario: Raise useful errors with incomplete files
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
 
+#  TODO  document that we permit matches across one line!
+#  CONSIDER  document that the trailing pipe is cosmetic!
+#  CONSIDER  display all missing steps not just the first
+
 #  ----8<----  these utilitarian Scenarios don't document anything  ----
 
+
 # ERGO use "cutensile" somewhere; and "blink hogs"
+
+Scenario: Match prose steps to Python steps by name
+    Step: evaluate_step_by_doc_string

@@ -306,7 +306,6 @@ class Step(Viridis):
 
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
-        print dir(v.suite)
 
         try:
             self.method(*self.matches)

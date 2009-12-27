@@ -63,7 +63,7 @@ class Morelia:
         if not condition:
             raise SyntaxError(self.format_fault(diagnostic)) #  CONSIDER format in editor-ready syntax??
 
-    def format_fault(self, diagnostic):  #  TODO  move down to Step
+    def format_fault(self, diagnostic):
         parent_reconstruction = ''
         if self.parent:  parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')

@@ -73,7 +73,7 @@ class Morelia:
         return expect
     
     def reconstruction(self):
-        return self.concept + ': ' + self.predicate  #  TODO does anyone else need this?
+        return self.concept + ': ' + self.predicate
 
     def get_filename(self):
         node = self
@@ -242,14 +242,14 @@ class ReportVisitor:
     def __init__(self, suite):  self.suite = suite
 
     def visit(self, node):
-        print node.prefix() + node.concept + ': ' + node.predicate # TODO  if verbose
+        print node.prefix() + node.reconstruction()
 
 
 class TestVisitor:
     def __init__(self, suite):  self.suite = suite
 
     def visit(self, node):
-        # print node.concept + ': ' + node.predicate # TODO  if verbose
+        # print node.reconstruction()  # TODO  if verbose
         self.suite.step = node
         node.evaluate_step(self)
 

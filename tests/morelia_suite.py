@@ -412,7 +412,7 @@ class MoreliaSuite(TestCase):
         
         expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
             (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
-            
+
         assert expect == diagnostic
 
     def test_evaluate_file(self):

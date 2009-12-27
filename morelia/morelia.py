@@ -65,12 +65,10 @@ class Morelia:
 
     def format_fault(self, diagnostic):  #  TODO  move down to Step
         parent_reconstruction = ''
-        if self.parent:
-            parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
+        if self.parent:  parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
-        expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % args
-        return expect
+        return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
     
     def reconstruction(self):
         return self.concept + ': ' + self.predicate

@@ -410,10 +410,9 @@ class MoreliaSuite(TestCase):
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
         
-        expect = '''
-  File "%s", line %s, in %s
-    %s
-%s''' % (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
+        expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
+            (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
+            
         assert expect == diagnostic
 
     def test_evaluate_file(self):

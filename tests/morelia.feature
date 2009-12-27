@@ -91,8 +91,6 @@ Scenario: Raise useful errors with incomplete files
          Then the result should be 121 on the screen | the result should be, line 5
 
 #  TODO  document that we permit matches across one line!
-#  CONSIDER  document that the trailing pipe is cosmetic!
-#  CONSIDER  display all missing steps not just the first
 
 #  ----8<----  these utilitarian Scenarios don't document anything  ----
 

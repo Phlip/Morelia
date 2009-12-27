@@ -418,3 +418,5 @@ def _imap(function, *iterables):
             yield tuple(args)
         else:
             yield function(*args)
+
+#  CONSIDER  display all missing steps not just the first

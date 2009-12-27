@@ -25,11 +25,14 @@ Scenario: Fail to match prose if feature file has bad strings
     
 Scenario: when did Bow Wow Wow become classic rock?
     Given: adventure of love - love and <culture>
+    
         | culture  
+        
         | radio    
         | g-string 
         | battery  
-        | driven   
+        | driven     |
+                              # note the trailing pipe is cosmetic
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step concept is Given

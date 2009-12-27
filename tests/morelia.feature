@@ -4,9 +4,7 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
-#  Note: comments don't suck!
-
-# ERGO use "cutensile" somewhere; and "blink hogs"
+#  ----8<----  these Scenarios document good examples of Morelia abilities  ----
 
 Scenario: Add two numbers
   Given I have entered 50 into the calculator
@@ -95,3 +93,7 @@ Scenario: Raise useful errors with incomplete files
           And I have entered 70 into the calculator  \
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
+
+#  ----8<----  these utilitarian Scenarios don't document anything  ----
+
+# ERGO use "cutensile" somewhere; and "blink hogs"

@@ -221,7 +221,6 @@ class Parser:
             self.thang = klass()
             name = self.thang.i_look_like()
             rx = '\s*(' + name + '):?\s*(.*)'
-            
             m = re.compile(rx).match(self.line)
 
             if m and len(m.groups()) > 0:

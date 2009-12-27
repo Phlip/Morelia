@@ -68,11 +68,8 @@ class Morelia:
         if self.parent:
             parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')
-        expect = '''
-  File "%s", line %s, in %s
-    %s
-%s''' % (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
-
+        args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
+        expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % args
         return expect
     
     def reconstruction(self):
@@ -80,7 +77,7 @@ class Morelia:
 
     def get_filename(self):
         node = self
-        
+
         while node:
             if not node.parent and hasattr(node, 'filename'):  return node.filename
             node = node.parent

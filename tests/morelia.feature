@@ -6,8 +6,6 @@ Feature: Morelia Viridis puts the squeeze on your features.
 
 #  Note: comments don't suck!
 
-#  TODO  call them "faults" everywhere
-
 # ERGO use "cutensile" somewhere; and "blink hogs"
 
 Scenario: Add two numbers

@@ -391,7 +391,7 @@ if __name__ == '__main__':
 #  TODO  maximum munch fails - Given must start a line
 
 
-def _special_range(n):  #  TODO  better name
+def _special_range(n):  #  CONSIDER  better name
     return xrange(n) if n else [0]
 
 

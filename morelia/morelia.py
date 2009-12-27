@@ -61,9 +61,9 @@ class Morelia:
         
     def enforce(self, condition, diagnostic):
         if not condition:
-            raise SyntaxError(self.format_diagnostic(diagnostic)) #  CONSIDER format in editor-ready syntax??
+            raise SyntaxError(self.format_fault(diagnostic)) #  CONSIDER format in editor-ready syntax??
 
-    def format_diagnostic(self, diagnostic):  #  TODO  move down to Step
+    def format_fault(self, diagnostic):  #  TODO  move down to Step
         parent_reconstruction = ''
         if self.parent:
             parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
@@ -311,7 +311,7 @@ class Step(Viridis):
             self.method(*self.matches)
         except (AssertionError, SyntaxError), e:
             args = list(e.args)
-            args[0] = self.format_diagnostic(e.args[0])
+            args[0] = self.format_fault(e.args[0])  # TODO  have we seen this before?
             e.args = tuple(e.args)
             raise e.__class__(*args)
 

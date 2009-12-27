@@ -400,13 +400,13 @@ class MoreliaSuite(TestCase):
         return
         self.assertTrue(False)
 
-    def test_format_diagnostics_like_python_errors(self): # TODO
+    def test_format_faults_like_python_errors(self):
         filename = pwd + '/morelia.feature'
         thang = Parser().parse_file(filename)
         step = thang.steps[0].steps[3].steps[1]
         assert filename == step.get_filename()
         omen = 'The Alpine glaciers move'
-        diagnostic = step.format_diagnostic(omen)
+        diagnostic = step.format_fault(omen)
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
         

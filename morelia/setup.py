@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from distutils.core import setup # , find_packages
+import morelia
 
 setup(name='Morelia',
-      version='0.0.2',
+      version=morelia.__version__, # '0.0.2',
       description='put the squeeze on your features',
       author='Phlip',
       author_email='phlip2005@gmail.com',

@@ -12,6 +12,7 @@ sys.path.insert(0, morelia_path)
 from morelia import *
 from morelia import _permute_indices
 
+# TODO  same order as morelia.feature, & vice-versa
 
 class MoreliaSuite(TestCase):
 
@@ -22,7 +23,7 @@ class MoreliaSuite(TestCase):
         self.stack.append(int(number))
 
     def step_I_press_add(self):
-        self.result = self.stack[0] + self.stack[1]
+        self.result = sum(self.stack)
 
     def step_the_result_should_be_on_the_screen(self, number):
         "the result should be (\d+) on the screen"

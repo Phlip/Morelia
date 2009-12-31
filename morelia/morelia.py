@@ -311,8 +311,9 @@ class Step(Viridis):
         except (AssertionError, SyntaxError), e:
             args = list(e.args)
             args[0] = self.format_fault(e.args[0])  # TODO  have we seen this before?
+            print dir(e)
             e.args = tuple(e.args)
-            raise e.__class__(*args)
+            raise e.__class__(*args)  #  TODO  this does not always work - how to reraise???
 
     def augment_predicate(self):  #  CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate

@@ -336,6 +336,17 @@ class MoreliaSuite(TestCase):
         
         self.youth = youth
     
+    def step_exceptional(self):
+        x = 1 / 0  #  guilty pleasure for programmers!
+    
+    def test_handle_exceptions(self):
+        s = Step()
+        s.concept = 'Given'
+        s.predicate = 'exceptional'
+        # s.matches = ['step_exceptional']
+        visitor = TestVisitor(self)
+        #s.evaluate_step()
+        
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')
         step.find_by_name(self)

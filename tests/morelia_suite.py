@@ -347,7 +347,6 @@ class MoreliaSuite(TestCase):
         s.line_number = 42
         # s.matches = ['step_exceptional']
         visitor = TestVisitor(self)
-        print dir(self)
         
         try:
             s.evaluate_step(visitor)

@@ -308,15 +308,18 @@ class Step(Viridis):
 
         try:
             self.method(*self.matches)
-        except (AssertionError, SyntaxError), e:
+        except Exception, e:
                
                #  TODO  test thru here!
                
-            args = list(e.args)
-            args[0] = self.format_fault(e.args[0])  # TODO  have we seen this before?
-            print dir(e)
-            e.args = tuple(e.args)
-            raise e.__class__(*args)  #  TODO  this does not always work - how to reraise???
+      #      args = list(e.args)
+            new_exception = self.format_fault(e.args[0])
+            #~ e.args[0].replace(e.args[0], )
+            #~ print e.args[0]
+            
+#            e.args = tuple(e.args)
+   #         print e.args
+            raise Exception(new_exception) # .__class__(*args)  #  TODO  this does not always work - how to reraise???
 
     def augment_predicate(self):  #  CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate

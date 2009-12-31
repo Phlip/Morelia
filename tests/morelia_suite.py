@@ -341,11 +341,20 @@ class MoreliaSuite(TestCase):
     
     def test_handle_exceptions(self):
         s = Step()
+        
         s.concept = 'Given'
         s.predicate = 'exceptional'
+        s.line_number = 42
         # s.matches = ['step_exceptional']
         visitor = TestVisitor(self)
-        #s.evaluate_step()
+        print dir(self)
+        
+        try:
+            s.evaluate_step(visitor)
+            assert False  #  should raise!
+        except Exception, e:
+            assert 'Given: exceptional' in str(e)
+        
         
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')

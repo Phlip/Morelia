@@ -345,7 +345,6 @@ class MoreliaSuite(TestCase):
         s.concept = 'Given'
         s.predicate = 'exceptional'
         s.line_number = 42
-        # s.matches = ['step_exceptional']
         visitor = TestVisitor(self)
         
         try:

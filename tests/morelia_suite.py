@@ -351,7 +351,7 @@ class MoreliaSuite(TestCase):
         try:
             s.evaluate_step(visitor)
             assert False  #  should raise!
-        except Exception, e:
+        except ZeroDivisionError, e:
             assert 'Given: exceptional' in str(e)
         
         

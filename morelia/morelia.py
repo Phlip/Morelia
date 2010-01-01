@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 import re
 
 #  ERGO  Morelia should raise a form in any state!
@@ -309,17 +309,9 @@ class Step(Viridis):
         try:
             self.method(*self.matches)
         except Exception, e:
-               
-               #  TODO  test thru here!
-               
-      #      args = list(e.args)
             new_exception = self.format_fault(e.args[0])
-            #~ e.args[0].replace(e.args[0], )
-            #~ print e.args[0]
-            
-#            e.args = tuple(e.args)
-   #         print e.args
-            raise Exception(new_exception) # .__class__(*args)  #  TODO  this does not always work - how to reraise???
+            e.args = (new_exception,) + (e.args[1:])
+            raise
 
     def augment_predicate(self):  #  CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent == None:  return self.predicate

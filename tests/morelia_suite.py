@@ -12,7 +12,7 @@ sys.path.insert(0, morelia_path)
 from morelia import *
 from morelia import _permute_indices
 
-# TODO  same order as morelia.feature, & vice-versa
+#  CONSIDER  same order as morelia.feature, & vice-versa
 
 class MoreliaSuite(TestCase):
 

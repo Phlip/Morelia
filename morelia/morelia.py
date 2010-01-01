@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.5'
+__version__ = '0.0.6'
 import re
 
 #  ERGO  Morelia should raise a form in any state!

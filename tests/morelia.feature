@@ -86,3 +86,15 @@ Scenario: Raise useful errors with incomplete files
     |  Feature yo         \
          Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
 
+
+#  TODO  a row may be a member of a step never a scenario or feature
+#  TODO  document that we permit matches across one line!
+
+#  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
+
+
+# ERGO use "cutensile" somewhere; and "blink hogs"
+
+Scenario: Match prose steps to Python steps by name
+    Step: evaluate_step_by_doc_string
+

@@ -23,36 +23,6 @@ Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string
     
-Scenario: when did Bow Wow Wow become classic rock?
-    Given: adventure of love - love and <culture>
-    
-        | culture  
-        
-        | radio    
-        | g-string 
-        | battery  
-        | driven     |  # note the trailing pipe is cosmetic, and required for comments
-
-    When Moralia evaluates this
-    Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
-      And the step concept is Given
-
-Scenario: Convert source predicates into their matching regular expressions
-   Given a source file with a <predicate>
-   When we evaluate the file
-   Then we convert it into a <suggestion>
-    And add <extra> arguments
-   
-       |   predicate     |   suggestion           |  extra      |
-       
-       | tastes great    | r'tastes great'        |             |
-       | less filling    | r'less filling'        |             |
-       | line\nfeed      | r'line\nfeed'          |             |
-       | tick'ed'        | r'tick\'ed\''          |             |
-       | argu<ment>al    | r'argu(.+)al'          | , ment      |
-       | arg<u>ment<al>  | r'arg(.+)ment(.+)'     | , u, al     |
-       | str"ing"        | r'str"([^"]+)"'        | , ing       |
-       | "str"i"ngs"     | r'"([^"]+)"i"([^"]+)"' | , str, ngs  |
        
 #      | pipe \| me      | r'pipe \\\| me'        |             |
 
@@ -63,15 +33,6 @@ Scenario: Raise useful errors with incomplete files
 
     |  Feature yo         | Feature without Scenario(s), line 1
     
-    |  Feature yo         \
-         Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
-         
-    |  Feature yo         \
-         Scenario dude    \
-           Givenfoo       | Scenario without step, line 2
-
-    |  nada               |  wtf, line 1
-
     |  Feature comp-      \
        Feature placent    | Only one Feature per file, line 2
 
@@ -88,8 +49,17 @@ Scenario: Raise useful errors with incomplete files
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
 
+    |  Feature yo         \
+         Scenario dude    \
+           Givenfoo       | Scenario without step, line 2
+
+    |  nada               | wtf, line 1
+
     | Given a table with one row \
         \| i \| be \| a \| lonely \| row |  table with only one row
+
+    |  Feature yo         \
+         Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
 
 #  TODO  a row may be a member of a step never a scenario or feature
 #  TODO  document that we permit matches across one line!

@@ -211,10 +211,13 @@ class Parser:
     def anneal_last_broken_line(self):
         if self.steps == []:  return False
         last = self.steps[-1]
+        print self.line
 
-        if len(last.predicate) and re.match(r'\\\s*$', last.predicate[-1]):
-                last.predicate += '\n' + self.line
-                return True
+        if re.match(r'\\\s*$', last.predicate[-1]):
+            last.predicate += '\n' + self.line
+            return True
+
+        return False
         
     def _parse_line(self):
         self.line = self.line.rstrip()
@@ -365,6 +368,8 @@ class Given(Step):   pass  #  CONSIDER  distinguish these by fault signatures!
 class When(Step):   pass
 class Then(Step):  pass
 class And(Step):  pass
+
+#  CONSIDER  how to validate that every row you think you wrote actually ran?
 
 class Row(Morelia):
     def i_look_like(self):  return r'\|'

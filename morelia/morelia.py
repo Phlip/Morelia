@@ -170,7 +170,7 @@ class Parser:
     def parse_file(self, filename):
         prose = open(filename, 'r').read()
         self.parse_features(prose)
-        self.steps[0].filename = filename  #  TODO  store & return only 1 step - the Feature already!
+        self.steps[0].filename = filename
         return self
 
     def parse_features(self, prose):

@@ -352,10 +352,10 @@ class MoreliaSuite(TestCase):
         #~ factions.append(faction)
         #~ elements.append(element)
 
-    #~ def step_my_milkshake(self, youth = 'boys', article = 'the'):
-        #~ r'my milkshake brings all the (boys|girls) to (.*) yard'
+    def step_my_milkshake(self, youth = 'boys', article = 'the'):
+        r'my milkshake brings all the (boys|girls) to (.*) yard'
         
-        #~ self.youth = youth
+        self.youth = youth
     
     #~ def step_exceptional(self):
         #~ x = 1 / 0  #  guilty pleasure for programmers!
@@ -404,27 +404,27 @@ class MoreliaSuite(TestCase):
         step = Given()._parse("brings all the boys to the yard it's better than yours")
         assert None == step.find_by_doc_string(self)
 
-    #~ def step_evaluate_step_by_doc_string(self):
-        #~ step = Given()._parse('my milkshake brings all the girls to a yard')
-        #~ self.youth = 'boys'
-        #~ step.evaluate(self)
-        #~ self.assertEqual('girls', self.youth)  # Uh...
+    def step_evaluate_step_by_doc_string(self):
+        step = Given()._parse('my milkshake brings all the girls to a yard')
+        self.youth = 'boys'
+        step.evaluate(self)
+        self.assertEqual('girls', self.youth)  # Uh...
 
-    #~ def test_evaluate_step_by_name(self):
-        #~ step = Given()._parse('my milkshake')
-        #~ self.youth = 'girls'
-        #~ step.evaluate(self)
-        #~ self.assertEqual('boys', self.youth)
+    def test_evaluate_step_by_name(self):
+        step = Given()._parse('my milkshake')
+        self.youth = 'girls'
+        step.evaluate(self)
+        self.assertEqual('boys', self.youth)
 
-    #~ def step_multiline_predicate(self):
-        #~ feature = 'Given umma\ngumma'
-        #~ steps = Parser().parse_feature(feature)
-        #~ self.assertEqual('umma\ngumma', steps[0].predicate)
+    def step_multiline_predicate(self):
+        feature = 'Given umma\ngumma'
+        steps = Parser().parse_feature(feature)
+        self.assertEqual('umma\ngumma', steps[0].predicate)
 
-    #~ def test_step_multiline_predicate(self):
-        #~ feature = 'When multiline predicate'
-        #~ steps = Parser().parse_feature(feature)
-        #~ steps[0].evaluate(self)
+    def test_step_multiline_predicate(self):
+        feature = 'When multiline predicate'
+        steps = Parser().parse_feature(feature)
+        steps[0].evaluate(self)
 
 #    def test_evaluate_unfound(self):  TODO   real test outa this
  #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)

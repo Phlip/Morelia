@@ -357,44 +357,43 @@ class MoreliaSuite(TestCase):
         
         self.youth = youth
     
-    #~ def step_exceptional(self):
-        #~ x = 1 / 0  #  guilty pleasure for programmers!
+    def step_exceptional(self):
+        x = 1 / 0  #  guilty pleasure for programmers!
     
-    #~ def test_handle_exceptions(self):
-        #~ s = Step()
+    def test_handle_exceptions(self):
+        s = Step()
         
-        #~ s.concept = 'Given'
-        #~ s.predicate = 'exceptional'
-        #~ s.line_number = 42
-        #~ visitor = TestVisitor(self)
+        s.concept = 'Given'
+        s.predicate = 'exceptional'
+        s.line_number = 42
+        visitor = TestVisitor(self)
         
-        #~ try:
-            #~ s.evaluate_step(visitor)
-            #~ assert False  #  should raise!
-        #~ except ZeroDivisionError, e:
-            #~ assert 'Given: exceptional' in str(e)
-        
-        
-    #~ def test_find_step_by_name(self):
-        #~ step = Given()._parse('my milkshake')
-        #~ step.find_by_name(self)
-        #~ expect = self.step_my_milkshake
-        #~ self.assertEqual(expect, step.method)
+        try:
+            s.evaluate_step(visitor)
+            assert False  #  should raise!
+        except ZeroDivisionError, e:
+            assert 'Given: exceptional' in str(e)
 
-    #~ def test_find_step_by_doc_string(self):
-        #~ step = And()._parse('my milkshake brings all the boys to the yard')
-        #~ method = step.find_by_doc_string(self)
-        #~ expect = self.step_my_milkshake
-        #~ self.assertEqual(expect, step.method)
+    def test_find_step_by_name(self):
+        step = Given()._parse('my milkshake')
+        step.find_by_name(self)
+        expect = self.step_my_milkshake
+        self.assertEqual(expect, step.method)
 
-    #~ def test_find_step_with_match(self):
-        #~ step = When()._parse('my milkshake brings all the girls to the yard')
-        #~ step.find_by_doc_string(self)
-        #~ self.assertEqual(('girls', 'the'), step.matches)
+    def test_find_step_by_doc_string(self):
+        step = And()._parse('my milkshake brings all the boys to the yard')
+        method = step.find_by_doc_string(self)
+        expect = self.step_my_milkshake
+        self.assertEqual(expect, step.method)
 
-    #~ def test_step_not_found(self):
-        #~ step = Then()._parse('not there')
-        #~ assert None == step.find_by_name(self)
+    def test_find_step_with_match(self):
+        step = When()._parse('my milkshake brings all the girls to the yard')
+        step.find_by_doc_string(self)
+        self.assertEqual(('girls', 'the'), step.matches)
+
+    def test_step_not_found(self):
+        step = Then()._parse('not there')
+        assert None == step.find_by_name(self)
 
     def step_fail_without_enough_function_name(self):
         step = And()._parse('my milk')

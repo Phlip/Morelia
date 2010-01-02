@@ -236,7 +236,7 @@ class Parser:
         self.steps.append(node)
         return node
 
-    def _append_to_previous_node(self):   #  TODO  if it's the first one, throw a warning
+    def _append_to_previous_node(self):
         previous = self.steps[-1]
         previous.predicate += '\n' + self.line.strip()
         previous.predicate = previous.predicate.strip()
@@ -254,7 +254,7 @@ class TestVisitor:
     def __init__(self, suite):  self.suite = suite
 
     def visit(self, node):
-        # print node.reconstruction()  # TODO  if verbose
+        # print node.reconstruction()  # CONSIDER  if verbose
         self.suite.step = node
         node.evaluate_step(self)
 
@@ -282,7 +282,7 @@ class Scenario(Morelia):
         name = self.steps[0].find_step_name(visitor.suite)
         visitor.suite = visitor.suite.__class__(name)
         # print self.predicate  #  CONSIDER  if verbose
-        visitor.suite.setUp()  #  TODO  does this belong inside the try: ? match what pyunit does (or call the pyunit runner directly)
+        visitor.suite.setUp()
 
         try:
             Morelia.evaluate_steps(self, visitor)
@@ -346,22 +346,22 @@ class Step(Viridis):
         at = self.parent.row_indices[x] + 1
         
         if at >= len(self.table):  
-            print 'this should never happen'
-            return  #  TODO  this should never happen
+            print 'CONSIDER this should never happen'
+            return
 
         #  CONSIDER  we hit this too many times - hit once and stash the result
         #  CONSIDER  better diagnostics when we miss these
 
         stick = self.table[at].harvest()
-        found = stick[q]  #  TODO  this array overrun is what you get when your table is ragged
-            #  TODO  only if it's not nothing?
-        found = found.replace('\n', '\\n')  #  TODO  crack the multi-line argument bug, and take this hack out!
+        found = stick[q]  #  CONSIDER  this array overrun is what you get when your table is ragged
+            #  CONSIDER  only if it's not nothing?
+        found = found.replace('\n', '\\n')  #  CONSIDER  crack the multi-line argument bug, and take this hack out!
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
-        # TODO  mix replitrons and matchers!
+        # CONSIDER  mix replitrons and matchers!
 
 
-class Given(Step):   pass  #  TODO  distinguish these by fault signatures!
+class Given(Step):   pass  #  CONSIDER  distinguish these by fault signatures!
 class When(Step):   pass
 class Then(Step):  pass
 class And(Step):  pass

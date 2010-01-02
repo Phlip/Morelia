@@ -555,7 +555,7 @@ class MoreliaSuite(TestCase):
             print diagnostics
             p = Parser().parse_features(statements)
             p.evaluate(self)
-            
+            print 'WTF'
             raise Exception('we expect syntax errors here') # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
         except (SyntaxError, AssertionError), e:
             beef, squeak = diagnostics.split(', line ')

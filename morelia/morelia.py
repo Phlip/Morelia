@@ -175,7 +175,7 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
-        return self  #  TODO  what happens when these ain't scenes?
+        return self
 
     def evaluate(self, suite):
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
@@ -190,7 +190,7 @@ class Parser:
     def parse_feature(self, lines):
         self.line_number = 0
         
-        for self.line in lines.split('\n'):      #  TODO  deal with pesky \r
+        for self.line in lines.split('\n'):
             self.line_number += 1
             
             if self.anneal_last_broken_line():

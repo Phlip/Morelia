@@ -70,6 +70,14 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
 
+    def test_deal_with_pesky_carriage_returns(self): # because Morse Code will live forever!
+        input = 'Given a string with spacies and   \r\n  another string  '
+        steps = Parser().parse_feature(input)
+        step = steps[0]
+        assert step.__class__ == Given
+        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
+
     def test_given_a_string_with_a_line_breaker_followed_by_a_keyword(self):
         input = 'Given a string \\\n And another string'  #  TODO  also do stray spacies
         steps = Parser().parse_feature(input)
@@ -102,7 +110,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
     def test_feature_with_lone_comment(self):
-        input = '''Feature: The Sacred White Llama of the Inca
+        input = '''Feature: The Sacred White Llama of the Inca\r
                    #  I are a comment'''
         steps = Parser().parse_feature(input)
         assert steps[0].__class__ == Feature

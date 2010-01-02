@@ -189,14 +189,13 @@ class Parser:
 
     def parse_feature(self, lines):
         self.line_number = 0
+        self.last_line = ''
         
         for self.line in lines.split('\n'):
             self.line_number += 1
             
-            if self.anneal_last_broken_line():
-                return self.steps
-            
-            if not self._parse_line():
+            if not self.anneal_last_broken_line() and \
+               not self._parse_line():
               if 0 < len(self.steps):
                 self._append_to_previous_node()
               else:
@@ -205,15 +204,19 @@ class Parser:
                 s.predicate = self.line
                 s.line_number = self.line_number
                 s.enforce(False, 'feature files must start with a Feature')
-        
+            
+            self.last_line = self.line
+            
         return self.steps
-    
-    def anneal_last_broken_line(self):
-        if self.steps == []:  return False
-        last = self.steps[-1]
-        print self.line
 
-        if re.match(r'\\\s*$', last.predicate[-1]):
+    def anneal_last_broken_line(self):
+        if self.steps == []:  return False  #  TODO  no need me 
+        last_line = self.last_node.predicate
+        print '"'+last_line+'"'
+        
+        if re.search(r'\\\s*$', last_line):
+            last = self.last_node
+            print last.__class__
             last.predicate += '\n' + self.line
             return True
 
@@ -237,6 +240,7 @@ class Parser:
         node = self.thang
         node._parse(predicate, self.steps, self.line_number)
         self.steps.append(node)
+        self.last_node = node
         return node
 
     def _append_to_previous_node(self):

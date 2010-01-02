@@ -22,8 +22,8 @@ Scenario: When we challenge Morelia with a Step with no matching
 Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string
-    
-       
+
+
 #      | pipe \| me      | r'pipe \\\| me'        |             |
 
 Scenario: Raise useful errors with incomplete files
@@ -32,42 +32,7 @@ Scenario: Raise useful errors with incomplete files
     |    statements       |   diagnostics
 
     |  Feature yo         | Feature without Scenario(s), line 1
-    
+
     |  Feature comp-      \
        Feature placent    | Only one Feature per file, line 2
 
-    |  Feature in da      \
-         Step zone        | Feature without Scenario(s), line 1
-
-    |  Feature    resist  \
-        Scenario syntax   \
-          Step   errors   | Scenario: syntax, line 3
-
-    |  Scenario: Add two numbers                     \
-        Given I have entered 50 into the calculator  \
-          And I have entered 70 into the calculator  \
-         When I press add                            \
-         Then the result should be 121 on the screen | the result should be, line 5
-
-    |  Feature yo         \
-         Scenario dude    \
-           Givenfoo       | Scenario without step, line 2
-
-    |  nada               | wtf, line 1
-
-    | Given a table with one row \
-        \| i \| be \| a \| lonely \| row |  table with only one row
-
-    |  Feature yo         \
-         Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
-
-#  TODO  a row may be a member of a step never a scenario or feature
-#  TODO  document that we permit matches across one line!
-
-#  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
-
-
-# ERGO use "cutensile" somewhere; and "blink hogs"
-
-Scenario: Match prose steps to Python steps by name
-    Step: evaluate_step_by_doc_string

@@ -204,15 +204,12 @@ class Parser:
                 s.predicate = self.line
                 s.line_number = self.line_number
                 s.enforce(False, 'feature files must start with a Feature')
-            
-            self.last_line = self.line
-            
+
         return self.steps
 
     def anneal_last_broken_line(self):
         if self.steps == []:  return False  #  TODO  no need me 
         last_line = self.last_node.predicate
-        print '"'+last_line+'"'
         
         if re.search(r'\\\s*$', last_line):
             last = self.last_node

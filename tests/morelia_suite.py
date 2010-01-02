@@ -429,31 +429,31 @@ class MoreliaSuite(TestCase):
 #    def test_evaluate_unfound(self):  TODO   real test outa this
  #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)
         
-    #~ def test_record_filename(self):
-        #~ filename = pwd + '/morelia.feature'
-        #~ thang = Parser().parse_file(filename)
-        #~ feature = thang.steps[0]
-        #~ assert feature.__class__ == Feature
-        #~ assert feature.filename == filename
-        #~ step = feature.steps[3].steps[1]
-        #~ assert filename == step.get_filename()
-        #~ return
-        #~ self.assertTrue(False)
+    def test_record_filename(self):
+        filename = pwd + '/morelia.feature'
+        thang = Parser().parse_file(filename)
+        feature = thang.steps[0]
+        assert feature.__class__ == Feature
+        assert feature.filename == filename
+        step = feature.steps[3].steps[1]
+        assert filename == step.get_filename()
+        return
+        self.assertTrue(False)
 
-    #~ def test_format_faults_like_python_errors(self):
-        #~ filename = pwd + '/morelia.feature'
-        #~ thang = Parser().parse_file(filename)
-        #~ step = thang.steps[0].steps[3].steps[1]
-        #~ assert filename == step.get_filename()
-        #~ omen = 'The Alpine glaciers move'
-        #~ diagnostic = step.format_fault(omen)
-        #~ parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
-        #~ reconstruction = step.reconstruction().replace('\n', '\\n')
+    def test_format_faults_like_python_errors(self):
+        filename = pwd + '/morelia.feature'
+        thang = Parser().parse_file(filename)
+        step = thang.steps[0].steps[3].steps[1]
+        assert filename == step.get_filename()
+        omen = 'The Alpine glaciers move'
+        diagnostic = step.format_fault(omen)
+        parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
+        reconstruction = step.reconstruction().replace('\n', '\\n')
         
-        #~ expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
-            #~ (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
+        expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
+            (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
 
-        #~ assert expect == diagnostic
+        assert expect == diagnostic
 
     def test_evaluate_file(self):
         thang = Parser().parse_file(pwd + '/morelia.feature')

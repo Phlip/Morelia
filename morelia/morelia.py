@@ -189,8 +189,7 @@ class Parser:
 
     def parse_feature(self, lines):
         self.line_number = 0
-        self.last_line = ''
-        
+
         for self.line in lines.split('\n'):
             self.line_number += 1
             
@@ -208,7 +207,7 @@ class Parser:
         return self.steps
 
     def anneal_last_broken_line(self):
-        if self.steps == []:  return False  #  TODO  no need me 
+        if self.steps == []:  return False  #  CONSIDER  no need me
         last_line = self.last_node.predicate
         
         if re.search(r'\\\s*$', last_line):

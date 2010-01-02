@@ -31,8 +31,8 @@ Scenario: when did Bow Wow Wow become classic rock?
         | radio    
         | g-string 
         | battery  
-        | driven     |
-                              # note the trailing pipe is cosmetic
+        | driven     |  # note the trailing pipe is cosmetic, and required for comments
+
     When Moralia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step concept is Given

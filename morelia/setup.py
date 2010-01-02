@@ -6,7 +6,7 @@ import morelia
 
 setup(name         = 'Morelia',
       version      = morelia.__version__,
-      description  = 'for "Behavior Driven Development" -- ' +
+      description  = 'for "Behavior Driven Development" (BDD) -- ' +
                      'a client-facing scripting language to ' +
                      'put the squeeze on all your features',
       author       = 'Phlip',

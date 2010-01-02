@@ -201,6 +201,14 @@ class MoreliaSuite(TestCase):
         self.assertEqual('Given', Given().i_look_like())
         self.assertEqual('\\|', Row().i_look_like())
 
+    def test_evaluate_step_by_name(self):
+        step = Given()._parse('my milkshake')
+        self.youth = 'girls'
+        step.evaluate(self)
+        self.assertEqual('boys', self.youth)
+
+  #  ####  row zone  #################################
+
     def test_Row_parse(self):
         sauce = 'buddha | brot |'
         row = Row()
@@ -410,12 +418,6 @@ class MoreliaSuite(TestCase):
         step.evaluate(self)
         self.assertEqual('girls', self.youth)  # Uh...
 
-    def test_evaluate_step_by_name(self):
-        step = Given()._parse('my milkshake')
-        self.youth = 'girls'
-        step.evaluate(self)
-        self.assertEqual('boys', self.youth)
-
     def step_multiline_predicate(self):
         feature = 'Given umma\ngumma'
         steps = Parser().parse_feature(feature)
@@ -551,7 +553,7 @@ class MoreliaSuite(TestCase):
           statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
           statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
           #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
-          print len(self.step.steps)  #  CONSIDER  document this as the way to hit the whole table
+          # print len(self.step.steps)  #  CONSIDER  document this as the way to hit the whole table
           p = Parser().parse_features(statements)
           p.evaluate(self)
           raise Exception('we expect syntax errors here')

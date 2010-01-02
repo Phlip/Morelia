@@ -23,6 +23,22 @@ Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string
 
+Scenario: Convert source predicates into their matching regular expressions
+   Given a source file with a <predicate>
+   When we evaluate the file
+   Then we convert it into a <suggestion>
+    And add <extra> arguments
+   
+       |   predicate     |   suggestion           |  extra      |
+       
+       | tastes great    | r'tastes great'        |             |
+       | less filling    | r'less filling'        |             |
+       | line\nfeed      | r'line\nfeed'          |             |
+       | tick'ed'        | r'tick\'ed\''          |             |
+       | argu<ment>al    | r'argu(.+)al'          | , ment      |
+       | arg<u>ment<al>  | r'arg(.+)ment(.+)'     | , u, al     |
+       | str"ing"        | r'str"([^"]+)"'        | , ing       |
+       | "str"i"ngs"     | r'"([^"]+)"i"([^"]+)"' | , str, ngs  |
 
 #      | pipe \| me      | r'pipe \\\| me'        |             |
 
@@ -39,3 +55,13 @@ Scenario: Raise useful errors with incomplete files
     | Feature    resist   \
         Scenario syntax   \
           Step   errors   | Scenario: syntax, line 3
+
+    |  Feature in da      \
+         Step zone        | Feature without Scenario(s), line 1
+
+    |  Scenario: Add two numbers                     \
+        Given I have entered 50 into the calculator  \
+          And I have entered 70 into the calculator  \
+         When I press add                            \
+         Then the result should be 121 on the screen | the result should be, line 5
+

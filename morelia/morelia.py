@@ -216,7 +216,6 @@ class Parser:
         
         if re.search(r'\\\s*$', last_line):
             last = self.last_node
-            print last.__class__
             last.predicate += '\n' + self.line
             return True
 

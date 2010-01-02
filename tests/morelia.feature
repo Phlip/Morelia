@@ -36,3 +36,6 @@ Scenario: Raise useful errors with incomplete files
     |  Feature comp-      \
        Feature placent    | Only one Feature per file, line 2
 
+    | Feature    resist   \
+        Scenario syntax   \
+          Step   errors   | Scenario: syntax, line 3

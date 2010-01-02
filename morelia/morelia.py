@@ -67,6 +67,7 @@ class Morelia:
     def format_fault(self, diagnostic):
         parent_reconstruction = ''
         if self.parent:  parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
+#        if self.my_scene():  parent_reconstruction = self.my_scene().reconstruction().replace('\n', '\\n') + parent_reconstruction
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
         return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
@@ -80,6 +81,17 @@ class Morelia:
         while node:
             if not node.parent and hasattr(node, 'filename'):  return node.filename
             node = node.parent
+
+        return None
+
+    #~ def my_scene(self):  #  CONSIDER  didn't I already write this?
+        #~ node = self
+
+        #~ while node:
+            #~ if node.__class__ == Scenario:  return node
+            #~ node = node.parent
+
+        #~ return None
 
 
 class Viridis(Morelia):
@@ -316,9 +328,10 @@ class Step(Viridis):
 
         try:
             self.method(*self.matches)
-        except Exception, e:
+        except (Exception, SyntaxError), e:
             new_exception = self.format_fault(e.args[0])
             e.args = (new_exception,) + (e.args[1:])
+            if type(e) == SyntaxError:  raise SyntaxError(new_exception)
             raise
 
     def augment_predicate(self):  #  CONSIDER  unsucktacularize me pleeeeeeze

@@ -196,9 +196,15 @@ class Parser:
             if self.anneal_last_broken_line():
                 return self.steps
             
-            if not self._parse_line() and \
-                    0 < len(self.steps):
+            if not self._parse_line():
+              if 0 < len(self.steps):
                 self._append_to_previous_node()
+              else:
+                s = Step()
+                s.concept = '???'
+                s.predicate = self.line
+                s.line_number = self.line_number
+                s.enforce(False, 'feature files must start with a Feature')
         
         return self.steps
     

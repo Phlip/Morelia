@@ -120,12 +120,25 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Comment')
         self.assertEqual(step.predicate, 'I are a comment')
 
+    def test_feature_with_lone_comment(self):
+        input = 'i be a newbie feature'
+        p = Parser()
+
+        try:
+          p.parse_feature(input)
+          assert False  #  should fail!
+        except SyntaxError, e:
+          e = str(e)
+          self.assert_regex_contains(r'File "None", line 1, in', e)
+          self.assert_regex_contains(r'\?\?\?: i be a newbie feature', e)
+          self.assert_regex_contains(r'feature files must start with a Feature', e)
+
     def test_feature_with_long_comment(self):   #  ERGO how to detect shadowed test cases??
         p = Parser()
         
         input = '''Feature: The Sacred Giant Mosquito of the Andes
                    #  at http://www.onagocag.com/nazbird.jpg 
-                           so pay no attention to the skeptics!'''
+                        so pay no attention to the skeptics!'''
         try:
             p.parse_feature(input)
             assert False  #  should raise a SyntaxError

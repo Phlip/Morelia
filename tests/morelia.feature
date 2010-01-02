@@ -23,6 +23,20 @@ Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string
 
+Scenario: when did Bow Wow Wow become classic rock?
+    Given: adventure of love - love and <culture>
+    
+        | culture  
+        
+        | radio    
+        | g-string 
+        | battery  
+        | driven     |  # note the trailing pipe is cosmetic, and required for comments
+
+    When Moralia evaluates this
+    Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
+      And the step concept is Given
+
 Scenario: Convert source predicates into their matching regular expressions
    Given a source file with a <predicate>
    When we evaluate the file
@@ -64,4 +78,11 @@ Scenario: Raise useful errors with incomplete files
           And I have entered 70 into the calculator  \
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
+
+    |  Feature yo         \
+         Scenario dude    \
+           Givenfoo       | Scenario without step, line 2
+
+    |  Feature yo         \
+         Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
 

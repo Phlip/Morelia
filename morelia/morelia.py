@@ -228,14 +228,18 @@ class Parser:
             return True
 
         return False
-        
+
+#  TODO  permit line breakers in comments
+#    | Given a table with one row 
+#        \| i \| be \| a \| lonely \| row |  table with only one row, line 1
+
     def _parse_line(self):
         self.line = self.line.rstrip()
         
         for klass in self.thangs:
             self.thang = klass()
             name = self.thang.i_look_like()
-            rx = '\s*(' + name + '):?\s*(.*)'
+            rx = '\s*(' + name + '):?\s+(.*)'
             m = re.compile(rx).match(self.line)
 
             if m and len(m.groups()) > 0:

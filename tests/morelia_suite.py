@@ -551,10 +551,12 @@ class MoreliaSuite(TestCase):
             statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
             statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
             #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
+            print statements
+            print diagnostics
             p = Parser().parse_features(statements)
             p.evaluate(self)
             
-            assert False, 'we expect syntax errors here' # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
+            raise Exception('we expect syntax errors here') # (CONSIDER use a non-AssertionError assertion!! ay-yi-yi)
         except (SyntaxError, AssertionError), e:
             beef, squeak = diagnostics.split(', line ')
             squeak = 'line ' + squeak

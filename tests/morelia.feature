@@ -72,8 +72,6 @@ Scenario: Raise useful errors with incomplete files
 
     |  nada               |  wtf, line 1
 
-#  TODO  a row may be a member of a step never a scenario or feature
-
     |  Feature comp-      \
        Feature placent    | Only one Feature per file, line 2
 
@@ -90,9 +88,13 @@ Scenario: Raise useful errors with incomplete files
          When I press add                            \
          Then the result should be 121 on the screen | the result should be, line 5
 
+    | Given a table with one row \
+        \| i \| be \| a \| lonely \| row |  table with only one row
+
+#  TODO  a row may be a member of a step never a scenario or feature
 #  TODO  document that we permit matches across one line!
 
-#  ----8<----  these utilitarian Scenarios don't document anything  ----
+#  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
 
 
 # ERGO use "cutensile" somewhere; and "blink hogs"

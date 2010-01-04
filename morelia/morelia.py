@@ -10,11 +10,8 @@
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
 __version__ = '0.0.7'
-import re
 
-#  ERGO  Morelia should raise a form in any state!
-#  ERGO  get Morelia working with more Pythons - virtualenv it!
-#  ERGO  moralia should try the regex first then the step name
+import re
 
 
 class Morelia:
@@ -447,3 +444,6 @@ def _imap(function, *iterables):
             yield function(*args)
 
 #  CONSIDER  display all missing steps not just the first
+#  ERGO  Morelia should raise a form in any state!
+#  ERGO  get Morelia working with more Pythons - virtualenv it!
+#  ERGO  moralia should try the regex first then the step name

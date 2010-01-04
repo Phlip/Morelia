@@ -419,6 +419,8 @@ class MoreliaSuite(TestCase):
         self.assertEqual('girls', self.youth)  # Uh...
 
     def step_multiline_predicate(self):
+        'we make up to hate-f---!'
+        
         feature = 'Given umma\ngumma'
         steps = Parser().parse_feature(feature)
         self.assertEqual('umma\ngumma', steps[0].predicate)

@@ -99,6 +99,8 @@ class Viridis(Morelia):
     def prefix(self):  return '  '
 
     def find_step_name(self, suite):
+        print suite.__dict__
+        print dir(suite)
         self.method = None
         self.find_by_doc_string(suite)
         if not self.method:  self.find_by_name(suite)

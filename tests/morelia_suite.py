@@ -429,8 +429,9 @@ class MoreliaSuite(TestCase):
         steps[0].evaluate(self)
 
 # CONSIDER use the suite._testMethodDoc to get the doc()! (and what can it do??)
+# CONSIDER  use suite.fail instead of raise
 
-#    def test_evaluate_unfound(self):  TODO   real test outa this
+#    def test_evaluate_unfound(self):  CONSIDER   real test outa this
  #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)
         
     def test_record_filename(self):
@@ -441,8 +442,6 @@ class MoreliaSuite(TestCase):
         assert feature.filename == filename
         step = feature.steps[3].steps[1]
         assert filename == step.get_filename()
-        return
-        self.assertTrue(False)
 
     def test_format_faults_like_python_errors(self):
         filename = pwd + '/morelia.feature'
@@ -582,7 +581,7 @@ class MoreliaSuite(TestCase):
     #~ And the first step contains "something"
     #~ And the first step does not contain "nothing"
 
-#  TODO  count test cases correctly regarding entire batch
+#  CONSIDER  count test cases correctly regarding entire batch - if pyUnit's architecture permits
 
 if __name__ == '__main__':
       unittest.main()  #  NOTE  this seems to return the correct shell value

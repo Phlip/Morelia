@@ -81,15 +81,6 @@ class Morelia:
 
         return None
 
-    #~ def my_scene(self):  #  CONSIDER  didn't I already write this?
-        #~ node = self
-
-        #~ while node:
-            #~ if node.__class__ == Scenario:  return node
-            #~ node = node.parent
-
-        #~ return None
-
 
 class Viridis(Morelia):
 

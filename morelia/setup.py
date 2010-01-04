@@ -20,5 +20,6 @@ setup(name         = 'Morelia',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Software Development :: Testing',
+        "Development Status :: 4 - Beta"
       ]
     )

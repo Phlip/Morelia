@@ -97,4 +97,3 @@ Scenario: Raise useful errors with incomplete files
 
 Scenario: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string
-

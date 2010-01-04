@@ -423,12 +423,12 @@ class MoreliaSuite(TestCase):
         steps = Parser().parse_feature(feature)
         self.assertEqual('umma\ngumma', steps[0].predicate)
 
-    def test_step_multiline_predicate(self):
-        'we make up to hate-f---!'
-       
+    def test_step_multiline_predicate(self):      
         feature = 'When multiline predicate'
         steps = Parser().parse_feature(feature)
         steps[0].evaluate(self)
+
+# CONSIDER use the suite._testMethodDoc to get the doc()! (and what can it do??)
 
 #    def test_evaluate_unfound(self):  TODO   real test outa this
  #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)

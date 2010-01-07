@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.8'
+__version__ = '0.0.9'
 
 import re
 
@@ -40,6 +40,9 @@ class Morelia:
     def my_class_name(self):  return re.sub(r'.*\.', '', str(self.__class__))
     def prefix(self):  return ''
     def my_parent_type(self):  return None
+        
+    def _my_regex(self, name):  #  TODO  calculate name inside
+        return '\s*(' + name + '):?\s+(.*)'
 
     def evaluate_steps(self, v):
         v.visit(self)
@@ -221,16 +224,13 @@ class Parser:
 #    | Given a table with one row 
 #        \| i \| be \| a \| lonely \| row |  table with only one row, line 1
 
-    def _my_regex(self, name):  #  TODO  calculate name inside
-        return '\s*(' + name + '):?\s+(.*)'
-
     def _parse_line(self):
         self.line = self.line.rstrip()
         
         for klass in self.thangs:
             self.thang = klass()
             name = self.thang.i_look_like()
-            rx = self._my_regex(name)
+            rx = self.thang._my_regex(name)
             m = re.compile(rx).match(self.line)
 
             if m and len(m.groups()) > 0:

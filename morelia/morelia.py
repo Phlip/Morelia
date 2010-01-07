@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
 import re
 
@@ -221,13 +221,16 @@ class Parser:
 #    | Given a table with one row 
 #        \| i \| be \| a \| lonely \| row |  table with only one row, line 1
 
+    def _my_regex(self, name):  #  TODO  calculate name inside
+        return '\s*(' + name + '):?\s+(.*)'
+
     def _parse_line(self):
         self.line = self.line.rstrip()
         
         for klass in self.thangs:
             self.thang = klass()
             name = self.thang.i_look_like()
-            rx = '\s*(' + name + '):?\s+(.*)'
+            rx = self._my_regex(name)
             m = re.compile(rx).match(self.line)
 
             if m and len(m.groups()) > 0:
@@ -394,6 +397,9 @@ class Row(Morelia):
 class Comment(Morelia):
     def i_look_like(self):  return r'\#'
     def my_parent_type(self):  return Morelia # aka "any"
+
+    def _my_regex(self, name):
+        return '\s*(' + name + ')(.*)'
 
     def validate_predicate(self):
         self.enforce(self.predicate.count('\n') == 0, 'linefeed in comment')

@@ -9,10 +9,11 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.9'
+__version__ = '0.0.8'
 
 import re
 
+# TODO  multiple Whens for one Scenario!
 
 class Morelia:
 

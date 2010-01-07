@@ -4,8 +4,6 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
-# TODO  multiple Whens for one Scenario!
-
 #  ----8<----  these Scenarios document good examples of Morelia abilities  ----
 
 Scenario: Add two numbers

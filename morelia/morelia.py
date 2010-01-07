@@ -392,7 +392,7 @@ class Row(Morelia):
         return row
 
 #  TODO  sample data with "post-it haiku"
-#  TODO  trailing comments
+#  CONSIDER  trailing comments
 
 class Comment(Morelia):
     def i_look_like(self):  return r'\#'

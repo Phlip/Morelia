@@ -165,6 +165,7 @@ class Viridis(Morelia):
         self.find_step_name(suite)
         self.method(*self.matches)
 
+
 class Parser:  
     def __init__(self):  
         self.thangs = [ Feature, Scenario,

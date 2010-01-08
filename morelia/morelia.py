@@ -299,7 +299,6 @@ class Scenario(Morelia):
             # def evaluate_steps
             visitor.visit(self)
             for step in self.steps:  step.evaluate_steps(visitor)
-
         finally:
             visitor.suite.tearDown()
 

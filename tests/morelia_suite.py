@@ -260,6 +260,7 @@ class MoreliaSuite(TestCase):
 
     def test_permute_schedule(self):
         expect = _permute_indices([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
+        expect = [ {'row_indices': ex} for ex in expect ]
         self.assemble_scene_table('Step you betcha\n')
         scenario = self.table_scene.steps[0].steps[0]
         schedule = scenario.permute_schedule()

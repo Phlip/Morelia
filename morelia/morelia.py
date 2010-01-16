@@ -104,6 +104,8 @@ class Viridis(Morelia):
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
 
+        print method_name
+
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def ' + method_name + arguments + ':\n' + \

@@ -423,8 +423,6 @@ if __name__ == '__main__':
     import os
     os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value
 
-#  TODO  maximum munch fails - Given must start a line
-
 
 def _special_range(n):  #  CONSIDER  better name
     return xrange(n) if n else [0]

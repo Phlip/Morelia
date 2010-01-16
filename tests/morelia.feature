@@ -23,6 +23,14 @@ Scenario: When we challenge Morelia with a Step with no matching
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
+Scenario: When we challenge Morelia with a Step with a linefeed in it
+          the default example replaces the linefeed with a space
+    Given a feature file with "Given no line
+                                          feeds"
+    When Moralia evaluates the file
+    Then it prints a diagnostic containing "    def step_no_line_feeds"
+    And the second line contains "no line\nfeeds"
+
 Scenario: Fail to match prose if feature file has bad strings
     Step: fail_without_enough_function_name
     Step: fail_step_without_enough_doc_string

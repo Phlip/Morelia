@@ -104,8 +104,6 @@ class Viridis(Morelia):
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
 
-        print method_name
-
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def ' + method_name + arguments + ':\n' + \
@@ -126,6 +124,7 @@ class Viridis(Morelia):
         self._add_extra_args(r'"(.+?)"', predicate)
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
         predicate = re.sub(r' \s+', '\\s+', predicate)
+        predicate = predicate.replace('\n', '\\n')
         return "r'" + predicate + "'"
 
     def _add_extra_args(self, matcher, predicate):

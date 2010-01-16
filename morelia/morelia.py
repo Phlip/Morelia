@@ -289,8 +289,8 @@ class Scenario(Morelia):
     def evaluate_steps(self, visitor):
         schedule = self.permute_schedule()
 
-        for sched in schedule:
-            self.row_indices = sched['row_indices']
+        for indices in schedule:
+            self.row_indices = indices
             self.evaluate_test_case(visitor)  #  note this works on reports too!
     
     def evaluate_test_case(self, visitor):  #  note this permutes reports too!
@@ -311,8 +311,7 @@ class Scenario(Morelia):
 
     def permute_schedule(self):
         dims = self.count_Row_dimensions()
-        schedule = _permute_indices(dims)
-        return [ {'row_indices': sched} for sched in schedule ]
+        return _permute_indices(dims)
 
     def _embellish(self):
         self.row_indices = []

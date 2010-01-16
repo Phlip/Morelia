@@ -289,6 +289,8 @@ class Scenario(Morelia):
     def evaluate_steps(self, visitor):
         schedule = self.permute_schedule()
         
+        print schedule
+        
         for indices in schedule:
             self.row_indices = indices
             self.evaluate_test_case(visitor)  #  note this works on reports too!

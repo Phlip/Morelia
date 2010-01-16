@@ -104,8 +104,6 @@ class Viridis(Morelia):
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
 
-#  TODO and the exampler should render multiple spaces as \s+
-
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
                      '    def ' + method_name + arguments + ':\n' + \
@@ -125,6 +123,7 @@ class Viridis(Morelia):
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
         self._add_extra_args(r'"(.+?)"', predicate)
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
+        predicate = re.sub(r' \s+', '\\s+', predicate)
         return "r'" + predicate + "'"
 
     def _add_extra_args(self, matcher, predicate):

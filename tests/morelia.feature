@@ -53,6 +53,7 @@ Scenario: Convert source predicates into their matching regular expressions
        | less filling    | r'less filling'        |             |
        | line\nfeed      | r'line\nfeed'          |             |
        | tick'ed'        | r'tick\'ed\''          |             |
+       | tastes   great  | r'tastes\s+great'      |             |
        | argu<ment>al    | r'argu(.+)al'          | , ment      |
        | arg<u>ment<al>  | r'arg(.+)ment(.+)'     | , u, al     |
        | str"ing"        | r'str"([^"]+)"'        | , ing       |

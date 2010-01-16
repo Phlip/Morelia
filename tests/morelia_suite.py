@@ -508,9 +508,8 @@ class MoreliaSuite(TestCase):
     def step_it_prints_a_diagnostic(self, sample):
         r'it prints a diagnostic containing "([^"]+)"'
 
-        self.diagnostic.index(sample)  #  CONSIDER  clearer diagnostics!!
-        # TODO  uh... self.assertTrue(diagnostic, 'foo')
-        
+        self.assert_regex_contains(re.escape(sample), self.diagnostic)
+
     def step_the_second_line_contains(self, docstring):
         r'the second line contains "([^"]+)"'
 
@@ -568,7 +567,7 @@ class MoreliaSuite(TestCase):
     def step_errors(self):
         raise SyntaxError('no, you!')
 
-    def assert_regex_contains(self, pattern, string, flags=None):  #  TODO  use more!
+    def assert_regex_contains(self, pattern, string, flags=None):
         flags = flags or 0
         diagnostic = '"%s" not found in "%s"' % (pattern, string)
         self.assertTrue(re.search(pattern, string, flags) != None, diagnostic)

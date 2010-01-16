@@ -14,6 +14,7 @@ __version__ = '0.0.9'
 import re
 
 # TODO  multiple Whens for one Scenario!
+# TODO  what happens with blank table items?
 
 class Morelia:
 
@@ -24,6 +25,9 @@ class Morelia:
         self.predicate = predicate
         self.steps = []
         self.line_number = line_number
+
+#  TODO  escape the sample regices already!
+#  and the default code should be 'print <arg_names, ... >'
 
         for s in list[::-1]:
             mpt = self.my_parent_type()
@@ -99,6 +103,8 @@ class Viridis(Morelia):
         doc_string = self.suggest_doc_string()
         arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
         method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
+
+#  TODO and the exampler should render multiple spaces as \s+
 
         diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
                      'suggest:\n\n' + \
@@ -326,10 +332,12 @@ class Step(Viridis):
     def evaluate_step(self, v):
         self.find_step_name(v.suite)
 
+# ERGO  use "born again pagan" somewhere
+
         try:
             self.method(*self.matches)
         except (Exception, SyntaxError), e:
-            new_exception = self.format_fault(e.args[0])
+            new_exception = self.format_fault(str(e))
             e.args = (new_exception,) + (e.args[1:])
             if type(e) == SyntaxError:  raise SyntaxError(new_exception)
             raise
@@ -377,7 +385,7 @@ class Step(Viridis):
 
 
 class Given(Step):   pass  #  CONSIDER  distinguish these by fault signatures!
-class When(Step):   pass
+class When(Step):   pass  #  TODO  cycle these against the Scenario
 class Then(Step):  pass
 class And(Step):  pass
 

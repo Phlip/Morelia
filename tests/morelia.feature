@@ -5,6 +5,10 @@ Feature: Morelia Viridis puts the squeeze on your features.
          as data to evaluate
 
 #  ----8<----  these Scenarios document good examples of Morelia abilities  ----
+#        ______products______         #      ______boxes______      #  ERGO  fix a bug in morelia
+# TODO  when we fail while unrolling a table, indicate which line failed
+# TODO  warn when steps are not called
+# ERGO mashup: Pirates & Cheerleaders
 
 Scenario: Add two numbers
   Given I have entered 50 into the calculator

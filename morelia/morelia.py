@@ -110,7 +110,7 @@ class Viridis(Morelia):
                      '        ' + doc_string + '\n\n' + \
                      '        # code\n\n'
 
-        suite.fail(diagnostic)  #  TODO  are linefeeds tooken out of the method_name?
+        suite.fail(diagnostic)
 
 #  ERGO  river is to riparian as pond is to ___?
 

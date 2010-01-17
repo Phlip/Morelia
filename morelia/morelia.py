@@ -302,8 +302,6 @@ class Scenario(Morelia):
         visitor.suite.setUp()
 
         try:
-#            Morelia.evaluate_steps(self, visitor)
-            # def evaluate_steps
             visitor.visit(self)
             for step in self.steps:  step.evaluate_steps(visitor)
         finally:

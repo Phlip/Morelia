@@ -87,7 +87,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string \\\n And another string')
 
-    def test_given_a_string_with_a_line_breaker_followed_by_a_keyword(self):
+    def test_given_a_string_with_a_line_breaker_followed_by_a_keyword_with_stray_spacies(self):
         input = 'Given a string \\  \n And another string, without stray spacies'
         steps = Parser().parse_feature(input)
         assert 1 == len(steps)

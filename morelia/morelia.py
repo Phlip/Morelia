@@ -269,8 +269,10 @@ class ReportVisitor:
     string = ''
 
     def visit(self, node):
-        self.string += node.reconstruction()
-        
+        recon =  node.reconstruction()
+        if recon[-1] != '\n':  recon += '\n'  #  TODO  clean this outa def reconstruction(s)!
+        self.string += recon
+
     def __str__(self):
         return self.string
 

@@ -437,6 +437,10 @@ class Comment(Morelia):
     def validate_predicate(self):
         self.enforce(self.predicate.count('\n') == 0, 'linefeed in comment')
 
+    def reconstruction(self):
+        recon = '  # ' + self.predicate
+        if recon[-1] != '\n':  recon += '\n'
+        return recon
 
 if __name__ == '__main__':
     import os

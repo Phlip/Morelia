@@ -482,8 +482,7 @@ class MoreliaSuite(TestCase):
     def test_report_file(self):
         rep = Parser().parse_file(pwd + '/morelia.feature').report(self)
         # TODO  assert something about rep! (-:
-        print rep
-        
+
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'
         self.file_contents = file_contents

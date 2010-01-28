@@ -193,7 +193,9 @@ class Parser:
         self.rip(TestVisitor(suite))  #  CONSIDER  rename to Viridis
 
     def report(self, suite):
-        self.rip(ReportVisitor(suite))
+        rv = ReportVisitor(suite)
+        self.rip(rv)
+        return str(rv)
 
     def rip(self, v):
         if self.steps != []:
@@ -262,9 +264,13 @@ class Parser:
 
 class ReportVisitor:
     def __init__(self, suite):  self.suite = suite
+    string = ''
 
     def visit(self, node):
-        print node.prefix() + node.reconstruction()
+        self.string += node.prefix() + node.reconstruction()
+        
+    def __str__(self):
+        return self.string
 
 
 class TestVisitor:
@@ -281,6 +287,9 @@ class Feature(Morelia):
         
     def evaluate_step(self, v):  
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
+        
+    def reconstruction(self):
+        return '\n' + self.concept + ': ' + self.predicate
 
 
 class Scenario(Morelia):
@@ -392,6 +401,10 @@ class And(Step):  pass
 class Row(Morelia):
     def i_look_like(self):  return r'\|'
     def my_parent_type(self):  return Step
+    def prefix(self):  return '        '
+
+    def reconstruction(self):
+        return '| ' + self.predicate
 
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0

@@ -479,8 +479,10 @@ class MoreliaSuite(TestCase):
         self.assertEqual(1, arguments.count(self.culture[0]))
         self.assertEqual(1, len(self.culture))
 
-    def toast_report_file(self):
-        Parser().parse_file(pwd + '/morelia.feature').report(self)
+    def test_report_file(self):
+        rep = Parser().parse_file(pwd + '/morelia.feature').report(self)
+        # TODO  assert something about rep! (-:
+        print rep
         
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'

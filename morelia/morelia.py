@@ -79,7 +79,7 @@ class Morelia:
         return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
    
     def reconstruction(self):
-        return self.concept + ': ' + self.predicate
+        return self.prefix() + self.concept + ': ' + self.predicate
 
     def get_filename(self):
         node = self
@@ -267,7 +267,7 @@ class ReportVisitor:
     string = ''
 
     def visit(self, node):
-        self.string += node.prefix() + node.reconstruction()
+        self.string += node.reconstruction()
         
     def __str__(self):
         return self.string
@@ -287,9 +287,6 @@ class Feature(Morelia):
         
     def evaluate_step(self, v):  
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
-        
-    def reconstruction(self):
-        return '\n' + self.concept + ': ' + self.predicate
 
 
 class Scenario(Morelia):
@@ -331,6 +328,9 @@ class Scenario(Morelia):
 
     def count_Row_dimensions(self):
         return [step.count_dimensions() for step in self.steps]
+
+    def reconstruction(self):
+        return '\n' + self.concept + ': ' + self.predicate
 
 
 class Step(Viridis):
@@ -391,10 +391,14 @@ class Step(Viridis):
         # CONSIDER  mix replitrons and matchers!
 
 
-class Given(Step):   pass  #  CONSIDER  distinguish these by fault signatures!
-class When(Step):   pass  #  TODO  cycle these against the Scenario
-class Then(Step):  pass
-class And(Step):  pass
+class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
+    def prefix(self):  return '  '
+class When(Step):  #  TODO  cycle these against the Scenario
+    def prefix(self):  return '   '
+class Then(Step):
+    def prefix(self):  return '   '
+class And(Step):  
+    def prefix(self):  return '    '
 
 #  CONSIDER  how to validate that every row you think you wrote actually ran?
 
@@ -403,8 +407,8 @@ class Row(Morelia):
     def my_parent_type(self):  return Step
     def prefix(self):  return '        '
 
-    def reconstruction(self):
-        return '| ' + self.predicate
+    def reconstruction(self):  #  TODO  strip the reconstruction at error time
+        return self.prefix() + '| ' + self.predicate
 
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0

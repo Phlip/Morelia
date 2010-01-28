@@ -408,7 +408,9 @@ class Row(Morelia):
     def prefix(self):  return '        '
 
     def reconstruction(self):  #  TODO  strip the reconstruction at error time
-        return self.prefix() + '| ' + self.predicate
+        recon = self.prefix() + '| ' + self.predicate
+        if recon[-1] != '\n':  recon += '\n'
+        return recon
 
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0

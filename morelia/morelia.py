@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.0.9'
+__version__ = '0.1.0'
 
 import re
 
@@ -77,7 +77,7 @@ class Morelia:
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
         return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
-    
+   
     def reconstruction(self):
         return self.concept + ': ' + self.predicate
 

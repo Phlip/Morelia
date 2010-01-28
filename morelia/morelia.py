@@ -79,7 +79,9 @@ class Morelia:
         return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
    
     def reconstruction(self):
-        return self.prefix() + self.concept + ': ' + self.predicate
+        recon = self.prefix() + self.concept + ': ' + self.predicate
+        if recon[-1] != '\n':  recon += '\n'
+        return recon
 
     def get_filename(self):
         node = self

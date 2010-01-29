@@ -150,7 +150,7 @@ class Viridis(Morelia):
             self.method_name = s
             method = suite.__getattribute__(s)
             doc = method.__doc__
-            
+
             if doc:
                 doc = re.compile('^' + doc + '$')  #  CONSIDER deal with users who put in the ^$
                 m = doc.match(self.augment_predicate())
@@ -268,6 +268,8 @@ class ReportVisitor:
     def __init__(self, suite):  self.suite = suite
     string = ''
 
+    def permute_schedule(self, node):  return [[0]]
+
     def visit(self, node):
         recon =  node.reconstruction()
         if recon[-1] != '\n':  recon += '\n'  #  TODO  clean this outa def reconstruction(s)!
@@ -280,6 +282,8 @@ class ReportVisitor:
 class TestVisitor:
     def __init__(self, suite):  self.suite = suite
 
+    def permute_schedule(self, node):  return node.permute_schedule()
+        
     def visit(self, node):
         # print node.reconstruction()  # CONSIDER  if verbose
         self.suite.step = node
@@ -297,7 +301,7 @@ class Scenario(Morelia):
     def my_parent_type(self):  return Feature
 
     def evaluate_steps(self, visitor):
-        schedule = self.permute_schedule()
+        schedule = visitor.permute_schedule(self)
 
         for indices in schedule:
             self.row_indices = indices

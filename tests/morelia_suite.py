@@ -479,11 +479,38 @@ class MoreliaSuite(TestCase):
         self.assertEqual(1, arguments.count(self.culture[0]))
         self.assertEqual(1, len(self.culture))
 
+    def _xml_to_tree(self, xml):
+        from lxml import etree
+        self._xml = xml
+ 
+        try:
+            if '<html' in xml[:200]:
+                return etree.HTML(xml)
+            else:
+                return etree.XML(xml)
+ 
+        except ValueError: # TODO don't rely on exceptions for normal control flow
+            tree = xml
+            self._xml = str(tree) # CONSIDER does this reconstitute the nested XML ?
+            return tree
+ 
+    def assert_xml(self, xml, xpath, **kw):
+        'Check that a given extent of XML or HTML contains a given XPath, and return its first node'
+ 
+        tree = self._xml_to_tree(xml)
+        nodes = tree.xpath(xpath)
+        self.assertTrue(len(nodes) > 0, xpath + ' not found in ' + self._xml)
+        node = nodes[0]
+        if kw.get('verbose', False): self.reveal_xml(node) # "here have ye been? What have ye seen?"--Morgoth
+        return node
+
     def test_report_file(self):
         rep = Parser().parse_file(pwd + '/morelia.feature').report(self)
         #print rep
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
+        html = '<html>' + rep + '</html>'
+        self.assert_xml(html, '/html')
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'

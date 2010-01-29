@@ -510,12 +510,13 @@ class MoreliaSuite(TestCase):
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
         # print rep
-        print re.search(r'(Scenario)', 'Scenario Scenario').groups()
-        print dir(re)
-        print re.search(r'(Scenario)', rep).groups()
-        print len(re.search(r'^(Scenario)', rep, re.MULTILINE).groups()[0])
-        html = '<html>' + rep + '</html>'
-        self.assert_xml(html, '/html')
+        scenario_count = len(re.findall(r'(^Scenario)', rep, re.MULTILINE))
+        div_count = scenario_count + 1 # the feature count
+
+        html = '<html><div/><div/><div/></html>'
+        #html = '<html><div/><div/><div/>' + rep + '</html>'
+        self.assert_xml(html, '/html[ count(*/div) = 3 ]')
+        
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'

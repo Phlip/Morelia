@@ -509,6 +509,11 @@ class MoreliaSuite(TestCase):
         #print rep
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
+        # print rep
+        print re.search(r'(Scenario)', 'Scenario Scenario').groups()
+        print dir(re)
+        print re.search(r'(Scenario)', rep).groups()
+        print len(re.search(r'^(Scenario)', rep, re.MULTILINE).groups()[0])
         html = '<html>' + rep + '</html>'
         self.assert_xml(html, '/html')
 

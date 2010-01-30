@@ -271,10 +271,13 @@ class ReportVisitor:
     def permute_schedule(self, node):  return [[0]]
 
     def visit(self, node):
-        recon =  node.reconstruction()
+        recon, we_owe =  node.to_html()
         if recon[-1] != '\n':  recon += '\n'  #  TODO  clean this outa def reconstruction(s)!
         self.string += recon
+        return we_owe
 
+    def owed(self, owed):  self.string += owed
+        
     def __str__(self):
         return self.string
 
@@ -289,6 +292,7 @@ class TestVisitor:
         self.suite.step = node
         node.evaluate_step(self)
 
+    def owed(self, igme):  pass
 
 class Feature(Morelia):
     def my_parent_type(self):  return None
@@ -296,6 +300,8 @@ class Feature(Morelia):
     def evaluate_step(self, v):  
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
+    def to_html(self):
+        return '\n<div>' + self.concept + ': ' + _clean_html(self.predicate) + '</div>', ''
 
 class Scenario(Morelia):
     def my_parent_type(self):  return Feature
@@ -316,8 +322,9 @@ class Scenario(Morelia):
         visitor.suite.setUp()
 
         try:
-            visitor.visit(self)
+            u_owe = visitor.visit(self)
             for step in self.steps:  step.evaluate_steps(visitor)
+            visitor.owed(u_owe)
         finally:
             visitor.suite.tearDown()
 
@@ -339,6 +346,9 @@ class Scenario(Morelia):
 
     def reconstruction(self):
         return '\n' + self.concept + ': ' + self.predicate
+
+    def to_html(self):
+        return '\n<div>' + self.concept + ': ' + _clean_html(self.predicate), '</div>'
 
 
 class Step(Viridis):
@@ -397,7 +407,9 @@ class Step(Viridis):
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # CONSIDER  mix replitrons and matchers!
-
+        
+    def to_html(self):
+        return '\n' + self.concept + ' ' + _clean_html(self.predicate) + '<br/>', ''
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
@@ -419,6 +431,9 @@ class Row(Morelia):
         recon = self.prefix() + '| ' + self.predicate
         if recon[-1] != '\n':  recon += '\n'
         return recon
+
+    def to_html(self):
+        return _clean_html(self.reconstruction()), ''  #  TODO  table magic here
 
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0
@@ -447,6 +462,9 @@ class Comment(Morelia):
         recon = '  # ' + self.predicate
         if recon[-1] != '\n':  recon += '\n'
         return recon
+
+    def to_html(self):
+        return '\n<em>' + '# ' + _clean_html(self.predicate) + '</em><br/>', ''
 
 if __name__ == '__main__':
     import os
@@ -480,6 +498,10 @@ def _imap(function, *iterables):
             yield tuple(args)
         else:
             yield function(*args)
+
+def _clean_html(string):
+    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'). \
+                            replace('"', '&quot;').replace("'", '&#39;')
 
 #  CONSIDER  display all missing steps not just the first
 #  ERGO  Morelia should raise a form in any state!

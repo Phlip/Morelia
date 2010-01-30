@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+
+
 #~ from __future__ import generators
 import unittest
 from unittest import TestCase
@@ -505,18 +507,20 @@ class MoreliaSuite(TestCase):
         return node
 
     def test_report_file(self):
-        rep = Parser().parse_file(pwd + '/morelia.feature').report(self)
-        #print rep
+        thang  = Parser().parse_file(pwd + '/morelia.feature')
+        div_count = len(thang.steps[0].steps)  #  CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
+        
+        rep = thang.report(self)
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
-        # print rep
-        scenario_count = len(re.findall(r'(^Scenario)', rep, re.MULTILINE))
-        div_count = scenario_count + 1 # the feature count
-
-        html = '<html><div/><div/><div/></html>'
-        #html = '<html><div/><div/><div/>' + rep + '</html>'
-        self.assert_xml(html, '/html[ count(*/div) = 3 ]')
         
+        
+        html = '<xml>' + rep + '</xml>'
+        open('/home/phlip/morelia/yo.html', 'w').write(html)
+          # ERGO assert_xml forgives - crack down on that!
+        
+        self.assert_xml(html, '/xml[ count(descendant::div) > %i ]' % (div_count - 1))
+        os.system('firefox /home/phlip/morelia/yo.html &')
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'
@@ -607,6 +611,7 @@ class MoreliaSuite(TestCase):
         flags = flags or 0
         diagnostic = '"%s" not found in "%s"' % (pattern, string)
         self.assertTrue(re.search(pattern, string, flags) != None, diagnostic)
+
 
 #~ Scenario: Leading # marks comment lines.
     #~ (Warning: Only leading marks are respected for now!)

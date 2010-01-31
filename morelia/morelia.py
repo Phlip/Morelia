@@ -301,7 +301,8 @@ class Feature(Morelia):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
-        return '\n<div>' + self.concept + ': ' + _clean_html(self.predicate) + '</div>', ''
+        return ['\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td>' + 
+                                    _clean_html(self.predicate) + '</td></tr></table></div>', '']
 
 class Scenario(Morelia):
     def my_parent_type(self):  return Feature
@@ -348,7 +349,7 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div>' + self.concept + ': ' + _clean_html(self.predicate), '</div>'
+        return '\n<div><em>' + self.concept + '</em>: ' + _clean_html(self.predicate), '</div>'
 
 
 class Step(Viridis):
@@ -409,7 +410,7 @@ class Step(Viridis):
         # CONSIDER  mix replitrons and matchers!
         
     def to_html(self):
-        return '\n' + self.concept + ' ' + _clean_html(self.predicate) + '<br/>', ''
+        return '\n<em>' + self.concept + '</em> ' + _clean_html(self.predicate) + '<br/>', ''
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
@@ -464,7 +465,7 @@ class Comment(Morelia):
         return recon
 
     def to_html(self):
-        return '\n<em>' + '# ' + _clean_html(self.predicate) + '</em><br/>', ''
+        return '\n# <em>' + _clean_html(self.predicate) + '</em><br/>', ''
 
 if __name__ == '__main__':
     import os

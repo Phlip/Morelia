@@ -513,14 +513,13 @@ class MoreliaSuite(TestCase):
         rep = thang.report(self)
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
-        
-        
+    
         html = '<xml>' + rep + '</xml>'
         open('/home/phlip/morelia/yo.html', 'w').write(html)
-          # ERGO assert_xml forgives - crack down on that!
+          # ERGO assert_xml with <html> forgives - crack down on that!
         
         self.assert_xml(html, '/xml[ count(descendant::div) > %i ]' % (div_count - 1))
-        os.system('firefox /home/phlip/morelia/yo.html &')
+     #   os.system('firefox /home/phlip/morelia/yo.html &')
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'

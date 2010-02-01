@@ -444,8 +444,8 @@ class Row(Morelia):
         
         if idx == 0:
             color = 'silver'
-        elif (idx % 3) % 2 == 0:  
-            color = '#ffeeff'
+        elif (idx / 3) % 2 == 0:  
+            color = '#eeffff'
         else:
             color = '#ffffee'
             

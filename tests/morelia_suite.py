@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
-
 #~ from __future__ import generators
 import unittest
 from unittest import TestCase
@@ -520,6 +518,7 @@ class MoreliaSuite(TestCase):
         
         self.assert_xml(html, '/xml[ count(descendant::div) > %i ]' % (div_count - 1))
      #   os.system('firefox /home/phlip/morelia/yo.html &')
+        #~ os.system('konqueror  /home/phlip/morelia/yo.html &')
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'

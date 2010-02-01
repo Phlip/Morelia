@@ -294,6 +294,7 @@ class TestVisitor:
 
     def owed(self, igme):  pass
 
+
 class Feature(Morelia):
     def my_parent_type(self):  return None
         
@@ -303,6 +304,7 @@ class Feature(Morelia):
     def to_html(self):
         return ['\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td>' + 
                                     _clean_html(self.predicate) + '</td></tr></table></div>', '']
+
 
 class Scenario(Morelia):
     def my_parent_type(self):  return Feature
@@ -349,7 +351,8 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div><em>' + self.concept + '</em>: ' + _clean_html(self.predicate), '</div>'
+        return '\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td>' + \
+                                            _clean_html(self.predicate) + '</td></tr>', '</table></div>'
 
 
 class Step(Viridis):
@@ -410,7 +413,8 @@ class Step(Viridis):
         # CONSIDER  mix replitrons and matchers!
         
     def to_html(self):
-        return '\n<em>' + self.concept + '</em> ' + _clean_html(self.predicate) + '<br/>', ''
+        return '\n<tr><td align="right" valign="top"><em>' + self.concept + '</em></td><td>' + _clean_html(self.predicate) + '</td></tr>', ''
+
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
@@ -422,6 +426,7 @@ class And(Step):
     def prefix(self):  return '    '
 
 #  CONSIDER  how to validate that every row you think you wrote actually ran?
+
 
 class Row(Morelia):
     def i_look_like(self):  return r'\|'

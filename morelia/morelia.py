@@ -302,7 +302,7 @@ class Feature(Morelia):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
-        return ['\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td>' + 
+        return ['\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + 
                                     _clean_html(self.predicate) + '</td></tr></table></div>', '']
 
 
@@ -351,7 +351,7 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td>' + \
+        return '\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
                                             _clean_html(self.predicate) + '</td></tr>', '</table></div>'
 
 
@@ -413,7 +413,7 @@ class Step(Viridis):
         # CONSIDER  mix replitrons and matchers!
         
     def to_html(self):
-        return '\n<tr><td align="right" valign="top"><em>' + self.concept + '</em></td><td>' + _clean_html(self.predicate) + '</td></tr>', ''
+        return '\n<tr><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
@@ -439,7 +439,10 @@ class Row(Morelia):
         return recon
 
     def to_html(self):
-        return _clean_html(self.reconstruction()), ''  #  TODO  table magic here
+        html = '\n<tr><td></td>'
+        for col in self.harvest():  html += '<td>' + _clean_html(col) + '</td>'
+        html += '</tr>'
+        return html, ''
 
     def count_dimension(self):
         if self is self.parent.steps[0]:  return 0

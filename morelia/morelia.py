@@ -74,7 +74,6 @@ class Morelia:
     def format_fault(self, diagnostic):
         parent_reconstruction = ''
         if self.parent:  parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
-#        if self.my_scene():  parent_reconstruction = self.my_scene().reconstruction().replace('\n', '\\n') + parent_reconstruction
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
         return '\n  File "%s", line %s, in %s\n    %s\n%s' % args

@@ -349,7 +349,7 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div><table><tr style="background-color: #cdffb8;"><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
+        return '\n<div><table width="100%"><tr style="background-color: #cdffb8;"><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
                                             _clean_html(self.predicate) + '</td></tr>', '</table></div>'
 
 

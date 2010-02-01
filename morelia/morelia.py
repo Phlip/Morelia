@@ -13,8 +13,9 @@ __version__ = '0.1.1'
 
 import re
 
-# TODO  multiple Whens for one Scenario!
-# TODO  what happens with blank table items?
+#  TODO  multiple Whens for one Scenario!
+#  TODO  what happens with blank table items?
+#  ERGO  river is to riparian as pond is to ___?
 
 class Morelia:
 
@@ -113,8 +114,6 @@ class Viridis(Morelia):
                      '        # code\n\n'
 
         suite.fail(diagnostic)
-
-#  ERGO  river is to riparian as pond is to ___?
 
     def suggest_doc_string(self, predicate = None):  #  CONSIDER  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''

@@ -440,7 +440,13 @@ class Row(Morelia):
 
     def to_html(self):
         html = '\n<tr><td></td>'
-        for col in self.harvest():  html += '<td style="background-color: silver;">' + _clean_html(col) + '</td>'
+        color = 'silver'
+        for idx, col in enumerate(self.harvest()):
+            html += '<td style="background-color: %s;" align="center">' % color + _clean_html(col) + '</td>'
+            if (idx % 3) % 2 == 0:  
+                color = '#ffeeff'
+            else:
+                color = '#ffffee'
         html += '</tr>'
         return html, ''
 

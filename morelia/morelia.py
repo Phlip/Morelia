@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 import re
 
@@ -349,7 +349,7 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
+        return '\n<div><table><tr><td align="right" valign="top" style="background-color: #cdffb8;"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
                                             _clean_html(self.predicate) + '</td></tr>', '</table></div>'
 
 

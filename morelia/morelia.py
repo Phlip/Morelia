@@ -441,16 +441,17 @@ class Row(Morelia):
     def to_html(self):
         html = '\n<tr><td></td>'
         idx = self.parent.steps.index(self)
-        
+        em = 'span'
         if idx == 0:
             color = 'silver'
+            em = 'em'
         elif ((2 + idx) / 3) % 2 == 0:  
             color = '#eeffff'
         else:
             color = '#ffffee'
-            
+        
         for col in self.harvest():
-            html += '<td style="background-color: %s;">' % color + _clean_html(col) + '</td>'
+            html += '<td style="background-color: %s;"><%s>' % (color, em) + _clean_html(col) + '</%s></td>' % em
             
         html += '</tr>'
         return html, ''

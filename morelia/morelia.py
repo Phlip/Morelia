@@ -440,11 +440,11 @@ class Row(Morelia):
 
     def to_html(self):
         html = '\n<tr><td></td>'
-        idx = 1 + self.parent.steps.index(self)
+        idx = self.parent.steps.index(self)
         
-        if idx == 1:
+        if idx == 0:
             color = 'silver'
-        elif (idx / 3) % 2 == 0:  
+        elif ((2 + idx) / 3) % 2 == 0:  
             color = '#eeffff'
         else:
             color = '#ffffee'

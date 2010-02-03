@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 import re
 
@@ -300,7 +300,7 @@ class Feature(Morelia):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
-        return ['\n<div><table><tr><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + 
+        return ['\n<div><table><tr><td align="right" valign="top" width="100"><em>' + self.concept + '</em>:</td><td colspan="101">' + 
                                     _clean_html(self.predicate) + '</td></tr></table></div>', '']
 
 
@@ -349,8 +349,9 @@ class Scenario(Morelia):
         return '\n' + self.concept + ': ' + self.predicate
 
     def to_html(self):
-        return '\n<div><table width="100%"><tr style="background-color: #cdffb8;"><td align="right" valign="top"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
-                                            _clean_html(self.predicate) + '</td></tr>', '</table></div>'
+        return ['\n<div><table width="100%"><tr style="background-color: #cdffb8;">' +
+                '<td align="right" valign="top" width="100"><em>' + self.concept + '</em>:</td><td colspan="101">' + \
+                                            _clean_html(self.predicate) + '</td></tr>', '</table></div>']
 
 
 class Step(Viridis):
@@ -451,7 +452,7 @@ class Row(Morelia):
         for col in self.harvest():
             html += '<td style="background-color: %s;"><%s>' % (color, em) + _clean_html(col) + '</%s></td>' % em
             
-        html += '</tr>'
+        html += '<td>&#160;</td></tr>'  #  CONSIDER  the table needn't stretch out so!
         return html, ''
 
     def count_dimension(self):
@@ -526,3 +527,4 @@ def _clean_html(string):
 #  ERGO  Morelia should raise a form in any state!
 #  ERGO  get Morelia working with more Pythons - virtualenv it!
 #  ERGO  moralia should try the regex first then the step name
+#  ERGO  pay for "Bartender" by Sacred Hoop

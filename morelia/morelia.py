@@ -300,7 +300,9 @@ class Feature(Morelia):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
-        return ['\n<div><table><tr><td align="right" valign="top" width="100"><em>' + self.concept + '</em>:</td><td colspan="101">' + 
+        return ['\n<div><table><tr style="background-color: #aaffbb;" width="100%">' +
+                                  '<td align="right" valign="top" width="100">' + 
+                                  '<em>' + self.concept + '</em>:</td><td colspan="101">' + 
                                     _clean_html(self.predicate) + '</td></tr></table></div>', '']
 
 

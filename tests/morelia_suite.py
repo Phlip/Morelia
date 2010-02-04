@@ -286,6 +286,22 @@ class MoreliaSuite(TestCase):
         self.assertEqual([ 'work',   'mall',  'jail',  'work',  'mall',  'jail' ], crunks)
         self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
 
+    def assemble_multiple_whens(self):
+        return '''Scenario: See all vendors
+                      Given Ooodles of Poodles
+                       When jump der
+                       Then Shtrudle
+                       When trudels and doodles
+                       Then Noodles'''
+
+    def test_parse_multiple_whens(self):
+        scenario = self.assemble_multiple_whens()
+        steps = Parser().parse_feature(scenario)  #  TODO  test that a non-double-When Scenario gives a flat schedule
+        scene, step_1, step_2, step_3, step_4, step_5 = steps
+        assert scene.concept == 'Scenario'
+        assert [ [0, 1, 2], [0, 3, 4] ] == scene.step_schedule()  #  TODO  mix step schedules and row schedules! (-:
+        # TODO  better object model! assert 2 == step_0.count_whens()
+        
     def test_harvest(self):
         r = Row()
         

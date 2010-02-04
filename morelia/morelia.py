@@ -331,9 +331,35 @@ class Scenario(Morelia):
         finally:
             visitor.suite.tearDown()
 
-    def permute_schedule(self):
+    def permute_schedule(self):  #  TODO  rename to permute_row_schedule
         dims = self.count_Row_dimensions()
         return _permute_indices(dims)
+
+    def step_schedule(self):  #  TODO  rename to permute_step_schedule !
+        sched = []
+        pre_slug = []
+        
+        #  TODO   deal with steps w/o whens
+
+        for idx, s in enumerate(self.steps):
+            if s.__class__ == When:
+                break
+            else:
+                pre_slug.append(idx)
+
+        for idx, s in enumerate(self.steps):
+            if s.__class__ == When:
+                slug = pre_slug[:]
+                slug.append(idx)
+
+                for idx in range(idx + 1, len(self.steps)):
+                    s = self.steps[idx]
+                    if s.__class__ == When:  break
+                    slug.append(idx)
+                        
+                sched.append(slug)
+
+        return sched
 
     def _embellish(self):
         self.row_indices = []

@@ -310,13 +310,16 @@ class Scenario(Morelia):
     def my_parent_type(self):  return Feature
 
     def evaluate_steps(self, visitor):
-        schedule = visitor.permute_schedule(self)
+        step_schedule = self.step_schedule()  #  TODO  don't permute the report - do the double dispatch trick (again!)
 
-        for indices in schedule:
-            self.row_indices = indices
-            self.evaluate_test_case(visitor)  #  note this works on reports too!
+        for step_indices in step_schedule:   #  TODO  think of a way to TDD this C-:
+            schedule = visitor.permute_schedule(self)
+
+            for indices in schedule:
+                self.row_indices = indices
+                self.evaluate_test_case(visitor, step_indices)  #  note this works on reports too!
     
-    def evaluate_test_case(self, visitor):  #  note this permutes reports too!
+    def evaluate_test_case(self, visitor, step_indices = None):  #  note this permutes reports too!
         self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')
 
         name = self.steps[0].find_step_name(visitor.suite)
@@ -326,7 +329,11 @@ class Scenario(Morelia):
 
         try:
             u_owe = visitor.visit(self)
-            for step in self.steps:  step.evaluate_steps(visitor)
+            
+            for idx, step in enumerate(self.steps):  
+                if step_indices == None or idx in step_indices:  #  TODO  take out the default arg
+                    step.evaluate_steps(visitor)
+                    
             visitor.owed(u_owe)
         finally:
             visitor.suite.tearDown()
@@ -359,6 +366,7 @@ class Scenario(Morelia):
                         
                 sched.append(slug)
 
+        if sched == []:  return [pre_slug]
         return sched
 
     def _embellish(self):

@@ -294,6 +294,9 @@ class MoreliaSuite(TestCase):
                        When trudels and doodles
                        Then Noodles'''
 
+#  TODO  what happens when a scene has 2 tables and it pulls keywords from either one?
+#  TODO  what happens when a scene has different tables in different When blocks?
+
     def test_parse_multiple_whens(self):
         scenario = self.assemble_multiple_whens()
         steps = Parser().parse_feature(scenario)  #  TODO  test that a non-double-When Scenario gives a flat schedule

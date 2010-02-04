@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 import re
 
@@ -458,7 +458,7 @@ class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
 class When(Step):  #  TODO  cycle these against the Scenario
     def prefix(self):  return '   '
     def to_html(self):
-        return '\n<tr style="background-color: #cdffb8;"><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
+        return '\n<tr style="background-color: #cdffb8; background: url(http://www.zeroplayer.com/images/stuff/aqua_gradient.png) no-repeat; background-size: 100%;"><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 class Then(Step):
     def prefix(self):  return '   '
 class And(Step):  

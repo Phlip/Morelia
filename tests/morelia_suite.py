@@ -287,12 +287,12 @@ class MoreliaSuite(TestCase):
         self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
 
     def assemble_multiple_whens(self):
-        return '''Scenario: See all vendors
-                      Given Ooodles of Poodles
-                       When jump der
-                       Then Shtrudle
-                       When trudels and doodles
-                       Then Noodles'''
+        return '''Scenario: Split When Blocks
+                      Given some setup
+                       When a first trigger occurs
+                       Then something good happens
+                       When another trigger occurs
+                       Then something else happens'''
 
 #  TODO  what happens when a scene has 2 tables and it pulls keywords from either one?
 #  TODO  what happens when a scene has different tables in different When blocks?

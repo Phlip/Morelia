@@ -9,7 +9,7 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 import re
 
@@ -267,6 +267,7 @@ class ReportVisitor:
     string = ''
 
     def permute_schedule(self, node):  return [[0]]
+    def step_schedule(self, node):  return [ [ x for x in range(len(node.steps)) ] ]
 
     def visit(self, node):
         recon, we_owe =  node.to_html()
@@ -284,7 +285,8 @@ class TestVisitor:
     def __init__(self, suite):  self.suite = suite
 
     def permute_schedule(self, node):  return node.permute_schedule()
-        
+    def step_schedule(self, node):  return node.step_schedule()
+
     def visit(self, node):
         # print node.reconstruction()  # CONSIDER  if verbose
         self.suite.step = node
@@ -310,7 +312,7 @@ class Scenario(Morelia):
     def my_parent_type(self):  return Feature
 
     def evaluate_steps(self, visitor):
-        step_schedule = self.step_schedule()  #  TODO  don't permute the report - do the double dispatch trick (again!)
+        step_schedule = visitor.step_schedule(self)  #  TODO  test this permuter directly (and rename it already)
 
         for step_indices in step_schedule:   #  TODO  think of a way to TDD this C-:
             schedule = visitor.permute_schedule(self)
@@ -455,6 +457,8 @@ class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
 class When(Step):  #  TODO  cycle these against the Scenario
     def prefix(self):  return '   '
+    def to_html(self):
+        return '\n<tr style="background-color: #cdffb8;"><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 class Then(Step):
     def prefix(self):  return '   '
 class And(Step):  

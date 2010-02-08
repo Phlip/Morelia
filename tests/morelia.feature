@@ -105,7 +105,6 @@ Scenario: Raise useful errors with incomplete files
 
 #  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
 
-
 # ERGO use "cutensile" somewhere; and "blink hogs"
 
 Scenario: Match prose steps to Python steps by name

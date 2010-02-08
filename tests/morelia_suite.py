@@ -570,7 +570,6 @@ class MoreliaSuite(TestCase):
     def step_the_second_line_contains(self, docstring):
         r'the second line contains "([^"]+)"'
 
-        #print ('yo', self.diagnostic)
         self.assert_regex_contains(re.escape(docstring), self.diagnostic) #.split('\n')[4])
 
     def step_it_contains_1_step(self):

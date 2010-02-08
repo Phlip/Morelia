@@ -11,7 +11,12 @@
 
 __version__ = '0.1.6'
 
+#  TODO  get working with python 3,4,5, etc...
+#  TODO  put http://www.dawnoftimecomics.com/index.php on comixpedia!
+
 import re
+
+#  ERGO  attention TeaBaggers! Resisting Obama's mindf---s is NOT THE SAME as embracing corporatist mindf---s! There's a BIG DIFFERENCE!
 
 #  TODO  multiple Whens for one Scenario!
 #  TODO  what happens with blank table items?
@@ -448,19 +453,22 @@ class Step(Viridis):
         self.copy = self.copy.replace('<'+self.replitron+'>', found)
 
         # CONSIDER  mix replitrons and matchers!
-        
+
     def to_html(self):
         return '\n<tr><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
+        
 class When(Step):  #  TODO  cycle these against the Scenario
     def prefix(self):  return '   '
     def to_html(self):
         return '\n<tr style="background-color: #cdffb8; background: url(http://www.zeroplayer.com/images/stuff/aqua_gradient.png) no-repeat; background-size: 100%;"><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
+
 class Then(Step):
     def prefix(self):  return '   '
+        
 class And(Step):  
     def prefix(self):  return '    '
 
@@ -526,10 +534,6 @@ class Comment(Morelia):
     def to_html(self):
         return '\n# <em>' + _clean_html(self.predicate) + '</em><br/>', ''
 
-if __name__ == '__main__':
-    import os
-    os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value
-
 
 def _special_range(n):  #  CONSIDER  better name
     return xrange(n) if n else [0]
@@ -538,7 +542,6 @@ def _special_range(n):  #  CONSIDER  better name
 def _permute_indices(arr):
     return list(_product(*_imap(_special_range, arr)))
       #  tx to Chris Rebert, et al, on the Python newsgroup for curing my brainlock here!!
-
 
 def _product(*args, **kwds):
     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
@@ -568,3 +571,8 @@ def _clean_html(string):
 #  ERGO  get Morelia working with more Pythons - virtualenv it!
 #  ERGO  moralia should try the regex first then the step name
 #  ERGO  pay for "Bartender" by Sacred Hoop
+
+
+if __name__ == '__main__':
+    import os
+    os.system('python ../tests/morelia_suite.py')   #  NOTE  this might not return the correct shell value

@@ -16,8 +16,6 @@ __version__ = '0.1.6'
 
 import re
 
-#  ERGO  attention TeaBaggers! Resisting Obama's mindf---s is NOT THE SAME as embracing corporatist mindf---s! There's a BIG DIFFERENCE!
-
 #  TODO  multiple Whens for one Scenario!
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
@@ -74,7 +72,7 @@ class Morelia:
         
     def enforce(self, condition, diagnostic):
         if not condition:
-            raise SyntaxError(self.format_fault(diagnostic)) #  CONSIDER format in editor-ready syntax??
+            raise SyntaxError(self.format_fault(diagnostic))
 
     def format_fault(self, diagnostic):
         parent_reconstruction = ''

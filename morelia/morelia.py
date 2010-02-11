@@ -58,7 +58,7 @@ class Morelia:
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
 
-    def evaluate_step(self, v):  pass  #  CONSIDER  rename
+    def test_step(self, v):  pass  #  CONSIDER  rename
     def i_look_like(self):  return self.my_class_name()
 
     def count_dimensions(self):  
@@ -293,7 +293,7 @@ class TestVisitor:
     def visit(self, node):
         # print node.reconstruction()  # CONSIDER  if verbose
         self.suite.step = node
-        node.evaluate_step(self)
+        node.test_step(self)
 
     def owed(self, igme):  pass
 
@@ -301,7 +301,7 @@ class TestVisitor:
 class Feature(Morelia):
     def my_parent_type(self):  return None
         
-    def evaluate_step(self, v):  
+    def test_step(self, v):  
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
@@ -398,7 +398,7 @@ class Scenario(Morelia):
 class Step(Viridis):
     def my_parent_type(self):  return Scenario
 
-    def evaluate_step(self, v):
+    def test_step(self, v):
         self.find_step_name(v.suite)
 
 # ERGO  use "born again pagan" somewhere

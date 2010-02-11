@@ -16,7 +16,6 @@ __version__ = '0.1.6'
 
 import re
 
-#  TODO  multiple Whens for one Scenario!
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
 
@@ -58,7 +57,7 @@ class Morelia:
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
 
-    def test_step(self, v):  pass  #  CONSIDER  rename
+    def test_step(self, v):  pass
     def i_look_like(self):  return self.my_class_name()
 
     def count_dimensions(self):  

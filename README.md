@@ -12,11 +12,20 @@ It is available both at [the cheeseshop](http://pypi.python.org/pypi/Morelia/) a
 
 To use it, first write a **project.feature** file, in ordinary prose, like this:
 
-![](http://cukes.info/images/feature.png)
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    
+    Scenario: Add two numbers
+        Given I have entered 50 into the calculator
+        And I have entered 70 into the calculator
+        When I press add
+        Then the result should be 120 on the screen
 
 Note that "In order", "As a", and "I want" are not Morelia keywords. They are part of *Feature*'s "predicate"; its text payload.
 
-The other blue words are keywords. The black words are executable test specifications.
+"Given", "And", "When" and "Then" are keywords. The words following them are executable test specifications.
 
 Now create a standard PythonUnit ***test suite***, like this:
 

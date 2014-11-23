@@ -12,7 +12,7 @@ setup(name         = 'Morelia',
       author       = 'Phlip',
       author_email = 'phlip2005@gmail.com',
       url          = 'http://c2.com/cgi/wiki?MoreliaViridis',
-      py_modules   = ['morelia'],
+      py_modules   = ['morelia', 'moreliai18n'],
       keywords     = "test bdd behavior",
       classifiers  = [
         "Intended Audience :: Developers",

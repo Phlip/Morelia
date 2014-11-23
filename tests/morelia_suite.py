@@ -45,7 +45,7 @@ class MoreliaSuite(TestCase):
         assert step.__class__ == Scenario
         self.assertEqual(step.concept, 'Scenario')
         self.assertEqual(step.predicate, 'range free Vegans')
-        
+
     def test___scenario(self):
         input = '  Scenario: with spacies'
         steps = Parser().parse_feature(input)
@@ -114,7 +114,7 @@ class MoreliaSuite(TestCase):
                    #  I are a comment'''
         steps = Parser().parse_feature(input)
         assert steps[0].__class__ == Feature
-        
+
         step = steps[1]
         assert step.__class__ == Comment
         self.assertEqual(step.concept, 'Comment')
@@ -135,9 +135,9 @@ class MoreliaSuite(TestCase):
 
     def test_feature_with_long_comment(self):   #  ERGO how to detect shadowed test cases??
         p = Parser()
-        
+
         input = '''Feature: The Sacred Giant Mosquito of the Andes
-                   #  at http://www.onagocag.com/nazbird.jpg 
+                   #  at http://www.onagocag.com/nazbird.jpg
                         so pay no attention to the skeptics!'''
         try:
             p.parse_feature(input)
@@ -145,7 +145,7 @@ class MoreliaSuite(TestCase):
         except SyntaxError, e:
             self.assert_regex_contains('linefeed in comment', str(e))
             self.assert_regex_contains('line 2', str(e))
-            
+
         steps = p.steps
         assert steps[0].__class__ == Feature
         step = steps[1]
@@ -232,7 +232,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual([2, 0, 3], dims)
 
     def test_permutate(self):
-        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2), 
+        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2),
                         (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
         self.assertEqual(expect, _permute_indices([0,4,3]))
         expect = [(0, 0, 0)]
@@ -248,9 +248,9 @@ class MoreliaSuite(TestCase):
                                 | beach |
                                 | hotel |
                            %sThen hearty <crunk>
-                                | crunk | 
-                                | work  | 
-                                | mall  | 
+                                | crunk |
+                                | work  |
+                                | mall  |
                                 | jail  |''' % moar
 
     def assemble_scene_table(self, moar = ''):
@@ -304,19 +304,19 @@ class MoreliaSuite(TestCase):
         assert scene.concept == 'Scenario'
         assert [ [0, 1, 2], [0, 3, 4] ] == scene.step_schedule()  #  TODO  mix step schedules and row schedules! (-:
         # TODO  better object model! assert 2 == step_0.count_whens()
-        
+
     def test_harvest(self):
         r = Row()
-        
+
         def harvest(predicate):
            r.predicate = predicate
            return r.harvest()
 
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
-           
+
            #  CONSIDER  document you gotta take the \ out yourself
-           
+
         self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
 
     def step_party_zone(self, zone):  #  CONSIDER  prevent collision with another "step_party"
@@ -330,7 +330,7 @@ class MoreliaSuite(TestCase):
 
     def step_hearty_crunk_(self, crunk):
         r'hearty (\w+)'
-        
+
         global crunks
         crunks.append(crunk)
         self.got_crunk = crunk
@@ -374,7 +374,7 @@ class MoreliaSuite(TestCase):
 
     def step_party_element_from_faction(self, element, faction):
         r'party (\w+) from (\w+)'
-            #  TODO  don't default to this "party <element> in <faction>"  
+            #  TODO  don't default to this "party <element> in <faction>"
 
         global elements, factions
         factions.append(faction)
@@ -382,20 +382,20 @@ class MoreliaSuite(TestCase):
 
     def step_my_milkshake(self, youth = 'boys', article = 'the'):
         r'my milkshake brings all the (boys|girls) to (.*) yard'
-        
+
         self.youth = youth
-    
+
     def step_exceptional(self):
         x = 1 / 0  #  guilty pleasure for programmers!
-    
+
     def test_handle_exceptions(self):
         s = Step()
-        
+
         s.concept = 'Given'
         s.predicate = 'exceptional'
         s.line_number = 42
         visitor = TestVisitor(self)
-        
+
         try:
             s.test_step(visitor)
             assert False  #  should raise!
@@ -442,7 +442,7 @@ class MoreliaSuite(TestCase):
         steps = Parser().parse_feature(feature)
         self.assertEqual('umma\ngumma', steps[0].predicate)
 
-    def test_step_multiline_predicate(self):      
+    def test_step_multiline_predicate(self):
         feature = 'When multiline predicate'
         steps = Parser().parse_feature(feature)
         steps[0].evaluate(self)
@@ -452,7 +452,7 @@ class MoreliaSuite(TestCase):
 
 #    def test_evaluate_unfound(self):  CONSIDER   real test outa this
  #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)
-        
+
     def test_record_filename(self):
         filename = pwd + '/morelia.feature'
         thang = Parser().parse_file(filename)
@@ -471,7 +471,7 @@ class MoreliaSuite(TestCase):
         diagnostic = step.format_fault(omen)
         parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
         reconstruction = step.reconstruction().replace('\n', '\\n')
-        
+
         expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
             (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
 
@@ -486,7 +486,7 @@ class MoreliaSuite(TestCase):
 
     def step_adventure_of_love_love_and_culture_(self, culture):
         r'adventure of love - love and (.+)'
-        
+
         self.culture.append(culture)
         self.concept = self.step.concept
 
@@ -494,28 +494,28 @@ class MoreliaSuite(TestCase):
 
     def step_culture_contains(self, arguments):
         r'"culture" contains (.*)'
-        
+
         self.assertEqual(1, arguments.count(self.culture[0]))
         self.assertEqual(1, len(self.culture))
 
     def _xml_to_tree(self, xml):
         from lxml import etree
         self._xml = xml
- 
+
         try:
             if '<html' in xml[:200]:
                 return etree.HTML(xml)
             else:
                 return etree.XML(xml)
- 
+
         except ValueError: # TODO don't rely on exceptions for normal control flow
             tree = xml
             self._xml = str(tree) # CONSIDER does this reconstitute the nested XML ?
             return tree
- 
+
     def assert_xml(self, xml, xpath, **kw):
         'Check that a given extent of XML or HTML contains a given XPath, and return its first node'
- 
+
         tree = self._xml_to_tree(xml)
         nodes = tree.xpath(xpath)
         self.assertTrue(len(nodes) > 0, xpath + ' not found in ' + self._xml)
@@ -526,15 +526,15 @@ class MoreliaSuite(TestCase):
     def test_report_file(self):
         thang  = Parser().parse_file(pwd + '/morelia.feature')
         div_count = len(thang.steps[0].steps)  #  CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
-        
+
         rep = thang.report(self)
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
-    
+
         html = '<xml>' + rep + '</xml>'
-        open('/home/phlip/morelia/yo.html', 'w').write(html)
+        open('/tmp/yo.html', 'w').write(html)
           # ERGO assert_xml with <html> forgives - crack down on that!
-        
+
         self.assert_xml(html, '/xml[ count(descendant::div) > %i ]' % (div_count - 1))
       #  os.system('firefox /home/phlip/morelia/yo.html &')
         # os.system('konqueror  /home/phlip/morelia/yo.html &')
@@ -542,13 +542,13 @@ class MoreliaSuite(TestCase):
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'
         self.file_contents = file_contents
-        
+
     #~ def step_wikked_(self):
         #~ '''wikked!
     #~ '''
 #~ #  TODO get rid of linefeeds in the suggestions
         #~ assert False
-        
+
     def step_Moralia_evaluates_the_file(self):
         self.diagnostic = None
         self.steps = []
@@ -558,7 +558,7 @@ class MoreliaSuite(TestCase):
             self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
             p.parse_features(self.file_contents).evaluate(self)
             self.steps = p.steps
-        except AssertionError, e: 
+        except AssertionError, e:
             #~ print str(e)
             self.diagnostic = str(e)
 
@@ -581,12 +581,12 @@ class MoreliaSuite(TestCase):
         r'the step concept is (.+)'
 
         self.assertEqual(concept, self.concept)
-        
+
     def step_a_source_file_with_a_Given_(self, predicate):
         r'a source file with a (.+)'
 
         self.predicate = predicate.replace('\\n', '\n')
-        
+
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'
 
@@ -605,7 +605,7 @@ class MoreliaSuite(TestCase):
 
     def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
         r'a file contains (.+), it produces (.+)'
-        
+
         try:
           statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
           statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
@@ -642,5 +642,3 @@ class MoreliaSuite(TestCase):
 
 if __name__ == '__main__':
       unittest.main()  #  NOTE  this seems to return the correct shell value
-
-

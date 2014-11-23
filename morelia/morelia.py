@@ -9,21 +9,28 @@
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 #  TODO  get working with python 3,4,5, etc...
 #  TODO  put http://www.dawnoftimecomics.com/index.php on comixpedia!
 
 import re
+from moreliai18n import TRANSLATIONS
 
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
 
+LANGUAGE_RE = re.compile(r'# language: (\w+)')
+DEFAULT_LANGUAGE = 'en'
+
+
 class Morelia:
 
-    def __init__(self):  self.parent = None
+    def __init__(self, language=DEFAULT_LANGUAGE):
+        self.parent = None
+        self.language = language
 
-    def _parse(self, predicate, list = [], line_number = 0):
+    def _parse(self, predicate, list=[], line_number=0):
         self.concept = self.my_class_name()
         self.predicate = predicate
         self.steps = []
@@ -51,16 +58,20 @@ class Morelia:
 
     def _my_regex(self):  #  TODO  calculate name inside
         name = self.i_look_like()
-        return '\s*(' + name + '):?\s+(.*)'
+        return u'\s*(' + name + '):?\s+(.*)'
 
     def evaluate_steps(self, v):
         v.visit(self)
         for step in self.steps:  step.evaluate_steps(v)
 
     def test_step(self, v):  pass
-    def i_look_like(self):  return self.my_class_name()
 
-    def count_dimensions(self):  
+    def i_look_like(self):
+        class_name = self.my_class_name()
+        name = class_name.lower()
+        return TRANSLATIONS[self.language].get(name, class_name).decode('utf-8')
+
+    def count_dimensions(self):
         return sum([step.count_dimension() for step in self.steps])
 
     def count_dimension(self):    # CONSIDER  beautify this crud!
@@ -68,7 +79,7 @@ class Morelia:
 
     def validate_predicate(self):
         return  # looks good! (-:
-        
+
     def enforce(self, condition, diagnostic):
         if not condition:
             raise SyntaxError(self.format_fault(diagnostic))
@@ -78,11 +89,11 @@ class Morelia:
         if self.parent:  parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
-        return '\n  File "%s", line %s, in %s\n    %s\n%s' % args
-   
+        return (u'\n  File "%s", line %s, in %s\n    %s\n%s' % args).encode('utf-8')
+
     def reconstruction(self):
         recon = self.prefix() + self.concept + ': ' + self.predicate
-        if recon[-1] != '\n':  recon += '\n'
+        if recon[-1] != u'\n':  recon += u'\n'
         return recon
 
     def get_filename(self):
@@ -99,22 +110,26 @@ class Viridis(Morelia):
 
     def prefix(self):  return '  '
 
+    @staticmethod
+    def slugify(predicate):
+        return re.sub(u'[^\w]+', u'_', predicate, re.U)
+
     def find_step_name(self, suite):
         self.method = None
         self.find_by_doc_string(suite)
         if not self.method:  self.find_by_name(suite)
         if self.method:  return self.method_name
         doc_string = self.suggest_doc_string()
-        arguments = '(self' + self.extra_arguments + ')'  #  note this line ain't tested! C-:
-        method_name = 'step_' + re.sub('[^\w]+', '_', self.predicate)
+        arguments = u'(self' + self.extra_arguments + u')'  #  note this line ain't tested! C-:
+        method_name = 'step_' + self.slugify(self.predicate)
 
-        diagnostic = 'Cannot match step: ' + self.predicate + '\n' + \
-                     'suggest:\n\n' + \
-                     '    def ' + method_name + arguments + ':\n' + \
-                     '        ' + doc_string + '\n\n' + \
-                     '        # code\n\n'
+        diagnostic = u'Cannot match step: ' + self.predicate + u'\n' + \
+                     u'suggest:\n\n' + \
+                     u'    def ' + method_name + arguments + u':\n' + \
+                     u'        ' + doc_string + u'\n\n' + \
+                     u'        # code\n\n'
 
-        suite.fail(diagnostic)
+        suite.fail(diagnostic.encode('utf-8'))
 
     def suggest_doc_string(self, predicate = None):  #  CONSIDER  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''
@@ -127,11 +142,11 @@ class Viridis(Morelia):
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
         predicate = re.sub(r' \s+', '\\s+', predicate)
         predicate = predicate.replace('\n', '\\n')
-        return "r'" + predicate + "'"
+        return "ur'" + predicate + "'"
 
     def _add_extra_args(self, matcher, predicate):
         args = re.findall(matcher, predicate)
-        for arg in args:  self.extra_arguments += ', ' + arg
+        for arg in args:  self.extra_arguments += ', ' + self.slugify(arg)
 
     def find_by_name(self, suite):
         self.method_name = None
@@ -163,7 +178,7 @@ class Viridis(Morelia):
     def find_steps(self, suite, regexp):
         matcher = re.compile(regexp)
         list = []
-        
+
         for s in dir(suite):
             if matcher.match(s):  list.append(s)
 
@@ -174,15 +189,18 @@ class Viridis(Morelia):
         self.method(*self.matches)
 
 
-class Parser:  
-    def __init__(self):  
-        self.thangs = [ Feature, Scenario,
-                                    Step, Given, When, Then, And,
-                                       Row, Comment ]
+class Parser:
+    def __init__(self):
+        self.thangs = [
+            Feature, Scenario,
+            Given, When, Then, And, But,
+            Row, Comment, Step
+        ]
         self.steps = []
+        self.language = DEFAULT_LANGUAGE
 
     def parse_file(self, filename):
-        prose = open(filename, 'r').read()
+        prose = open(filename, 'r').read().decode('utf-8')
         self.parse_features(prose)
         self.steps[0].filename = filename
         return self
@@ -197,7 +215,7 @@ class Parser:
     def report(self, suite):
         rv = ReportVisitor(suite)
         self.rip(rv)
-        return str(rv)
+        return unicode(rv).encode('utf-8')
 
     def rip(self, v):
         if self.steps != []:
@@ -207,25 +225,34 @@ class Parser:
         self.line_number = 0
 
         for self.line in lines.split('\n'):
+            if self.line_number == 0:
+                match = LANGUAGE_RE.match(self.line)
+                if match:
+                    self.language = match.groups()[0]
+                    self.line_number += 1
+                    continue
             self.line_number += 1
-            
-            if not self.anneal_last_broken_line() and \
-               not self._parse_line():
-              if 0 < len(self.steps):
-                self._append_to_previous_node()
-              else:
-                s = Step()
-                s.concept = '???'
-                s.predicate = self.line
-                s.line_number = self.line_number
-                s.enforce(False, 'feature files must start with a Feature')
+            if not self.line:
+                continue
+
+            if not self.anneal_last_broken_line() and not self._parse_line():
+                if 0 < len(self.steps):
+                    self._append_to_previous_node()
+                else:
+                    s = Step()
+                    s.concept = '???'
+                    s.predicate = self.line
+                    s.line_number = self.line_number
+                    feature_name = TRANSLATIONS[self.language].get('feature', 'Feature').decode('utf-8')
+                    feature_name = feature_name.replace('|', ' or ')
+                    s.enforce(False, u'feature files must start with a %s' % feature_name)
 
         return self.steps
 
     def anneal_last_broken_line(self):
         if self.steps == []:  return False  #  CONSIDER  no need me
         last_line = self.last_node.predicate
-        
+
         if re.search(r'\\\s*$', last_line):
             last = self.last_node
             last.predicate += '\n' + self.line
@@ -234,14 +261,14 @@ class Parser:
         return False
 
 #  TODO  permit line breakers in comments
-#    | Given a table with one row 
+#    | Given a table with one row
 #        \| i \| be \| a \| lonely \| row |  table with only one row, line 1
 
     def _parse_line(self):
         self.line = self.line.rstrip()
-        
+
         for klass in self.thangs:
-            self.thang = klass()
+            self.thang = klass(language=self.language)
             rx = self.thang._my_regex()
             m = re.compile(rx).match(self.line)
 
@@ -278,10 +305,12 @@ class ReportVisitor:
         return we_owe
 
     def owed(self, owed):  self.string += owed
-        
+
     def __str__(self):
         return self.string
 
+    def __unicode__(self):
+        return unicode(self.string)
 
 class TestVisitor:
     def __init__(self, suite):  self.suite = suite
@@ -299,14 +328,14 @@ class TestVisitor:
 
 class Feature(Morelia):
     def my_parent_type(self):  return None
-        
-    def test_step(self, v):  
+
+    def test_step(self, v):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
         return ['\n<div><table><tr style="background-color: #aaffbb;" width="100%">' +
-                                  '<td align="right" valign="top" width="100">' + 
-                                  '<em>' + self.concept + '</em>:</td><td colspan="101">' + 
+                                  '<td align="right" valign="top" width="100">' +
+                                  '<em>' + self.concept + '</em>:</td><td colspan="101">' +
                                     _clean_html(self.predicate) + '</td></tr></table></div>', '']
 
 
@@ -322,7 +351,7 @@ class Scenario(Morelia):
             for indices in schedule:
                 self.row_indices = indices
                 self.evaluate_test_case(visitor, step_indices)  #  note this works on reports too!
-    
+
     def evaluate_test_case(self, visitor, step_indices = None):  #  note this permutes reports too!
         self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')
 
@@ -333,11 +362,11 @@ class Scenario(Morelia):
 
         try:
             u_owe = visitor.visit(self)
-            
-            for idx, step in enumerate(self.steps):  
+
+            for idx, step in enumerate(self.steps):
                 if step_indices == None or idx in step_indices:  #  TODO  take out the default arg
                     step.evaluate_steps(visitor)
-                    
+
             visitor.owed(u_owe)
         finally:
             visitor.suite.tearDown()
@@ -349,7 +378,7 @@ class Scenario(Morelia):
     def step_schedule(self):  #  TODO  rename to permute_step_schedule !
         sched = []
         pre_slug = []
-        
+
         #  TODO   deal with steps w/o whens
 
         for idx, s in enumerate(self.steps):
@@ -367,7 +396,7 @@ class Scenario(Morelia):
                     s = self.steps[idx]
                     if s.__class__ == When:  break
                     slug.append(idx)
-                        
+
                 sched.append(slug)
 
         if sched == []:  return [pre_slug]
@@ -375,11 +404,11 @@ class Scenario(Morelia):
 
     def _embellish(self):
         self.row_indices = []
-        
+
         for step in self.steps:
             rowz = int(step.steps != [] and step.steps[0].__class__ is Row)
             self.row_indices.append(rowz)
-        
+
         return self.row_indices.count(1) > 0
 
     def count_Row_dimensions(self):
@@ -422,7 +451,7 @@ class Step(Viridis):
         for self.replitron in replitrons:
             for x in range(0, len(self.parent.row_indices)):
                 self.table = self.parent.steps[x].steps
-            
+
                 if self.table != []:
                     q = 0
 
@@ -435,8 +464,8 @@ class Step(Viridis):
     def replace_replitron(self, x, q):
         if self.title != self.replitron:  return
         at = self.parent.row_indices[x] + 1
-        
-        if at >= len(self.table):  
+
+        if at >= len(self.table):
             print 'CONSIDER this should never happen'
             return
 
@@ -457,7 +486,7 @@ class Step(Viridis):
 
 class Given(Step):   #  CONSIDER  distinguish these by fault signatures!
     def prefix(self):  return '  '
-        
+
 class When(Step):  #  TODO  cycle these against the Scenario
     def prefix(self):  return '   '
     def to_html(self):
@@ -465,9 +494,13 @@ class When(Step):  #  TODO  cycle these against the Scenario
 
 class Then(Step):
     def prefix(self):  return '   '
-        
-class And(Step):  
+
+class And(Step):
     def prefix(self):  return '    '
+
+
+class But(And):
+    pass
 
 #  CONSIDER  how to validate that every row you think you wrote actually ran?
 
@@ -489,14 +522,14 @@ class Row(Morelia):
         if idx == 0:
             color = 'silver'
             em = 'em'
-        elif ((2 + idx) / 3) % 2 == 0:  
+        elif ((2 + idx) / 3) % 2 == 0:
             color = '#eeffff'
         else:
             color = '#ffffee'
-        
+
         for col in self.harvest():
             html += '<td style="background-color: %s;"><%s>' % (color, em) + _clean_html(col) + '</%s></td>' % em
-            
+
         html += '<td>&#160;</td></tr>'  #  CONSIDER  the table needn't stretch out so!
         return html, ''
 
@@ -548,8 +581,8 @@ def _product(*args, **kwds):
     for pool in pools:
         result = [x+[y] for x in result for y in pool]
     for prod in result:
-        yield tuple(prod) 
-        
+        yield tuple(prod)
+
 def _imap(function, *iterables):
     iterables = map(iter, iterables)
     while True:

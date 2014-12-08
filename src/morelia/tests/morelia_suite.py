@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#~ from __future__ import generators
 import unittest
 from unittest import TestCase
 import re
@@ -9,17 +8,24 @@ import os
 pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
-from morelia import *
-from morelia import _permute_indices
+# from morelia import *
+from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
+                          And, When, Then, Viridis, TestVisitor, _permute_indices)
 
 #  CONSIDER  same order as morelia.feature, & vice-versa
+zones = []
+crunks = []
+factions = []
+elements = []
+
 
 class MoreliaSuite(TestCase):
 
     def step_I_have_entered_a_number_into_the_calculator(self, number):
         r'I have entered (\d+) into the calculator'
 
-        if not hasattr(self, 'stack'):  self.stack = []
+        if not hasattr(self, 'stack'):
+            self.stack = []
         self.stack.append(int(number))
 
     def step_I_press_add(self):
@@ -56,7 +62,7 @@ class MoreliaSuite(TestCase):
 
     def test_given_a_string_with_given_in_it(self):
         input = 'Given a string with Given in it   \nAnd another string'
-        steps = Parser().parse_feature(input)  #  ^ note the spacies
+        steps = Parser().parse_feature(input)  # ^ note the spacies
         step = steps[0]
         assert step.__class__ == Given
         self.assertEqual(step.concept, 'Given')
@@ -70,7 +76,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
 
-    def test_deal_with_pesky_carriage_returns(self): # because Morse Code will live forever!
+    def test_deal_with_pesky_carriage_returns(self):  # because Morse Code will live forever!
         input = 'Given a string with spacies and   \r\n  another string  '
         steps = Parser().parse_feature(input)
         step = steps[0]
@@ -109,31 +115,31 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.concept, 'Scenario')
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-    def test_feature_with_lone_comment(self):
-        input = '''Feature: The Sacred White Llama of the Inca\r
-                   #  I are a comment'''
-        steps = Parser().parse_feature(input)
-        assert steps[0].__class__ == Feature
+    # def test_feature_with_lone_comment(self):
+    #     input = '''Feature: The Sacred White Llama of the Inca\r
+    #                #  I are a comment'''
+    #     steps = Parser().parse_feature(input)
+    #     assert steps[0].__class__ == Feature
 
-        step = steps[1]
-        assert step.__class__ == Comment
-        self.assertEqual(step.concept, 'Comment')
-        self.assertEqual(step.predicate, 'I are a comment')
+    #     step = steps[1]
+    #     assert step.__class__ == Comment
+    #     self.assertEqual(step.concept, 'Comment')
+    #     self.assertEqual(step.predicate, 'I are a comment')
 
     def test_feature_with_lone_comment(self):
         input = 'i be a newbie feature'
         p = Parser()
 
         try:
-          p.parse_feature(input)
-          assert False  #  should fail!
-        except SyntaxError, e:
-          e = str(e)
-          self.assert_regex_contains(r'File "None", line 1, in', e)
-          self.assert_regex_contains(r'\?\?\?: i be a newbie feature', e)
-          self.assert_regex_contains(r'feature files must start with a Feature', e)
+            p.parse_feature(input)
+            assert False  # should fail!
+        except SyntaxError as e:
+            e = str(e)
+            self.assert_regex_contains(r'File "None", line 1, in', e)
+            self.assert_regex_contains(r'\?\?\?: i be a newbie feature', e)
+            self.assert_regex_contains(r'feature files must start with a Feature', e)
 
-    def test_feature_with_long_comment(self):   #  ERGO how to detect shadowed test cases??
+    def test_feature_with_long_comment(self):  # ERGO how to detect shadowed test cases??
         p = Parser()
 
         input = '''Feature: The Sacred Giant Mosquito of the Andes
@@ -141,8 +147,8 @@ class MoreliaSuite(TestCase):
                         so pay no attention to the skeptics!'''
         try:
             p.parse_feature(input)
-            assert False  #  should raise a SyntaxError
-        except SyntaxError, e:
+            assert False  # should raise a SyntaxError
+        except SyntaxError as e:
             self.assert_regex_contains('linefeed in comment', str(e))
             self.assert_regex_contains('line 2', str(e))
 
@@ -166,13 +172,13 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step_0.concept, 'Scenario')
         self.assertEqual(step_0.predicate, 'See all vendors')
         self.assertEqual(step_1.concept, 'Given')
-        self.assertEqual(step_1.predicate,     'I am logged in as a user in the administrator role')
+        self.assertEqual(step_1.predicate, 'I am logged in as a user in the administrator role')
         self.assertEqual(step_2.concept, 'And')
-        self.assertEqual(step_2.predicate,   'There are 3 vendors')
+        self.assertEqual(step_2.predicate, 'There are 3 vendors')
         self.assertEqual(step_3.concept, 'When')
-        self.assertEqual(step_3.predicate,    'I go to the manage vendors page')
+        self.assertEqual(step_3.predicate, 'I go to the manage vendors page')
         self.assertEqual(step_4.concept, 'Then')
-        self.assertEqual(step_4.predicate,    'I should see the first 3 vendor names')
+        self.assertEqual(step_4.predicate, 'I should see the first 3 vendor names')
 
     def test_strip_predicates(self):
         step = Parser().parse_feature('  Given   gangsta girl   \t     ')[0]
@@ -180,7 +186,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.predicate, 'gangsta girl')
 
     def test_bond_predicates(self):
-        return #  CONSIDER  why test_strip_predicates passes and this croaks???
+        return  # CONSIDER  why test_strip_predicates passes and this croaks???
         step = Parser().parse_feature('  Given\n   elf quest   \t     ')[0]
         self.assertEqual(step.concept, 'Given')
         self.assertEqual(step.predicate, 'elf quest')
@@ -207,7 +213,7 @@ class MoreliaSuite(TestCase):
         step.evaluate(self)
         self.assertEqual('boys', self.youth)
 
-  #  ####  row zone  #################################
+# ####  row zone  #################################
 
     def test_Row_parse(self):
         sauce = 'buddha | brot |'
@@ -232,15 +238,16 @@ class MoreliaSuite(TestCase):
         self.assertEqual([2, 0, 3], dims)
 
     def test_permutate(self):
-        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1), (0, 1, 2),
-                        (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0), (0, 3, 1), (0, 3, 2)]
-        self.assertEqual(expect, _permute_indices([0,4,3]))
+        expect = [(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 1, 0), (0, 1, 1),
+                  (0, 1, 2), (0, 2, 0), (0, 2, 1), (0, 2, 2), (0, 3, 0),
+                  (0, 3, 1), (0, 3, 2)]
+        self.assertEqual(expect, _permute_indices([0, 4, 3]))
         expect = [(0, 0, 0)]
-        self.assertEqual(expect, _permute_indices([1,1,1]))
+        self.assertEqual(expect, _permute_indices([1, 1, 1]))
         expect = [(0, 0, 0), (0, 0, 1)]
-        self.assertEqual(expect, _permute_indices([1,1,2]))
+        self.assertEqual(expect, _permute_indices([1, 1, 2]))
 
-    def assemble_scene_table_source(self, moar = ''):
+    def assemble_scene_table_source(self, moar=''):
         return '''Feature: permute tables
                        Scenario: turn one feature into many
                            Given party <zone>
@@ -253,13 +260,13 @@ class MoreliaSuite(TestCase):
                                 | mall  |
                                 | jail  |''' % moar
 
-    def assemble_scene_table(self, moar = ''):
+    def assemble_scene_table(self, moar=''):
         scene = self.assemble_scene_table_source(moar)
         p = Parser()
         self.table_scene = p.parse_features(scene)
 
     def test_permute_schedule(self):
-        expect = _permute_indices([2, 0, 3])  #  NOTE:  by rights, 0 should be -1
+        expect = _permute_indices([2, 0, 3])  # NOTE:  by rights, 0 should be -1
         self.assemble_scene_table('Step you betcha\n')
         scenario = self.table_scene.steps[0].steps[0]
         schedule = scenario.permute_schedule()
@@ -283,8 +290,8 @@ class MoreliaSuite(TestCase):
         zones = []
         scene = self.assemble_scene_table_source('Step my milkshake brings all the boys to the yard\n')
         Parser().parse_features(scene).evaluate(self)
-        self.assertEqual([ 'work',   'mall',  'jail',  'work',  'mall',  'jail' ], crunks)
-        self.assertEqual([ 'beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel' ], zones)
+        self.assertEqual(['work', 'mall', 'jail', 'work', 'mall', 'jail'], crunks)
+        self.assertEqual(['beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel'], zones)
 
     def assemble_multiple_whens(self):
         return '''Scenario: Split When Blocks
@@ -299,34 +306,35 @@ class MoreliaSuite(TestCase):
 
     def test_parse_multiple_whens(self):
         scenario = self.assemble_multiple_whens()
-        steps = Parser().parse_feature(scenario)  #  TODO  test that a non-double-When Scenario gives a flat schedule
+        steps = Parser().parse_feature(scenario)  # TODO  test that a non-double-When Scenario gives a flat schedule
         scene, step_1, step_2, step_3, step_4, step_5 = steps
         assert scene.concept == 'Scenario'
-        assert [ [0, 1, 2], [0, 3, 4] ] == scene.step_schedule()  #  TODO  mix step schedules and row schedules! (-:
+        assert [[0, 1, 2], [0, 3, 4]] == scene.step_schedule()  # TODO  mix step schedules and row schedules! (-:
         # TODO  better object model! assert 2 == step_0.count_whens()
 
     def test_harvest(self):
         r = Row()
 
         def harvest(predicate):
-           r.predicate = predicate
-           return r.harvest()
+            r.predicate = predicate
+            return r.harvest()
 
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
 
-           #  CONSIDER  document you gotta take the \ out yourself
+        # CONSIDER  document you gotta take the \ out yourself
 
         self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
 
-    def step_party_zone(self, zone):  #  CONSIDER  prevent collision with another "step_party"
-        r'party (\w+)'  #  CONSIDER  illustrate how the patterns here form testage too
+    def step_party_zone(self, zone):  # CONSIDER  prevent collision with another "step_party"
+        r'party (\w+)'  # CONSIDER  illustrate how the patterns here form testage too
 
         self.got_party_zone = zone
         global zones
         zones.append(zone)
 
-    def step_flesh_is_weak(self):  pass
+    def step_flesh_is_weak(self):
+        pass
 
     def step_hearty_crunk_(self, crunk):
         r'hearty (\w+)'
@@ -335,18 +343,18 @@ class MoreliaSuite(TestCase):
         crunks.append(crunk)
         self.got_crunk = crunk
 
-#~ #  TODO  squeak if the table item ain't found
-#~ #  TODO  respect the tests' verbosity levels
-#~ #  CONSIDER  note that default arguments on steps are permitted!
-#~ #  CONSIDER  parse the || as Json/Yaml? - permit gaps & comments in tables
+#  TODO  squeak if the table item ain't found
+#  TODO  respect the tests' verbosity levels
+#  CONSIDER  note that default arguments on steps are permitted!
+#  CONSIDER  parse the || as Json/Yaml? - permit gaps & comments in tables
 
     def test_Rows_find_step_parents(self):
         self.assemble_scene_table()
         given, then, = self.table_scene.steps[0].steps[0].steps
         self.assertEqual(Row, given.steps[0].__class__)
-        self.assertEqual(Row,  then.steps[0].__class__)
+        self.assertEqual(Row, then.steps[0].__class__)
         self.assertEqual('zone  |', given.steps[0].predicate)
-        self.assertEqual('crunk |',  then.steps[0].predicate)
+        self.assertEqual('crunk |', then.steps[0].predicate)
 
     def assemble_short_scene_table(self):
         #  TODO  warn about bad but permitted style -- with | columns | out of order!
@@ -374,19 +382,19 @@ class MoreliaSuite(TestCase):
 
     def step_party_element_from_faction(self, element, faction):
         r'party (\w+) from (\w+)'
-            #  TODO  don't default to this "party <element> in <faction>"
+        # TODO  don't default to this "party <element> in <faction>"
 
         global elements, factions
         factions.append(faction)
         elements.append(element)
 
-    def step_my_milkshake(self, youth = 'boys', article = 'the'):
+    def step_my_milkshake(self, youth='boys', article='the'):
         r'my milkshake brings all the (boys|girls) to (.*) yard'
 
         self.youth = youth
 
     def step_exceptional(self):
-        x = 1 / 0  #  guilty pleasure for programmers!
+        x = 1 / 0  # noqa guilty pleasure for programmers!
 
     def test_handle_exceptions(self):
         s = Step()
@@ -398,8 +406,8 @@ class MoreliaSuite(TestCase):
 
         try:
             s.test_step(visitor)
-            assert False  #  should raise!
-        except ZeroDivisionError, e:
+            assert False  # should raise!
+        except ZeroDivisionError as e:
             assert 'Given: exceptional' in str(e)
 
     def test_find_step_by_name(self):
@@ -410,7 +418,7 @@ class MoreliaSuite(TestCase):
 
     def test_find_step_by_doc_string(self):
         step = And()._parse('my milkshake brings all the boys to the yard')
-        method = step.find_by_doc_string(self)
+        step.find_by_doc_string(self)
         expect = self.step_my_milkshake
         self.assertEqual(expect, step.method)
 
@@ -451,7 +459,7 @@ class MoreliaSuite(TestCase):
 # CONSIDER  use suite.fail instead of raise
 
 #    def test_evaluate_unfound(self):  CONSIDER   real test outa this
- #       Parser().parse_file(pwd + '/nada.feature').evaluate(self)
+#       Parser().parse_file(pwd + '/nada.feature').evaluate(self)
 
     def test_record_filename(self):
         filename = pwd + '/morelia.feature'
@@ -490,7 +498,8 @@ class MoreliaSuite(TestCase):
         self.culture.append(culture)
         self.concept = self.step.concept
 
-    def step_Moralia_evaluates_this(self):  pass
+    def step_Moralia_evaluates_this(self):
+        pass
 
     def step_culture_contains(self, arguments):
         r'"culture" contains (.*)'
@@ -508,9 +517,9 @@ class MoreliaSuite(TestCase):
             else:
                 return etree.XML(xml)
 
-        except ValueError: # TODO don't rely on exceptions for normal control flow
+        except ValueError:  # TODO don't rely on exceptions for normal control flow
             tree = xml
-            self._xml = str(tree) # CONSIDER does this reconstitute the nested XML ?
+            self._xml = str(tree)  # CONSIDER does this reconstitute the nested XML ?
             return tree
 
     def assert_xml(self, xml, xpath, **kw):
@@ -520,34 +529,35 @@ class MoreliaSuite(TestCase):
         nodes = tree.xpath(xpath)
         self.assertTrue(len(nodes) > 0, xpath + ' not found in ' + self._xml)
         node = nodes[0]
-        if kw.get('verbose', False): self.reveal_xml(node) # "here have ye been? What have ye seen?"--Morgoth
+        if kw.get('verbose', False):
+            self.reveal_xml(node)  # "here have ye been? What have ye seen?"--Morgoth
         return node
 
     def test_report_file(self):
-        thang  = Parser().parse_file(pwd + '/morelia.feature')
-        div_count = len(thang.steps[0].steps)  #  CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
+        thang = Parser().parse_file(pwd + '/morelia.feature')
+        div_count = len(thang.steps[0].steps)  # CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
 
-        rep = thang.report(self)
+        rep = thang.report(self).string
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
 
         html = '<xml>' + rep + '</xml>'
         open('/tmp/yo.html', 'w').write(html)
-          # ERGO assert_xml with <html> forgives - crack down on that!
+        # ERGO assert_xml with <html> forgives - crack down on that!
 
         self.assert_xml(html, '/xml[ count(descendant::div) > %i ]' % (div_count - 1))
-      #  os.system('firefox /home/phlip/morelia/yo.html &')
+        #  os.system('firefox /home/phlip/morelia/yo.html &')
         # os.system('konqueror  /home/phlip/morelia/yo.html &')
 
     def step_a_feature_file_with_contents(self, file_contents):
         r'a feature file with "([^"]+)"'
         self.file_contents = file_contents
 
-    #~ def step_wikked_(self):
-        #~ '''wikked!
-    #~ '''
-#~ #  TODO get rid of linefeeds in the suggestions
-        #~ assert False
+    # def step_wikked_(self):
+    # '''wikked!
+    # '''
+    #  TODO get rid of linefeeds in the suggestions
+    # assert False
 
     def step_Moralia_evaluates_the_file(self):
         self.diagnostic = None
@@ -558,8 +568,8 @@ class MoreliaSuite(TestCase):
             self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
             p.parse_features(self.file_contents).evaluate(self)
             self.steps = p.steps
-        except AssertionError, e:
-            #~ print str(e)
+        except AssertionError as e:
+            # print str(e)
             self.diagnostic = str(e)
 
     def step_it_prints_a_diagnostic(self, sample):
@@ -570,7 +580,7 @@ class MoreliaSuite(TestCase):
     def step_the_second_line_contains(self, docstring):
         r'the second line contains "([^"]+)"'
 
-        self.assert_regex_contains(re.escape(docstring), self.diagnostic) #.split('\n')[4])
+        self.assert_regex_contains(re.escape(docstring), self.diagnostic)
 
     def step_it_contains_1_step(self):
         r'it contains 1 step'
@@ -598,7 +608,7 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(suggestion, self.suggestion)
 
-    def step_add_extra_arguments(self, extra = ''):  #  TODO  blank columns should exist!
+    def step_add_extra_arguments(self, extra=''):  # TODO  blank columns should exist!
         r'add (.+) arguments'
 
         self.assertEqual(extra, self.viridis.extra_arguments)
@@ -607,18 +617,18 @@ class MoreliaSuite(TestCase):
         r'a file contains (.+), it produces (.+)'
 
         try:
-          statements = statements.replace('\\n', '\n')  #  CONSIDER  document this is how you paint linefeedage
-          statements = statements.replace('\\', '')  #  CONSIDER document this is how you paint reserved words
-          #~ diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
-          # print len(self.step.steps)  #  CONSIDER  document this as the way to hit the whole table
-          p = Parser().parse_features(statements)
-          p.evaluate(self)
-          raise Exception('we expect syntax errors here')
-        except (SyntaxError, AssertionError), e:
-          beef, squeak = diagnostics.split(', line ')
-          squeak = 'line ' + squeak
-          self.assert_regex_contains(re.escape(beef), str(e))
-          self.assert_regex_contains(re.escape(squeak), str(e))
+            statements = statements.replace('\\n', '\n')  # CONSIDER  document this is how you paint linefeedage
+            statements = statements.replace('\\', '')  # CONSIDER document this is how you paint reserved words
+            # diagnostics = diagnostics.replace('\\', '')  #  CONSIDER  document this is how you escape pipes
+            # print len(self.step.steps)  #  CONSIDER  document this as the way to hit the whole table
+            p = Parser().parse_features(statements)
+            p.evaluate(self)
+            raise Exception('we expect syntax errors here')
+        except (SyntaxError, AssertionError) as e:
+            beef, squeak = diagnostics.split(', line ')
+            squeak = 'line ' + squeak
+            self.assert_regex_contains(re.escape(beef), str(e))
+            self.assert_regex_contains(re.escape(squeak), str(e))
 
     def step_errors(self):
         raise SyntaxError('no, you!')
@@ -626,19 +636,19 @@ class MoreliaSuite(TestCase):
     def assert_regex_contains(self, pattern, string, flags=None):
         flags = flags or 0
         diagnostic = '"%s" not found in "%s"' % (pattern, string)
-        self.assertTrue(re.search(pattern, string, flags) != None, diagnostic)
+        self.assertTrue(re.search(pattern, string, flags) is not None, diagnostic)
 
 
-#~ Scenario: Leading # marks comment lines.
-    #~ (Warning: Only leading marks are respected for now!)
-    #~ Given a feature file with "When something
-                               #~ \# Given nothing"
-    #~ When Moralia evaluates the file
-    #~ Then it contains 1 step
-    #~ And the first step contains "something"
-    #~ And the first step does not contain "nothing"
+# Scenario: Leading # marks comment lines.
+    # (Warning: Only leading marks are respected for now!)
+    # Given a feature file with "When something
+    # \# Given nothing"
+    # When Moralia evaluates the file
+    # Then it contains 1 step
+    # And the first step contains "something"
+    # And the first step does not contain "nothing"
 
-#  CONSIDER  count test cases correctly regarding entire batch - if pyUnit's architecture permits
+# CONSIDER  count test cases correctly regarding entire batch - if pyUnit's architecture permits
 
 if __name__ == '__main__':
-      unittest.main()  #  NOTE  this seems to return the correct shell value
+    unittest.main()  # NOTE  this seems to return the correct shell value

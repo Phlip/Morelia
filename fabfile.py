@@ -10,7 +10,7 @@ def _sh(cmd):
 
 def clean_pyc_files():
     'erase them all, because they bug us'
-    
+
     _sh('find . -name \*.pyc -exec rm {} \;')
 
 def autotest(cmd='fab test', sleep=1):
@@ -73,7 +73,7 @@ def test(extra=''):
 
 def ci():
     'stick it in GitHub'
-    
+
     test()
     _sh('git push origin master')
 
@@ -85,5 +85,5 @@ def up():
 
 def todo():
     'nag messages from u to u'
-    
+
     _sh('git grep TO'+'DO `find . -name *.py` `find . -name *.feature` ')

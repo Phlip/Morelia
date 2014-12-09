@@ -17,6 +17,8 @@ __version__ = '0.1.7'
 import itertools
 import re
 from six import moves
+import unicodedata
+
 from .i18n import TRANSLATIONS
 
 #  TODO  what happens with blank table items?
@@ -124,7 +126,9 @@ class Viridis(Morelia):
 
     @staticmethod
     def slugify(predicate):
-        return re.sub(u'[^\w]+', u'_', predicate, re.U)
+        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
+        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
+        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
 
     def find_step_name(self, suite):
         self.method = None
@@ -134,7 +138,7 @@ class Viridis(Morelia):
         if self.method:
             return self.method_name
         doc_string = self.suggest_doc_string()
-        arguments = u'(self' + self.extra_arguments + u')'  # note this line ain't tested! C-:
+        arguments = u'(self%s)' % self.extra_arguments  # note this line ain't tested! C-:
         method_name = 'step_' + self.slugify(self.predicate)
 
         diagnostic = u'Cannot match step: ' + self.predicate + u'\n' + \
@@ -143,7 +147,7 @@ class Viridis(Morelia):
                      u'        ' + doc_string + u'\n\n' + \
                      u'        # code\n\n'
 
-        suite.fail(diagnostic)
+        suite.fail(diagnostic.encode('utf-8'))
 
     def suggest_doc_string(self, predicate=None):  # CONSIDER  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''

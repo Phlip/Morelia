@@ -599,7 +599,7 @@ TRANSLATIONS = {
         "scenario": u"Scenariusz",
         "scenario_outline": u"Szablon scenariusza",
         "examples": u"Przykłady",
-        "given": u"Zakładając|Mając",
+        "given": u"Zakładając(?:, że)?|Mając",
         "when": u"Jeżeli|Jeśli|Gdy|Kiedy",
         "then": u"Wtedy",
         "and": u"Oraz|I",

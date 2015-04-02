@@ -20,6 +20,7 @@ from six import moves
 import unicodedata
 
 from .i18n import TRANSLATIONS
+from .utils import to_unicode
 
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
@@ -92,7 +93,7 @@ class Morelia:
     def enforce(self, condition, diagnostic):
         if not condition:
             msg = self.format_fault(diagnostic)
-            raise SyntaxError(msg.encode('utf-8'))
+            raise SyntaxError(msg)
 
     def format_fault(self, diagnostic):
         parent_reconstruction = ''
@@ -100,10 +101,16 @@ class Morelia:
             parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
         reconstruction = self.reconstruction().replace('\n', '\\n')
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
+        args = tuple([to_unicode(i) for i in args])
         return u'\n  File "%s", line %s, in %s\n    %s\n%s' % args
 
     def reconstruction(self):
-        recon = u'%s%s: %s' % (self.prefix(), self.concept, self.predicate)
+        predicate = self.predicate
+        try:
+            predicate = predicate.decode('utf-8')
+        except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
+            pass
+        recon = u'%s%s: %s' % (self.prefix(), self.concept, predicate)
         if recon[-1] != u'\n':
             recon += u'\n'
         return recon
@@ -147,7 +154,7 @@ class Viridis(Morelia):
                      u'        ' + doc_string + u'\n\n' + \
                      u'        # code\n\n'
 
-        suite.fail(diagnostic.encode('utf-8'))
+        suite.fail(diagnostic)
 
     def suggest_doc_string(self, predicate=None):  # CONSIDER  invent Ruby scan here, to dazzle the natives
         self.extra_arguments = ''
@@ -211,14 +218,14 @@ class Viridis(Morelia):
 
 
 class Parser:
-    def __init__(self):
+    def __init__(self, language=None):
         self.thangs = [
             Feature, Scenario,
             Given, When, Then, And, But,
             Row, Comment, Step
         ]
         self.steps = []
-        self.language = DEFAULT_LANGUAGE
+        self.language = DEFAULT_LANGUAGE if language is None else language
 
     def parse_file(self, filename):
         prose = open(filename, 'r').read()
@@ -246,18 +253,30 @@ class Parser:
         if self.steps != []:
             self.steps[0].evaluate_steps(v)
 
+    def parse_language_directive(self, line):
+        """ Parse language directive.
+
+        :param str line: line to parse
+        :returns: True if line contains correct language directive
+        :side effects: sets self.language to parsed language
+        """
+        match = LANGUAGE_RE.match(line)
+        if match:
+            self.language = match.groups()[0]
+            return True
+        return False
+
     def parse_feature(self, lines):
+        lines = to_unicode(lines)
         self.line_number = 0
 
-        for self.line in lines.split('\n'):
+        for self.line in lines.split(u'\n'):
             self.line_number += 1
-            match = LANGUAGE_RE.match(self.line)
-            if match:
-                self.language = match.groups()[0]
+
+            if self.parse_language_directive(self.line):
                 continue
-            if self.line.startswith('#'):
-                continue
-            if not self.line:
+
+            if not self.line or self.line.startswith('#'):
                 continue
 
             if not self.anneal_last_broken_line() and not self._parse_line():
@@ -455,15 +474,6 @@ class Scenario(Morelia):
             return [pre_slug]
         return sched
 
-    def _embellish(self):
-        self.row_indices = []
-
-        for step in self.steps:
-            rowz = int(step.steps != [] and step.steps[0].__class__ is Row)
-            self.row_indices.append(rowz)
-
-        return self.row_indices.count(1) > 0
-
     def count_Row_dimensions(self):
         return [step.count_dimensions() for step in self.steps]
 
@@ -494,10 +504,10 @@ class Step(Viridis):
         try:
             self.method(*self.matches)
         except (Exception, SyntaxError) as e:
-            new_exception = self.format_fault(str(e))
+            new_exception = self.format_fault(to_unicode(e))
             e.args = (new_exception,) + (e.args[1:])
             if type(e) == SyntaxError:
-                raise SyntaxError(new_exception)
+                raise SyntaxError(repr(new_exception))
             raise
 
     def augment_predicate(self):  # CONSIDER  unsucktacularize me pleeeeeeze

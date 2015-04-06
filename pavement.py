@@ -127,7 +127,7 @@ def twine_upload(options):
 
 
 @task
-@needs('cleanup', 'build', 'html', 'sign_dist', 'twine_upload', 'publish_docs')
+@needs('cleanup', 'build', 'sign_dist', 'twine_upload')
 def release(options):
     """ Generate packages and upload to PyPI. """
     pass

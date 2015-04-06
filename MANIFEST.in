@@ -1,1 +1,1 @@
-include LICENSE INSTALL *.rst
+include LICENSE INSTALL AUTHORS *.rst

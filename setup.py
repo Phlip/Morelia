@@ -16,7 +16,7 @@ setup(
     packages=find_packages('src', exclude=['example*']),
     package_dir={'': 'src'},
     classifiers=[
-        'Development Status :: 4 - Beta'
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',

@@ -14,6 +14,10 @@ Morelia
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: License
 
+.. image:: https://travis-ci.org/kidosoft/Morelia.svg?branch=master
+    :target: https://travis-ci.org/kidosoft/Morelia
+    :alt: Build status
+
 .. image:: https://readthedocs.org/projects/morelia/badge/?format=svg
     :target: https://morelia.readthedocs.org
     :alt: Documetation

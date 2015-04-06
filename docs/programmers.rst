@@ -1,16 +1,10 @@
-Morelia *viridis* is a Python Behavior Driven Development platform, conceptually derived from Ruby's Cucumber Framework.
+Tutorial for programmers
+========================
 
-It is available both at `the cheeseshop`_ and GitHub_.
+Feature description
+-------------------
 
-**Mascot**:
-
-.. image:: http://www.naturfoto.cz/fotografie/ostatni/krajta-zelena-47784.jpg
-
-**Install** it with::
-
-    sudo pip install Morelia
-
-To use it, first write a **project.feature** file, in ordinary prose, like this:
+To use Morelia in BDD, first write a :file:`project.feature` file [1]_, in ordinary prose, like this:
 
 .. code-block:: cucumber
 
@@ -25,11 +19,16 @@ To use it, first write a **project.feature** file, in ordinary prose, like this:
         When I press add
         Then the result should be 120 on the screen
 
-Note that "In order", "As a", and "I want" are not Morelia keywords. They are part of *Feature*'s "predicate"; its text payload.
+Note that "In order", "As a", and "I want" are not Morelia keywords.
+They are part of *Feature*'s "predicate"; its text payload.
 
-"Given", "And", "When" and "Then" are keywords. The words following them are executable test specifications.
+"Given", "And", "When" and "Then" are keywords.
+The words following them are executable test specifications.
 
-Now create a standard PythonUnit *test suite*, like this:
+Writing TestCase
+----------------
+
+Now create a standard Python's unittest [2]_ *test case*, like this:
 
 .. code-block:: python
 
@@ -49,9 +48,16 @@ Now create a standard PythonUnit *test suite*, like this:
             "the result should be (\d+) on the screen"
             assert int(number) == self.result
 
-Note that Morelia does not waste anyone's time inventing a new testing back-end just to add a layer of literacy over our testage. Steps are miniature TestCases. Your onsite customer need never know, and your unit tests and customer tests can share their support methods. The same one test button can run all TDD and BDD tests.
+Note that Morelia does not waste anyone's time inventing a new testing back-end
+just to add a layer of literacy over our testage. Steps are miniature test cases.
+Your onsite customer need never know, and your unit tests and customer tests
+can share their support methods. The same one test button can run all TDD and BDD tests.
 
-Next, note that Morelia matches Steps in your Feature file to either the names or doc-strings of *step_* methods in your test case. And it expands regular expressions, such as `(\d+)`, into step arguments, such as `number`. Remember to use tight expressions, such as `(\d+)`, not loosey-goose expressions like `(\d*)` or `(.*)`, to validate your input.
+Next, note that Morelia matches Steps in your Feature file to either the names
+or doc-strings of *step_* methods in your test case.
+And it expands regular expressions, such as `(\d+)`, into step arguments,
+such as `number`. Remember to use tight expressions, such as `(\d+)`,
+not loosey-goose expressions like `(\d*)` or `(.*)`, to validate your input.
 
 When you run your TestCase, **hook** into all your feature files, like this:
 
@@ -63,12 +69,14 @@ When you run your TestCase, **hook** into all your feature files, like this:
 
 The passing steps will appear as passing test cases in your test run.
 
-And note that Morelia calls `setUp()` and `tearDown()` around your Scenario. Each step calls within one TestCase, so `self` can store variables between each step.
+And note that Morelia calls `setUp()` and `tearDown()` around your Scenario.
+Each step calls within one TestCase, so `self` can store variables between each step.
 
 Tables
 ------
 
-To DRY up a series of redundant scenarios, varying by only "payload" variables, roll the Scenarios up into a table, using `<angles>` around the payload variable names:
+To DRY up a series of redundant scenarios, varying by only "payload" variables,
+roll the Scenarios up into a table, using `<angles>` around the payload variable names:
 
 .. code-block:: cucumber
 
@@ -93,23 +101,33 @@ To DRY up a series of redundant scenarios, varying by only "payload" variables, 
            |  99.00 | Kuantan, Malaysia      | 55.00 |   no  |
            | 101.00 | Tierra del Fuego       | 55.00 |   no  |
 
-That Scenario will unroll into a series of scenarios, each with one value from the table inserted into their placeholders `<total>`, `<destination>`, and `<rapid>`. So this step method will receive each line in the "destination" column:
+That Scenario will unroll into a series of scenarios,
+each with one value from the table inserted into their placeholders `<total>`,
+`<destination>`, and `<rapid>`.
+So this step method will receive each line in the "destination" column:
 
 .. code-block:: python
 
     def step_the_order_will_ship_to_(self, location):
         r'the order will ship to (.*)'
 
-(And observe that naming the placeholder the same as the method argument is a *reeeally* good idea, but naturally unenforceable.)
+(And observe that naming the placeholder the same as the method argument
+is a *reeeally* good idea, but naturally unenforceable.)
 
-MV will take each line of the table, and construct a complete test case out of the Scenario steps, running `setUp()` and `tearDown()` around them.
+Morelia Viridis will take each line of the table,
+and construct a complete test case out of the Scenario steps,
+running `setUp()` and `tearDown()` around them.
 
 When
 ----
 
-The other step keywords (Given, And, Then, etc.) are cosmetic, to permit good grammar. They are all aliases for Step. The committee may eventually find specific uses for them.
+The other step keywords (Given, And, Then, etc.) are cosmetic,
+to permit good grammar. They are all aliases for Step.
+The committee may eventually find specific uses for them.
 
-The `When` keyword, however, is special. When a Scenario contains more than one When, Morelia splits it up into one Scenario for each When block, and runs each one separately. So the following two Feature details are equivalent...
+The `When` keyword, however, is special. When a Scenario contains more than one When,
+Morelia splits it up into one Scenario for each When block,
+and runs each one separately. So the following two Feature details are equivalent...
 
 .. code-block:: cucumber
 
@@ -146,5 +164,9 @@ The committee does not yet know what happens if a multi-When Scenario also conta
 Here's another **sneaky snake**, which might also be a Green Tree Python (a Morelia *viridis*):
 
 .. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
-.. _the cheeseshop: http://pypi.python.org/pypi/Morelia/
-.. _GitHub: http://github.com/kidosoft/Morelia/
+
+.. rubric:: Footnotes
+.. [1] File name really doesn't matter for Morelia but by conversion .feature extension is used.
+.. [2] More on Python's unittests https://docs.python.org/library/unittest.html
+
+

@@ -15,6 +15,9 @@ setup(
     keywords="test bdd behavior",
     packages=find_packages('src', exclude=['example*']),
     package_dir={'': 'src'},
+    install_requires=[
+        'six',
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

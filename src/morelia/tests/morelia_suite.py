@@ -8,9 +8,8 @@ import os
 pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
-# from morelia import *
 from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
-                          And, When, Then, Viridis, TestVisitor, _permute_indices)
+                          And, When, Then, TestVisitor, _permute_indices, MissingStepError)
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
 
@@ -327,12 +326,13 @@ class MoreliaSuite(TestCase):
     def test_evaluate_permuted_schedule(self):
         self.assemble_scene_table('Step flesh is weak\n')
         scenario = self.table_scene.steps[0].steps[0]
+        steps_num = len(scenario.steps)
         visitor = TestVisitor(self)
         global crunks, zones
         crunks = []
         zones = []
         scenario.row_indices = [1, 0, 2]
-        scenario.evaluate_test_case(visitor)
+        scenario.evaluate_test_case(visitor, range(steps_num))
         self.assertEqual('hotel', visitor.suite.got_party_zone)
         self.assertEqual('jail', visitor.suite.got_crunk)
 
@@ -477,32 +477,32 @@ class MoreliaSuite(TestCase):
 
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')
-        step.find_by_name(self)
+        method, matches = step.find_step(self)
         expect = self.step_my_milkshake
-        self.assertEqual(expect, step.method)
+        self.assertEqual(expect, method)
 
     def test_find_step_by_doc_string(self):
         step = And()._parse('my milkshake brings all the boys to the yard')
-        step.find_by_doc_string(self)
+        method, matches = step.find_step(self)
         expect = self.step_my_milkshake
-        self.assertEqual(expect, step.method)
+        self.assertEqual(expect, method)
 
     def test_find_step_with_match(self):
         step = When()._parse('my milkshake brings all the girls to the yard')
-        step.find_by_doc_string(self)
-        self.assertEqual(('girls', 'the'), step.matches)
+        method, matches = step.find_step(self)
+        self.assertEqual(('girls', 'the'), matches)
 
     def test_step_not_found(self):
         step = Then()._parse('not there')
-        assert None == step.find_by_name(self)
+        self.assertRaises(MissingStepError, step.find_step, self)
 
     def step_fail_without_enough_function_name(self):
         step = And()._parse('my milk')
-        assert None == step.find_by_name(self)
+        self.assertRaises(MissingStepError, step.find_step, self)
 
     def step_fail_step_without_enough_doc_string(self):
         step = Given()._parse("brings all the boys to the yard it's better than yours")
-        assert None == step.find_by_doc_string(self)
+        self.assertRaises(MissingStepError, step.find_step, self)
 
     def step_evaluate_step_by_doc_string(self):
         step = Given()._parse('my milkshake brings all the girls to a yard')
@@ -677,8 +677,8 @@ class MoreliaSuite(TestCase):
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'
 
-        self.viridis = Viridis()
-        self.suggestion = self.viridis.suggest_doc_string(self.predicate)
+        self.viridis = Step()
+        self.suggestion = self.viridis._suggest_doc_string(self.predicate)
 
     def step_we_convert_it_into_a_(self, suggestion):
         r'we convert it into a (.+)'

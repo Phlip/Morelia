@@ -8,17 +8,21 @@
 #                                 ,_       __|      ,
 #                        |  |_|  /  |  |  /  |  |  / \_
 #                         \/  |_/   |_/|_/\_/|_/|_/ \/
+import itertools
+import re
+from abc import ABCMeta
+
+from six import moves
+
+from .exceptions import MissingStepError
+from .i18n import TRANSLATIONS
+from .matchers import MethodNameStepMatcher, DocStringStepMatcher
+from .utils import to_unicode
+from .visitors import TestVisitor, ReportVisitor, StepMatcherVisitor
+
 
 __version__ = '0.2.1'
 
-from abc import ABCMeta, abstractmethod
-import itertools
-import re
-from six import moves
-import unicodedata
-
-from .i18n import TRANSLATIONS
-from .utils import to_unicode
 
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
@@ -29,9 +33,12 @@ DEFAULT_LANGUAGE = 'en'
 
 class INode(object):
 
-    __meta__ = ABCMeta
+    __metaclass__ = ABCMeta
 
-    def test_step(self, visitor):
+    def test_step(self, suite, matcher):
+        pass
+
+    def find_step(self, suite, matcher):
         pass
 
 
@@ -40,6 +47,7 @@ class Morelia(INode):
     def __init__(self, language=DEFAULT_LANGUAGE):
         self.parent = None
         self.language = language
+        self.additional_data = {}
 
     def _parse(self, predicate, list=[], line_number=0):
         self.concept = str(self)
@@ -130,26 +138,6 @@ class Morelia(INode):
         return None
 
 
-class MissingStepError(Exception):
-
-    def __init__(self, predicate, suggest, *args, **kwargs):
-        self.predicate = predicate
-        self.suggest = suggest
-
-
-class Viridis(Morelia):
-
-    def prefix(self):
-        return '  '
-
-    @staticmethod
-    def slugify(predicate):
-        predicate = to_unicode(predicate)
-        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
-        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
-        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
-
-
 class Parser:
     def __init__(self, language=None):
         self.thangs = [
@@ -174,19 +162,26 @@ class Parser:
         self.parse_feature(prose)
         return self
 
-    def evaluate(self, suite, check_all_steps=True):
-        if check_all_steps:
-            self.match_steps(suite)
-        self.rip(TestVisitor(suite))  # CONSIDER  rename to Viridis
+    def _create_matcher(self, suite, matcher_classes):
+        root_matcher = None
+        for matcher_class in matcher_classes:
+            matcher = matcher_class(suite)
+            if root_matcher is not None:
+                root_matcher.add_matcher(matcher)
+            else:
+                root_matcher = matcher
+        return root_matcher
 
-    def match_steps(self, suite):
-        rv = StepMatcherVisitor(suite)
-        self.rip(rv)
-        suggest = rv.get_suggest()
-        if suggest:
-            diagnostic = u'Cannot match steps:\n\n%s' % suggest
-            suite.fail(diagnostic)
-        return rv
+    def evaluate(self, suite, matchers=None):
+        if matchers is None:
+            matchers = [DocStringStepMatcher, MethodNameStepMatcher]
+        matcher = self._create_matcher(suite, matchers)
+        test_visitor = TestVisitor(suite, matcher)
+        step_matcher_visitor = StepMatcherVisitor(suite, matcher)
+        try:
+            self.rip(test_visitor)
+        except MissingStepError:
+            self.rip(step_matcher_visitor)
 
     def report(self, suite):
         rv = ReportVisitor(suite)
@@ -195,11 +190,12 @@ class Parser:
 
     def rip(self, visitor):
         if self.steps != []:
+            node = self.steps[0]
+            visitor.before_feature(node)
             try:
-                self.steps[0].evaluate_steps(visitor)
-            except MissingStepError as e:
-                diagnostic = u'Cannot match step: %s\nsuggest:\n\n%s' % (e.predicate, e.suggest)
-                visitor.suite.fail(diagnostic)
+                node.evaluate_steps(visitor)
+            finally:
+                visitor.after_feature(node)
 
     def parse_language_directive(self, line):
         """ Parse language directive.
@@ -285,94 +281,6 @@ class Parser:
         previous.validate_predicate()
 
 
-class IVisitor(object):
-
-    __meta__ = ABCMeta
-
-    def before_scenario(self):
-        pass
-
-    def after_scenario(self, result):
-        pass
-
-    def permute_schedule(self, node):
-        return node.permute_schedule()
-
-    def step_schedule(self, node):
-        return node.step_schedule()
-
-    @abstractmethod
-    def visit(self):
-        pass
-
-
-class ReportVisitor(IVisitor):
-    def __init__(self, suite):
-        self.suite = suite
-        self.string = ''
-
-    def permute_schedule(self, node):
-        return [[0]]
-
-    def step_schedule(self, node):
-        return [list(range(len(node.steps)))]
-
-    def visit(self, node):
-        recon, result = node.to_html()
-        if recon[-1] != '\n':
-            recon += '\n'  # TODO  clean this outa def reconstruction(s)!
-        self.string += recon
-        return result
-
-    def after_scenario(self, result):
-        if result:
-            self.string += result
-
-    def __str__(self):
-        return self.string
-
-    def __unicode__(self):
-        return unicode(self.string)
-
-
-class TestVisitor(IVisitor):
-
-    def __init__(self, suite):
-        self.suite = suite
-
-    def visit(self, node):
-        self.suite.step = node
-        try:
-            node.test_step(self)
-        except MissingStepError as e:
-            diagnostic = u'Cannot match step: %s\nsuggest:\n\n%s' % (e.predicate, e.suggest)
-            self.suite.fail(diagnostic)
-
-    def before_scenario(self):
-        self.suite.setUp()
-
-    def after_scenario(self, result):
-        self.suite.tearDown()
-
-
-class StepMatcherVisitor(ReportVisitor):
-
-    def __init__(self, suite):
-        super(StepMatcherVisitor, self).__init__(suite)
-        self.not_matched = set()
-
-    def get_suggest(self):
-        return u''.join(self.not_matched)
-
-    def visit(self, node):
-        try:
-            node.find_step(self.suite)
-        except MissingStepError as e:
-            self.not_matched.add(e.suggest)
-        except AttributeError:
-            pass
-
-
 class Feature(Morelia):
 
     def __str__(self):
@@ -381,7 +289,7 @@ class Feature(Morelia):
     def my_parent_type(self):
         return None
 
-    def test_step(self, visitor):
+    def test_step(self, suite, matcher):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
 
     def to_html(self):
@@ -413,16 +321,15 @@ class Scenario(Morelia):
     def evaluate_test_case(self, visitor, step_indices):  # note this permutes reports too!
         self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')
 
-        visitor.before_scenario()
-        result = None
+        visitor.before_scenario(self)
         try:
-            result = visitor.visit(self)
+            self.result = visitor.visit(self)
 
             for idx, step in enumerate(self.steps):
                 if idx in step_indices:
                     step.evaluate_steps(visitor)
         finally:
-            visitor.after_scenario(result)
+            visitor.after_scenario(self)
 
     def permute_schedule(self):  # TODO  rename to permute_row_schedule
         dims = self.count_Row_dimensions()
@@ -471,7 +378,10 @@ class Scenario(Morelia):
                 '</table></div>']
 
 
-class Step(Viridis):
+class Step(Morelia):
+
+    def prefix(self):
+        return '  '
 
     def __str__(self):
         return u'Step'
@@ -479,48 +389,15 @@ class Step(Viridis):
     def my_parent_type(self):
         return Scenario
 
-    def find_step(self, suite):
-        pattern = '^step_'
-        step_methods = self._find_steps(suite, pattern)
+    def find_step(self, suite, matcher):
+        predicate = self.predicate
         augmented_predicate = self._augment_predicate()
-        method, matches = self._find_by_doc_string(suite, step_methods, augmented_predicate)
-        if not method:
-            method, matches = self._find_by_name(suite, step_methods, self.predicate)
+        method, matches = matcher.find(predicate, augmented_predicate)
         if method:
             return method, matches
-        doc_string = self._suggest_doc_string(self.predicate)
-        method_name = self.slugify(self.predicate)
-        suggest = u'    def step_%s(self%s):\n        %s\n\n        # code\n\n' % (
-            method_name, self.extra_arguments, doc_string)
-        raise MissingStepError(self.predicate, suggest)
 
-    def _find_by_name(self, suite, step_methods, predicate):
-        clean = re.sub(r'[^\w]', '_?', predicate)
-        pattern = '^step_' + clean + '$'
-        regexp = re.compile(pattern)
-        step_methods = [method for method in step_methods if regexp.match(method)]
-        for method_name in step_methods:
-            method = suite.__getattribute__(method_name)
-            return method, []
-        return None, []
-
-    def _find_by_doc_string(self, suite, step_methods, predicate):
-        for method_name in step_methods:
-            method = suite.__getattribute__(method_name)
-            doc = method.__doc__
-
-            if doc:
-                doc = re.compile('^' + doc + '$')  # CONSIDER deal with users who put in the ^$
-                m = doc.match(predicate)
-
-                if m:
-                    return method, m.groups()
-        return None, []
-
-    def _find_steps(self, suite, regexp):
-        matcher = re.compile(regexp)
-        result = [s for s in dir(suite) if matcher.match(s)]
-        return result
+        suggest = matcher.suggest(predicate)
+        raise MissingStepError(predicate, suggest)
 
     def _augment_predicate(self):  # CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent is None:
@@ -548,30 +425,13 @@ class Step(Viridis):
 
         return self.copy
 
-    def _suggest_doc_string(self, predicate):  # CONSIDER  invent Ruby scan here, to dazzle the natives
-        self.extra_arguments = ''
-        predicate = predicate.replace("'", "\\'")
-        predicate = predicate.replace('\n', '\\n')
-        self._add_extra_args(r'\<(.+?)\>', predicate)
-        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
-        self._add_extra_args(r'"(.+?)"', predicate)
-        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
-        predicate = re.sub(r' \s+', '\\s+', predicate)
-        predicate = predicate.replace('\n', '\\n')
-        return "ur'" + predicate + "'"
-
-    def _add_extra_args(self, matcher, predicate):
-        args = re.findall(matcher, predicate)
-        for arg in args:
-            self.extra_arguments += ', ' + self.slugify(arg)
-
-    def evaluate(self, suite):
-        method, matches = self.find_step(suite)
+    def evaluate(self, suite, matcher):
+        method, matches = self.find_step(suite, matcher)
         method(*matches)
 
-    def test_step(self, visitor):
+    def test_step(self, suite, matcher):
         try:
-            self.evaluate(visitor.suite)
+            self.evaluate(suite, matcher)
         except (Exception, SyntaxError) as e:
             new_exception = self.format_fault(to_unicode(e))
             e.args = (new_exception,) + (e.args[1:])

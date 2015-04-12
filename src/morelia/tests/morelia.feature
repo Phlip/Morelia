@@ -55,7 +55,7 @@ Scenario: Convert source predicates into their matching regular expressions
    Then we convert it into a <suggestion>
     And add <extra> arguments
    
-       |   predicate     |   suggestion           |  extra      |
+       |   predicate     |   suggestion            |  extra      |
        
        | tastes great    | ur'tastes great'        |             |
        | less filling    | ur'less filling'        |             |

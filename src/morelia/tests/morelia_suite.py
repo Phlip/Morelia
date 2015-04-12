@@ -10,6 +10,7 @@ morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
 from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
                           And, When, Then, TestVisitor, _permute_indices, MissingStepError)
+from morelia.matchers import DocStringStepMatcher, MethodNameStepMatcher
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
 
@@ -253,7 +254,8 @@ class MoreliaSuite(TestCase):
     def test_evaluate_step_by_name(self):
         step = Given()._parse('my milkshake')
         self.youth = 'girls'
-        step.evaluate(self)
+        matcher = self._get_default_machers()
+        step.evaluate(self, matcher)
         self.assertEqual('boys', self.youth)
 
 # ####  row zone  #################################
@@ -327,14 +329,15 @@ class MoreliaSuite(TestCase):
         self.assemble_scene_table('Step flesh is weak\n')
         scenario = self.table_scene.steps[0].steps[0]
         steps_num = len(scenario.steps)
-        visitor = TestVisitor(self)
+        matcher = DocStringStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
+        visitor = TestVisitor(self, matcher)
         global crunks, zones
         crunks = []
         zones = []
         scenario.row_indices = [1, 0, 2]
         scenario.evaluate_test_case(visitor, range(steps_num))
-        self.assertEqual('hotel', visitor.suite.got_party_zone)
-        self.assertEqual('jail', visitor.suite.got_crunk)
+        self.assertEqual('hotel', visitor._suite.got_party_zone)
+        self.assertEqual('jail', visitor._suite.got_crunk)
 
     def test_another_two_dimensional_table(self):
         global crunks, zones
@@ -467,47 +470,56 @@ class MoreliaSuite(TestCase):
         s.concept = 'Given'
         s.predicate = 'exceptional'
         s.line_number = 42
-        visitor = TestVisitor(self)
+        matcher = DocStringStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
+        visitor = TestVisitor(self, matcher)
+        matcher = self._get_default_machers()
 
         try:
-            s.test_step(visitor)
+            s.test_step(visitor, matcher)
             assert False  # should raise!
         except ZeroDivisionError as e:
             assert 'Given: exceptional' in str(e)
 
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')
-        method, matches = step.find_step(self)
+        matcher = self._get_default_machers()
+        method, matches = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_by_doc_string(self):
         step = And()._parse('my milkshake brings all the boys to the yard')
-        method, matches = step.find_step(self)
+        matcher = self._get_default_machers()
+        method, matches = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_with_match(self):
         step = When()._parse('my milkshake brings all the girls to the yard')
-        method, matches = step.find_step(self)
+        matcher = self._get_default_machers()
+        method, matches = step.find_step(self, matcher)
         self.assertEqual(('girls', 'the'), matches)
 
     def test_step_not_found(self):
         step = Then()._parse('not there')
-        self.assertRaises(MissingStepError, step.find_step, self)
+        matcher = self._get_default_machers()
+        self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_fail_without_enough_function_name(self):
         step = And()._parse('my milk')
-        self.assertRaises(MissingStepError, step.find_step, self)
+        matcher = self._get_default_machers()
+        self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_fail_step_without_enough_doc_string(self):
         step = Given()._parse("brings all the boys to the yard it's better than yours")
-        self.assertRaises(MissingStepError, step.find_step, self)
+        matcher = self._get_default_machers()
+        self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_evaluate_step_by_doc_string(self):
         step = Given()._parse('my milkshake brings all the girls to a yard')
         self.youth = 'boys'
-        step.evaluate(self)
+        matcher = self._get_default_machers()
+        step.evaluate(self, matcher)
         self.assertEqual('girls', self.youth)  # Uh...
 
     def step_multiline_predicate(self):
@@ -520,7 +532,8 @@ class MoreliaSuite(TestCase):
         feature = '%s multiline predicate' % self.when_keyword
         language = self._get_language()
         steps = Parser(language=language).parse_feature(feature)
-        steps[0].evaluate(self)
+        matcher = self._get_default_machers()
+        steps[0].evaluate(self, matcher)
 
 # CONSIDER use the suite._testMethodDoc to get the doc()! (and what can it do??)
 # CONSIDER  use suite.fail instead of raise
@@ -614,7 +627,7 @@ class MoreliaSuite(TestCase):
         thang = Parser(language=language).parse_file(pwd + '/morelia%s.feature' % (language or ''))
         div_count = len(thang.steps[0].steps)  # CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
 
-        rep = thang.report(self).string
+        rep = thang.report(self)._result
         once = 'when did Bow Wow Wow become classic rock'
         assert 1 == rep.count(once)
 
@@ -677,8 +690,8 @@ class MoreliaSuite(TestCase):
     def step_we_evaluate_the_file(self):
         r'we evaluate the file'
 
-        self.viridis = Step()
-        self.suggestion = self.viridis._suggest_doc_string(self.predicate)
+        matcher = self._get_default_machers()
+        self.suggestion, self.extra_arguments = matcher._suggest_doc_string(self.predicate)
 
     def step_we_convert_it_into_a_(self, suggestion):
         r'we convert it into a (.+)'
@@ -688,7 +701,7 @@ class MoreliaSuite(TestCase):
     def step_add_extra_arguments(self, extra=''):  # TODO  blank columns should exist!
         r'add (.+) arguments'
 
-        self.assertEqual(extra, self.viridis.extra_arguments)
+        self.assertEqual(extra, self.extra_arguments)
 
     def step_a_file_contains_statements_produce_diagnostics_(self, statements, diagnostics):
         r'a file contains (.+), it produces (.+)'
@@ -718,6 +731,13 @@ class MoreliaSuite(TestCase):
         string = to_unicode(string)
         diagnostic = u'"%s" not found in "%s"' % (pattern, string)
         self.assertTrue(re.search(pattern, string, flags) is not None, diagnostic)
+
+    def _get_default_machers(self):
+        docstring_matcher = DocStringStepMatcher(self)
+        method_name_matcher = MethodNameStepMatcher(self)
+        docstring_matcher.add_matcher(method_name_matcher)
+        return docstring_matcher
+
 
 # Scenario: Leading # marks comment lines.
     # (Warning: Only leading marks are respected for now!)

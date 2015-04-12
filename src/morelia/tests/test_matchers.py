@@ -2,12 +2,16 @@ import unittest
 
 from mock import Mock, sentinel, patch, MagicMock
 
-from morelia.matchers import ByNameStepMatcher, IStepMatcher
+from morelia.matchers import MethodNameStepMatcher, IStepMatcher, DocStringStepMatcher
 
 
 class TestStepMatcher(IStepMatcher):
+
     def match(self, predicate, augmented_predicate, step_methods):
-        pass
+        pass  # pragma: nocover
+
+    def suggest(self, predicate):
+        pass  # pragma: nocover
 
 
 class IStepMatcherAddMatcherTestCase(unittest.TestCase):
@@ -142,10 +146,10 @@ class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
         self.assertEqual(result, step_methods)
 
 
-class ByNameStepMatcherMatchTestCase(unittest.TestCase):
-    """ Test :py:meth:`ByNameStepMatcher.match`. """
+class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
+    """ Test :py:meth:`MethodNameStepMatcher.match`. """
 
-    def test_should_return_name_and_method(self):
+    def test_should_return_method(self):
         """ Scenario: match by name """
         # Arrange
         predicate = 'my_milkshake'
@@ -155,7 +159,7 @@ class ByNameStepMatcherMatchTestCase(unittest.TestCase):
             method_name: sentinel.method
         }
         suite = Mock(**methods)
-        obj = ByNameStepMatcher(suite)
+        obj = MethodNameStepMatcher(suite)
         # Act
         result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
         # Assert
@@ -171,7 +175,7 @@ class ByNameStepMatcherMatchTestCase(unittest.TestCase):
             method_name: sentinel.method
         }
         suite = Mock(**methods)
-        obj = ByNameStepMatcher(suite)
+        obj = MethodNameStepMatcher(suite)
         # Act
         result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
         # Assert
@@ -187,12 +191,150 @@ class ByNameStepMatcherMatchTestCase(unittest.TestCase):
             method_name: sentinel.method
         }
         suite = Mock(**methods)
-        obj = ByNameStepMatcher(suite)
+        obj = MethodNameStepMatcher(suite)
         # Act
         result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
         # Assert
         self.assertEqual(result_method, None)
 
 
-if __name__ == '__main__':  # pragma: nobranch
-    unittest.main()
+class DocStringStepMatcherMatchTestCase(unittest.TestCase):
+    """ Test :py:meth:`DocStringStepMatcher.match`. """
+
+    def test_should_return_method_and_matches(self):
+        """ Scenario: match by docstring """
+        # Arrange
+        predicate = 'my milkshake brings all the boys to the yard'
+        augmented_predicate = 'my milkshake brings all the boys to the yard'
+        method_name = 'step_%s' % predicate
+        docstring = r'my milkshake brings all the (boys|girls) to (.*) yard'
+        method = Mock(__doc__=docstring)
+        methods = {
+            method_name: method
+        }
+        suite = Mock(**methods)
+        obj = DocStringStepMatcher(suite)
+        # Act
+        result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
+        # Assert
+        self.assertEqual(result_method, method)
+        self.assertEqual(result_args, ('boys', 'the'))
+
+    def test_should_return_none_if_docstring_not_mached(self):
+        """ Scenario: no match by docstring """
+        # Arrange
+        predicate = 'not there'
+        augmented_predicate = 'not there'
+        method_name = 'step_%s' % predicate
+        docstring = r'my milkshake brings all the (boys|girls) to (.*) yard'
+        method = Mock(__doc__=docstring)
+        methods = {
+            method_name: method
+        }
+        suite = Mock(**methods)
+        obj = DocStringStepMatcher(suite)
+        # Act
+        result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
+        # Assert
+        self.assertTrue(result_method is None)
+        self.assertEqual(result_args, [])
+
+    def test_should_return_none_if_no_docstring(self):
+        """ Scenario: no match by docstring """
+        # Arrange
+        predicate = 'my milkshake brings all the boys to the yard'
+        augmented_predicate = 'my milkshake brings all the boys to the yard'
+        method_name = 'step_%s' % predicate
+        method = Mock(__doc__='')
+        methods = {
+            method_name: method
+        }
+        suite = Mock(**methods)
+        obj = DocStringStepMatcher(suite)
+        # Act
+        result_method, result_args = obj.match(predicate, augmented_predicate, methods.keys())
+        # Assert
+        self.assertTrue(result_method is None)
+        self.assertEqual(result_args, [])
+
+    def test_should_return_second_method_and_matches(self):
+        """ Scenario: many methods """
+        # Arrange
+        predicate = 'my milkshake brings all the boys to the yard'
+        augmented_predicate = 'my milkshake brings all the boys to the yard'
+        method_name = 'step_%s' % predicate
+        docstring = r'my milkshake brings all the (boys|girls) to (.*) yard'
+        method = Mock(__doc__=docstring)
+        methods = {
+            method_name: method,
+            'step_other': sentinel.method,
+        }
+        suite = Mock(**methods)
+        obj = DocStringStepMatcher(suite)
+        # Act
+        result_method, result_args = obj.match(predicate, augmented_predicate,
+                                               [method_name, 'step_other'])
+        # Assert
+        self.assertEqual(result_method, method)
+        self.assertEqual(result_args, ('boys', 'the'))
+
+
+class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
+    """ Test :py:meth:`DocStringStepMatcher.suggest`. """
+
+    def test_should_return_suggested_method(self):
+        """ Scenariusz: suggest """
+        # Arrange
+        obj = DocStringStepMatcher(sentinel.suite)
+        # Act
+        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        # code\n\n'
+        test_data = [
+            ('tastes great', 'tastes_great', r"ur'tastes great'", ''),
+            ('less filling', 'less_filling', r"ur'less filling'", ''),
+            ('line\nfeed', 'line_feed', r"ur'line\nfeed'", ''),
+            ('tick\'ed\'', 'tick_ed', r"ur'tick\'ed\''", ''),
+            ('tastes   great', 'tastes_great', r"ur'tastes\s+great'", ''),
+            ('argu<ment>al', 'argu_ment_al', r"ur'argu(.+)al'", ', ment'),
+            ('arg<u>ment<al>', 'arg_u_ment_al', r"ur'arg(.+)ment(.+)'", ', u, al'),
+            ('str"ing"', 'str_ing', 'ur\'str"([^"]+)"\'', ', ing'),
+            ('"str"i"ngs"', 'str_i_ngs', 'ur\'"([^"]+)"i"([^"]+)"\'', ', str, ngs'),
+        ]
+        for predicate, method, docstring, args in test_data:
+            result = obj.suggest(predicate)
+            # Assert
+            expected = pattern % {
+                'method_name': method,
+                'docstring': docstring,
+                'args': args,
+            }
+            self.assertEqual(result, expected)
+
+
+class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
+    """ Test :py:meth:`MethodNameStepMatcher.suggest`. """
+
+    def test_should_return_suggested_method(self):
+        """ Scenariusz: suggest """
+        # Arrange
+        obj = MethodNameStepMatcher(sentinel.suite)
+        pattern = u'    def step_%(method_name)s(self%(args)s):\n\n        # code\n\n'
+        test_data = [
+            ('tastes great', 'tastes_great', ''),
+            ('less filling', 'less_filling', ''),
+            ('line\nfeed', 'line_feed', ''),
+            ('tick\'ed\'', 'tick_ed', ''),
+            ('tastes   great', 'tastes_great', ''),
+            ('argu<ment>al', 'argu_ment_al', ', ment'),
+            ('arg<u>ment<al>', 'arg_u_ment_al', ', u, al'),
+            ('str"ing"', 'str_ing', ', ing'),
+            ('"str"i"ngs"', 'str_i_ngs', ', str, ngs'),
+        ]
+        for predicate, method, args in test_data:
+            # Act
+            result = obj.suggest(predicate)
+            # Assert
+            expected = pattern % {
+                'method_name': method,
+                'args': args,
+            }
+            self.assertEqual(result, expected)

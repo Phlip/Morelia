@@ -1,5 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import re
+import unicodedata
+
+from .utils import to_unicode
 
 
 class IStepMatcher(object):
@@ -45,8 +48,37 @@ class IStepMatcher(object):
     def match(self, predicate, augmented_predicate, step_methods):
         pass  # pragma: nocover
 
+    @abstractmethod
+    def suggest(self, predicate):
+        pass  # pragma: nocover
 
-class ByNameStepMatcher(IStepMatcher):
+    def _suggest_doc_string(self, predicate):
+        extra_arguments = ''
+        predicate = predicate.replace("'", r"\'").replace('\n', r'\n')
+
+        # support for tables
+        extra_arguments += self._add_extra_args(r'\<(.+?)\>', predicate)
+        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+
+        # support for variables
+        extra_arguments += self._add_extra_args(r'"(.+?)"', predicate)
+        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
+
+        predicate = re.sub(r' \s+', r'\s+', predicate)
+        return "ur'%s'" % predicate, extra_arguments
+
+    def _add_extra_args(self, matcher, predicate):
+        args = re.findall(matcher, predicate)
+        return ''.join(', ' + self.slugify(arg) for arg in args)
+
+    def slugify(self, predicate):
+        predicate = to_unicode(predicate)
+        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
+        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
+        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
+
+
+class MethodNameStepMatcher(IStepMatcher):
 
     def match(self, predicate, augmented_predicate, step_methods):
         clean = re.sub(r'[^\w]', '_?', predicate)
@@ -57,3 +89,54 @@ class ByNameStepMatcher(IStepMatcher):
             method = self._suite.__getattribute__(method_name)
             return method, []
         return None, []
+
+    def suggest(self, predicate):
+        """ Suggest method definition.
+
+        :param str predicate: step predicate
+        :returns: suggested method definition
+        """
+        doc_string, extra_arguments = self._suggest_doc_string(predicate)
+        method_name = self.slugify(predicate)
+        indent = ' ' * 4
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n\n%(double_indent)s# code\n\n' % {
+            'indent': indent,
+            'method_name': method_name,
+            'args': extra_arguments,
+            'double_indent': indent * 2,
+        }
+        return suggest
+
+
+class DocStringStepMatcher(IStepMatcher):
+
+    def match(self, predicate, augmented_predicate, step_methods):
+        for method_name in step_methods:
+            method = self._suite.__getattribute__(method_name)
+            doc = method.__doc__
+            if not doc:
+                continue
+            doc = re.compile('^' + doc + '$')  # CONSIDER deal with users who put in the ^$
+            m = doc.match(augmented_predicate)
+
+            if m:
+                return method, m.groups()
+        return None, []
+
+    def suggest(self, predicate):
+        """ Suggest method definition.
+
+        :param str predicate: step predicate
+        :returns: suggested method definition
+        """
+        doc_string, extra_arguments = self._suggest_doc_string(predicate)
+        method_name = self.slugify(predicate)
+        indent = ' ' * 4
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n%(double_indent)s%(doc_string)s\n\n%(double_indent)s# code\n\n' % {
+            'indent': indent,
+            'method_name': method_name,
+            'args': extra_arguments,
+            'double_indent': indent * 2,
+            'doc_string': doc_string
+        }
+        return suggest

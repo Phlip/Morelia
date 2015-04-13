@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 import re
 import unicodedata
 
+import parse
+
 from .utils import to_unicode
 
 
@@ -37,12 +39,12 @@ class IStepMatcher(object):
     def find(self, predicate, augmented_predicate, step_methods=None):
         if step_methods is None:
             step_methods = self._get_all_step_methods()
-        method, matches = self.match(predicate, augmented_predicate, step_methods)
+        method, args, kwargs = self.match(predicate, augmented_predicate, step_methods)
         if method:
-            return method, matches
+            return method, args, kwargs
         if self._next is not None:
             return self._next.find(predicate, augmented_predicate, step_methods)
-        return None, []
+        return None, (), {}
 
     @abstractmethod
     def match(self, predicate, augmented_predicate, step_methods):
@@ -58,14 +60,22 @@ class IStepMatcher(object):
 
         # support for tables
         extra_arguments += self._add_extra_args(r'\<(.+?)\>', predicate)
-        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+        predicate = self.replace_table_placeholder(predicate)
 
         # support for variables
         extra_arguments += self._add_extra_args(r'"(.+?)"', predicate)
-        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
+        predicate = self.replace_variable_placeholder(predicate)
 
         predicate = re.sub(r' \s+', r'\s+', predicate)
         return "ur'%s'" % predicate, extra_arguments
+
+    def replace_variable_placeholder(self, predicate):
+        predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
+        return predicate
+
+    def replace_table_placeholder(self, predicate):
+        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+        return predicate
 
     def _add_extra_args(self, matcher, predicate):
         args = re.findall(matcher, predicate)
@@ -87,8 +97,8 @@ class MethodNameStepMatcher(IStepMatcher):
         step_methods = [method for method in step_methods if regexp.match(method)]
         for method_name in step_methods:
             method = self._suite.__getattribute__(method_name)
-            return method, []
-        return None, []
+            return method, (), {}
+        return None, (), {}
 
     def suggest(self, predicate):
         """ Suggest method definition.
@@ -108,7 +118,7 @@ class MethodNameStepMatcher(IStepMatcher):
         return suggest
 
 
-class DocStringStepMatcher(IStepMatcher):
+class RegexpStepMatcher(IStepMatcher):
 
     def match(self, predicate, augmented_predicate, step_methods):
         for method_name in step_methods:
@@ -120,8 +130,13 @@ class DocStringStepMatcher(IStepMatcher):
             m = doc.match(augmented_predicate)
 
             if m:
-                return method, m.groups()
-        return None, []
+                kwargs = m.groupdict()
+                if not kwargs:
+                    args = m.groups()
+                else:
+                    args = ()
+                return method, args, kwargs
+        return None, (), {}
 
     def suggest(self, predicate):
         """ Suggest method definition.
@@ -140,3 +155,45 @@ class DocStringStepMatcher(IStepMatcher):
             'doc_string': doc_string
         }
         return suggest
+
+
+class ParseStepMatcher(IStepMatcher):
+
+    def match(self, predicate, augmented_predicate, step_methods):
+        for method_name in step_methods:
+            method = self._suite.__getattribute__(method_name)
+            doc = method.__doc__
+            if not doc:
+                continue
+            match = parse.parse(doc, augmented_predicate)
+            if match:
+                args = match.fixed
+                kwargs = match.named
+                return method, tuple(args), kwargs
+        return None, (), {}
+
+    def suggest(self, predicate):
+        """ Suggest method definition.
+
+        :param str predicate: step predicate
+        :returns: suggested method definition
+        """
+        doc_string, extra_arguments = self._suggest_doc_string(predicate)
+        method_name = self.slugify(predicate)
+        indent = ' ' * 4
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n%(double_indent)s%(doc_string)s\n\n%(double_indent)s# code\n\n' % {
+            'indent': indent,
+            'method_name': method_name,
+            'args': extra_arguments,
+            'double_indent': indent * 2,
+            'doc_string': doc_string
+        }
+        return suggest
+
+    def replace_variable_placeholder(self, predicate):
+        predicate = re.sub(r'"(.+?)"', r'"{\1}"', predicate)
+        return predicate
+
+    def replace_table_placeholder(self, predicate):
+        predicate = re.sub(r'\<(.+?)\>', r'{\1}', predicate)
+        return predicate

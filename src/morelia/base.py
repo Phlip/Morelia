@@ -16,7 +16,7 @@ from six import moves
 
 from .exceptions import MissingStepError
 from .i18n import TRANSLATIONS
-from .matchers import MethodNameStepMatcher, DocStringStepMatcher
+from .matchers import MethodNameStepMatcher, RegexpStepMatcher, ParseStepMatcher
 from .utils import to_unicode
 from .visitors import TestVisitor, ReportVisitor, StepMatcherVisitor
 
@@ -174,7 +174,7 @@ class Parser:
 
     def evaluate(self, suite, matchers=None):
         if matchers is None:
-            matchers = [DocStringStepMatcher, MethodNameStepMatcher]
+            matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
         matcher = self._create_matcher(suite, matchers)
         test_visitor = TestVisitor(suite, matcher)
         step_matcher_visitor = StepMatcherVisitor(suite, matcher)
@@ -392,9 +392,9 @@ class Step(Morelia):
     def find_step(self, suite, matcher):
         predicate = self.predicate
         augmented_predicate = self._augment_predicate()
-        method, matches = matcher.find(predicate, augmented_predicate)
+        method, args, kwargs = matcher.find(predicate, augmented_predicate)
         if method:
-            return method, matches
+            return method, args, kwargs
 
         suggest = matcher.suggest(predicate)
         raise MissingStepError(predicate, suggest)
@@ -426,8 +426,8 @@ class Step(Morelia):
         return self.copy
 
     def evaluate(self, suite, matcher):
-        method, matches = self.find_step(suite, matcher)
-        method(*matches)
+        method, args, kwargs = self.find_step(suite, matcher)
+        method(*args, **kwargs)
 
     def test_step(self, suite, matcher):
         try:

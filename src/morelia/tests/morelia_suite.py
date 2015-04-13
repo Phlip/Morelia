@@ -10,7 +10,7 @@ morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
 from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
                           And, When, Then, TestVisitor, _permute_indices, MissingStepError)
-from morelia.matchers import DocStringStepMatcher, MethodNameStepMatcher
+from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
 
@@ -329,7 +329,7 @@ class MoreliaSuite(TestCase):
         self.assemble_scene_table('Step flesh is weak\n')
         scenario = self.table_scene.steps[0].steps[0]
         steps_num = len(scenario.steps)
-        matcher = DocStringStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
+        matcher = RegexpStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
         visitor = TestVisitor(self, matcher)
         global crunks, zones
         crunks = []
@@ -470,7 +470,7 @@ class MoreliaSuite(TestCase):
         s.concept = 'Given'
         s.predicate = 'exceptional'
         s.line_number = 42
-        matcher = DocStringStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
+        matcher = RegexpStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
         visitor = TestVisitor(self, matcher)
         matcher = self._get_default_machers()
 
@@ -483,22 +483,22 @@ class MoreliaSuite(TestCase):
     def test_find_step_by_name(self):
         step = Given()._parse('my milkshake')
         matcher = self._get_default_machers()
-        method, matches = step.find_step(self, matcher)
+        method, args, kwargs = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_by_doc_string(self):
         step = And()._parse('my milkshake brings all the boys to the yard')
         matcher = self._get_default_machers()
-        method, matches = step.find_step(self, matcher)
+        method, args, kwargs = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_with_match(self):
         step = When()._parse('my milkshake brings all the girls to the yard')
         matcher = self._get_default_machers()
-        method, matches = step.find_step(self, matcher)
-        self.assertEqual(('girls', 'the'), matches)
+        method, args, kwargs = step.find_step(self, matcher)
+        self.assertEqual(('girls', 'the'), args)
 
     def test_step_not_found(self):
         step = Then()._parse('not there')
@@ -733,7 +733,7 @@ class MoreliaSuite(TestCase):
         self.assertTrue(re.search(pattern, string, flags) is not None, diagnostic)
 
     def _get_default_machers(self):
-        docstring_matcher = DocStringStepMatcher(self)
+        docstring_matcher = RegexpStepMatcher(self)
         method_name_matcher = MethodNameStepMatcher(self)
         docstring_matcher.add_matcher(method_name_matcher)
         return docstring_matcher

@@ -17,6 +17,7 @@ setup(
     package_dir={'': 'src'},
     install_requires=[
         'six',
+        'parse',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',

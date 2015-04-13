@@ -90,8 +90,8 @@ class StepFindStepTestCase(TestCase):
         obj.predicate = 'method'
         # Act
         matcher = Mock()
-        matcher.find.return_value = (sentinel.method, [])
-        result, matches = obj.find_step(sentinel.suite, matcher)
+        matcher.find.return_value = (sentinel.method, [], {})
+        result, args, kwargs = obj.find_step(sentinel.suite, matcher)
         # Assert
         self.assertEqual(result, sentinel.method)
 
@@ -101,5 +101,5 @@ class StepFindStepTestCase(TestCase):
         obj = Step()
         obj.predicate = u'some_method'
         matcher = Mock()
-        matcher.find.return_value = (None, [])
+        matcher.find.return_value = (None, [], {})
         self.assertRaises(MissingStepError, obj.find_step, sentinel.suite, matcher)

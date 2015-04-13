@@ -18,10 +18,13 @@ Morelia
     :target: https://travis-ci.org/kidosoft/Morelia
     :alt: Build status
 
+.. image:: https://coveralls.io/repos/kidosoft/Morelia/badge.svg
+    :target: https://coveralls.io/r/kidosoft/Morelia
+    :alt: Coverage
+
 .. image:: https://readthedocs.org/projects/morelia/badge/?format=svg
     :target: https://morelia.readthedocs.org
     :alt: Documetation
-
 
 Morelia *viridis* is a Python Behavior Driven Development platform, conceptually derived from Ruby's Cucumber Framework.
 

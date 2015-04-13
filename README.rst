@@ -46,7 +46,7 @@ Write feature description:
 
 .. code-block:: cucumber
 
-    # tests/morelia.feature
+    # calculator.feature
 
     Feature: Addition
         In order to avoid silly mistakes
@@ -64,43 +64,121 @@ Create standard python's unittest and hook Morelia in it:
 
 .. code-block:: python
 
-    # tests/morelia_test.py
+    # test_acceptance.py
 
-    class MoreliaTest(TestCase):
+    import unittest
+    from morelia import Parser
+
+    class CalculatorTestCase(unittest.TestCase):
+    
+        def test_addition(self):
+            Parser().parse_file('calculator.feature').evaluate(self)
+
+Run test exaclty like your regular tests. Here's raw unittest example:
+
+.. code-block:: console
+
+   python -m unittest -v test_acceptance
+
+And you'll see which steps are missing:
+
+.. code-block:: python
+
+    F
+    ======================================================================
+    FAIL: test_addition (__main__.CalculatorTestCase)
+    Addition feature
+    ----------------------------------------------------------------------
+    Traceback (most recent call last):
+      File "test_acceptance.py", line 43, in test_addition
+        Parser().parse_file('calculator.feature').evaluate(self)
+      File "/.../morelia/base.py", line 184, in evaluate
+        self.rip(step_matcher_visitor)
+      File "/.../morelia/base.py", line 198, in rip
+        visitor.after_feature(node)
+      File "/.../morelia/visitors.py", line 117, in after_feature
+        self._suite.fail(diagnostic)
+    AssertionError: Cannot match steps:
+
+        def step_I_have_powered_calculator_on(self):
+            ur'I have powered calculator on'
+
+            # code
+            pass
+
+        def step_I_have_entered_50_into_the_calculator(self):
+            ur'I have entered 50 into the calculator'
+
+            # code
+            pass
+
+        def step_I_have_entered_70_into_the_calculator(self):
+            ur'I have entered 70 into the calculator'
+
+            # code
+            pass
+
+        def step_I_press_add(self):
+            ur'I press add'
+
+            # code
+            pass
+
+        def step_the_result_should_be_120_on_the_screen(self):
+            ur'the result should be 120 on the screen'
+
+            # code
+            pass
+
+
+Now implement steps:
+
+.. code-block:: python
+
+    # test_acceptance.py
+
+    import unittest
+    from morelia import Parser
+    
+    class CalculatorTestCase(unittest.TestCase):
     
         def setUp(self):
             self.stack = []
+
+        def test_addition(self):
+            Parser().parse_file('calculator.feature').evaluate(self)
     
         def step_I_have_entered_a_number_into_the_calculator(self, number):
-            r'I have entered (\d+) into the calculator'
+            ur'I have entered (\d+) into the calculator'  # match by regexp
             self.stack.append(int(number))
     
         def step_I_press_add(self):  #  matched by method name
             self.result = sum(self.stack)
     
         def step_the_result_should_be_on_the_screen(self, number):
-            "the result should be (\d+) on the screen"
+            ur'the result should be {number} on the screen'  # match by format-like string
             assert int(number) == self.result
 
-        def test_evaluate_file(self):
-            from morelia import Parser
-            Parser().parse_file('tests/morelia.feature').evaluate(self)
+And run it again:
 
-And run it exactly the same as your regular tests. E.g.:
+.. code-block:: console
 
-python -m unittest tests/morelia_test.py
+    $ python -m unittest -v test_acceptance
+
+    test_addition (test_acceptance.CalculatorTestCase)
+    Addition feature ... ok
+
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.016s
+
+    OK
 
 Note that Morelia does not waste anyone's time inventing a new testing back-end
 just to add a layer of literacy over our testage. Steps are miniature TestCases.
 Your onsite customer need never know, and your unit tests and customer tests
 can share their support methods. The same one test button can run all TDD and BDD tests.
 
-Next, note that Morelia matches Steps in your Feature file to either the names
-or doc-strings of *step_* methods in your test case.
-And it expands regular expressions, such as `(\d+)`, into step arguments,
-such as `number`.
-Remember to use tight expressions, such as `(\d+)`,
-not loosey-goose expressions like `(\d*)` or `(.*)`, to validate your input.
+Look at example directory for a little more enhanced example.
 
 Documentation
 =============

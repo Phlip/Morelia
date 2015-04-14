@@ -52,11 +52,12 @@ Write feature description:
         In order to avoid silly mistakes
         As a math idiot
         I want to be told the sum of two numbers
-    
+
     Scenario: Add two numbers
-        Given I have entered 50 into the calculator
-        And I have entered 70 into the calculator
-        When I press add
+        Given I have powered calculator on
+        When I enter 50 into the calculator
+        And I enter 70 into the calculator
+        And I press add
         Then the result should be 120 on the screen
 
 
@@ -106,14 +107,14 @@ And you'll see which steps are missing:
             # code
             pass
 
-        def step_I_have_entered_50_into_the_calculator(self):
-            ur'I have entered 50 into the calculator'
+        def step_I_enter_50_into_the_calculator(self):
+            ur'I enter 50 into the calculator'
 
             # code
             pass
 
-        def step_I_have_entered_70_into_the_calculator(self):
-            ur'I have entered 70 into the calculator'
+        def step_I_enter_70_into_the_calculator(self):
+            ur'I enter 70 into the calculator'
 
             # code
             pass
@@ -130,7 +131,6 @@ And you'll see which steps are missing:
             # code
             pass
 
-
 Now implement steps:
 
 .. code-block:: python
@@ -142,14 +142,15 @@ Now implement steps:
     
     class CalculatorTestCase(unittest.TestCase):
     
-        def setUp(self):
-            self.stack = []
-
         def test_addition(self):
             Parser().parse_file('calculator.feature').evaluate(self)
     
-        def step_I_have_entered_a_number_into_the_calculator(self, number):
-            ur'I have entered (\d+) into the calculator'  # match by regexp
+        def step_I_have_powered_calculator_on(self):
+            ur'I have powered calculator on'
+            self.stack = []
+
+        def step_I_enter_a_number_into_the_calculator(self, number):
+            ur'I enter (\d+) into the calculator'  # match by regexp
             self.stack.append(int(number))
     
         def step_I_press_add(self):  #  matched by method name
@@ -158,6 +159,7 @@ Now implement steps:
         def step_the_result_should_be_on_the_screen(self, number):
             ur'the result should be {number} on the screen'  # match by format-like string
             assert int(number) == self.result
+
 
 And run it again:
 

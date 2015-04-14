@@ -109,11 +109,10 @@ class MethodNameStepMatcher(IStepMatcher):
         doc_string, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n\n%(double_indent)s# code\n\n' % {
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
             'args': extra_arguments,
-            'double_indent': indent * 2,
         }
         return suggest
 
@@ -147,11 +146,10 @@ class RegexpStepMatcher(IStepMatcher):
         doc_string, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n%(double_indent)s%(doc_string)s\n\n%(double_indent)s# code\n\n' % {
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
             'args': extra_arguments,
-            'double_indent': indent * 2,
             'doc_string': doc_string
         }
         return suggest
@@ -181,11 +179,10 @@ class ParseStepMatcher(IStepMatcher):
         doc_string, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n%(double_indent)s%(doc_string)s\n\n%(double_indent)s# code\n\n' % {
+        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
             'args': extra_arguments,
-            'double_indent': indent * 2,
             'doc_string': doc_string
         }
         return suggest

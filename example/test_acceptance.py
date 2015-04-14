@@ -27,8 +27,8 @@ class CalculatorTestCase(unittest.TestCase):
         ur'I have powered calculator on'
         self.calculator.on()
 
-    def step_I_have_entered_a_number_into_the_calculator(self, number):
-        ur'I have entered (\d+) into the calculator'  # match by regexp
+    def step_I_enter_a_number_into_the_calculator(self, number):
+        ur'I enter (\d+) into the calculator'  # match by regexp
         self.calculator.push(int(number))
 
     def step_I_press_add(self):  # matched by method name

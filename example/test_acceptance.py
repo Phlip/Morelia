@@ -28,19 +28,19 @@ class CalculatorTestCase(unittest.TestCase):
         self.calculator.on()
 
     def step_I_enter_a_number_into_the_calculator(self, number):
-        ur'I enter (\d+) into the calculator'  # match by regexp
+        ur'I enter "(\d+)" into the calculator'  # match by regexp
         self.calculator.push(int(number))
 
     def step_I_press_add(self):  # matched by method name
         self.calculator.add()
 
     def step_the_result_should_be_on_the_screen(self, number):
-        ur'the result should be {number} on the screen'  # match by format-like string
+        ur'the result should be "{number}" on the screen'  # match by format-like string
         assert int(number) == self.calculator.get_result()
 
     def test_addition(self):
         """ Addition feature """
-        Parser().parse_file('calculator.feature').evaluate(self)
+        Parser().parse_file('calculator.feature').evaluate(self, show_all_missing=True)
 
 
 if __name__ == '__main__':  # pragma: nobranch

@@ -9,6 +9,11 @@ ADDED
 
   * support for different output formatters
 
+CHANGED
+^^^^^^^
+
+  * folding missing steps suggestions for more condense output
+
 Version: 0.3.0 (2015-04-14)
 -------------------------------------------------------------------------------
 

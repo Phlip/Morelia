@@ -55,37 +55,72 @@ class IStepMatcher(object):
         pass  # pragma: nocover
 
     def _suggest_doc_string(self, predicate):
-        extra_arguments = ''
         predicate = predicate.replace("'", r"\'").replace('\n', r'\n')
 
-        # support for tables
-        extra_arguments += self._add_extra_args(r'\<(.+?)\>', predicate)
-        predicate = self.replace_table_placeholder(predicate)
+        arguments = self._add_extra_args(r'["\<](.+?)["\>]', predicate)
+        arguments = self._name_arguments(arguments)
 
-        # support for variables
-        extra_arguments += self._add_extra_args(r'"(.+?)"', predicate)
-        predicate = self.replace_variable_placeholder(predicate)
-
+        predicate = self.replace_placeholders(predicate, arguments)
         predicate = re.sub(r' \s+', r'\s+', predicate)
-        return "ur'%s'" % predicate, extra_arguments
 
-    def replace_variable_placeholder(self, predicate):
+        arguments = self._format_arguments(arguments)
+        return "ur'%s'" % predicate, arguments
+
+    def _name_arguments(self, extra_arguments):
+        if not extra_arguments:
+            return ''
+        arguments = []
+        number_arguments_count = sum(1 for arg_type, arg in extra_arguments
+                                     if arg_type == 'number')
+        if number_arguments_count < 2:
+            num_suffixes = iter([''])
+        else:
+            num_suffixes = iter(range(1, number_arguments_count + 1))
+
+        for arg_type, arg in extra_arguments:
+            if arg_type == 'number':
+                arguments.append('number%s' % next(num_suffixes))
+            else:
+                arguments.append(arg)
+        return arguments
+
+    def _format_arguments(self, arguments):
+        if not arguments:
+            return ''
+        return ', ' + ', '.join(arguments)
+
+    def replace_placeholders(self, predicate, arguments):
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
-        return predicate
-
-    def replace_table_placeholder(self, predicate):
         predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
         return predicate
 
     def _add_extra_args(self, matcher, predicate):
         args = re.findall(matcher, predicate)
-        return ''.join(', ' + self.slugify(arg) for arg in args)
+        result = []
+        for arg in args:
+            try:
+                float(arg)
+            except ValueError:
+                arg = ('id', self.slugify(arg))
+            else:
+                arg = ('number', arg)
+            result.append(arg)
+        return result
 
     def slugify(self, predicate):
         predicate = to_unicode(predicate)
-        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
-        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
-        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
+        result = []
+        for part in re.split('[^\w]+', predicate):
+            part = unicodedata.normalize('NFD', part).encode('ascii', 'replace').decode('utf-8')
+            part = part.replace(u'??', u'_').replace(u'?', u'')
+            try:
+                float(part)
+            except ValueError:
+                pass
+            else:
+                part = 'number'
+            result.append(part)
+        return '_'.join(result).strip('_')
 
 
 class MethodNameStepMatcher(IStepMatcher):
@@ -104,17 +139,22 @@ class MethodNameStepMatcher(IStepMatcher):
         """ Suggest method definition.
 
         :param str predicate: step predicate
-        :returns: suggested method definition
+        :returns: suggested method definition, suggested method name, suggested docstring
+        :rtype: (str, str, str)
         """
-        doc_string, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n\n        # code\n        pass\n\n' % {
+        suggest = u'%(indent)sdef step_%(method_name)s(self):\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
-            'args': extra_arguments,
         }
-        return suggest
+        return suggest, method_name, ''
+
+    def slugify(self, predicate):
+        predicate = to_unicode(predicate)
+        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
+        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
+        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
 
 
 class RegexpStepMatcher(IStepMatcher):
@@ -141,18 +181,19 @@ class RegexpStepMatcher(IStepMatcher):
         """ Suggest method definition.
 
         :param str predicate: step predicate
-        :returns: suggested method definition
+        :returns: suggested method definition, suggested method name, suggested docstring
+        :rtype: (str, str, str)
         """
-        doc_string, extra_arguments = self._suggest_doc_string(predicate)
+        docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
         suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
             'args': extra_arguments,
-            'doc_string': doc_string
+            'doc_string': docstring
         }
-        return suggest
+        return suggest, method_name, docstring
 
 
 class ParseStepMatcher(IStepMatcher):
@@ -174,23 +215,27 @@ class ParseStepMatcher(IStepMatcher):
         """ Suggest method definition.
 
         :param str predicate: step predicate
-        :returns: suggested method definition
+        :returns: suggested method definition, suggested method name, suggested docstring
+        :rtype: (str, str, str)
         """
-        doc_string, extra_arguments = self._suggest_doc_string(predicate)
+        docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         indent = ' ' * 4
         suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
             'indent': indent,
             'method_name': method_name,
             'args': extra_arguments,
-            'doc_string': doc_string
+            'doc_string': docstring
         }
-        return suggest
+        return suggest, method_name, docstring
 
-    def replace_variable_placeholder(self, predicate):
-        predicate = re.sub(r'"(.+?)"', r'"{\1}"', predicate)
-        return predicate
+    def replace_placeholders(self, predicate, arguments):
+        arguments = iter(arguments)
 
-    def replace_table_placeholder(self, predicate):
-        predicate = re.sub(r'\<(.+?)\>', r'{\1}', predicate)
+        def repl(match):
+            if match.group(0).startswith('"'):
+                return '"{%s}"' % next(arguments)
+            return '{%s}' % next(arguments)
+
+        predicate = re.sub(r'".+?"|\<.+?\>', repl, predicate)
         return predicate

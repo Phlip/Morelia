@@ -76,7 +76,7 @@ class MissingStepErrorTestCase(TestCase):
         """ Scenario: exception with step and suggest """
         # Arrange
         # Act
-        result = MissingStepError('predicate line', 'def step_predicate_line(self):\n    pass')
+        result = MissingStepError('predicate line', 'def step_predicate_line(self):\n    pass', 'step_predicate_line', '')
         # Assert
         self.assertTrue(result is not None)
         self.assertEqual(result.predicate, 'predicate line')
@@ -104,4 +104,5 @@ class StepFindStepTestCase(TestCase):
         obj.predicate = u'some_method'
         matcher = Mock()
         matcher.find.return_value = (None, [], {})
+        matcher.suggest.return_value = ('suggest', 'method_name', 'docstring')
         self.assertRaises(MissingStepError, obj.find_step, sentinel.suite, matcher)

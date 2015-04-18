@@ -24,13 +24,28 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Arrange
         obj = StepMatcherVisitor(sentinel.suite, sentinel.matcher)
         node = Mock()
-        suggest = 'suggest'
-        node.find_step.side_effect = [MissingStepError('predicate', suggest)]
+        exc = MissingStepError('predicate', sentinel.suggest,
+                               sentinel.method_name, sentinel.docstring)
+        node.find_step.side_effect = [exc]
         # Act
         obj.visit(node)
         # Assert
         node.find_step.assert_called_once_with(sentinel.suite, sentinel.matcher)
-        self.assertTrue(suggest in obj._not_matched)
+        self.assertTrue(sentinel.docstring in obj._not_matched)
+
+    def test_should_not_find_step_by_method_name_matcher(self):
+        """ Scenario: step not found by method name matcher """
+        # Arrange
+        obj = StepMatcherVisitor(sentinel.suite, sentinel.matcher)
+        node = Mock()
+        exc = MissingStepError('predicate', sentinel.suggest,
+                               sentinel.method_name, '')
+        node.find_step.side_effect = [exc]
+        # Act
+        obj.visit(node)
+        # Assert
+        node.find_step.assert_called_once_with(sentinel.suite, sentinel.matcher)
+        self.assertTrue(sentinel.method_name in obj._not_matched)
 
 
 class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
@@ -41,7 +56,7 @@ class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
         # Arrange
         suite = Mock()
         obj = StepMatcherVisitor(suite, sentinel.matcher)
-        obj._not_matched = OrderedDict([('suggest string', True)])
+        obj._not_matched = OrderedDict([('docstring', 'suggest string')])
         # Act
         obj.after_feature(sentinel.node)
         # Assert

@@ -420,8 +420,8 @@ class Step(Morelia):
         if method:
             return method, args, kwargs
 
-        suggest = matcher.suggest(predicate)
-        raise MissingStepError(predicate, suggest)
+        suggest, method_name, docstring = matcher.suggest(predicate)
+        raise MissingStepError(predicate, suggest, method_name, docstring)
 
     def get_real_reconstruction(self, suite, matcher):
         predicate = self._augment_predicate()

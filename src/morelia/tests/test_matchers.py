@@ -6,7 +6,7 @@ from morelia.matchers import (MethodNameStepMatcher, IStepMatcher,
                               RegexpStepMatcher, ParseStepMatcher)
 
 
-class TestStepMatcher(IStepMatcher):
+class TestingStepMatcher(IStepMatcher):
 
     def match(self, predicate, augmented_predicate, step_methods):
         pass  # pragma: nocover
@@ -22,8 +22,8 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         """ Scenario: add matcher """
         # Arrange
         suite = Mock()
-        matcher1 = TestStepMatcher(suite)
-        matcher2 = TestStepMatcher(suite)
+        matcher1 = TestingStepMatcher(suite)
+        matcher2 = TestingStepMatcher(suite)
         # Act
         matcher1.add_matcher(matcher2)
         # Assert
@@ -33,9 +33,9 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         """ Scenario: delegating add """
         # Arrange
         suite = Mock()
-        matcher1 = TestStepMatcher(suite)
-        matcher2 = TestStepMatcher(suite)
-        matcher3 = TestStepMatcher(suite)
+        matcher1 = TestingStepMatcher(suite)
+        matcher2 = TestingStepMatcher(suite)
+        matcher3 = TestingStepMatcher(suite)
         matcher1._next = matcher2
         # Act
         matcher1.add_matcher(matcher3)
@@ -47,9 +47,9 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         """ Scenario: chaining """
         # Arrange
         suite = Mock()
-        matcher1 = TestStepMatcher(suite)
-        matcher2 = TestStepMatcher(suite)
-        matcher3 = TestStepMatcher(suite)
+        matcher1 = TestingStepMatcher(suite)
+        matcher2 = TestingStepMatcher(suite)
+        matcher3 = TestingStepMatcher(suite)
         # Act
         matcher1.add_matcher(matcher2).add_matcher(matcher3)
         # Assert
@@ -64,7 +64,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         """ Scenario: find method when step methods given"""
         # Arrange
         suite = Mock()
-        obj = TestStepMatcher(suite)
+        obj = TestingStepMatcher(suite)
         # Act
         step_methods = sentinel.step_methods
         predicate = sentinel.predicate
@@ -80,7 +80,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         """ Scenario: no step methods """
         # Arrange
         suite = Mock()
-        obj = TestStepMatcher(suite)
+        obj = TestingStepMatcher(suite)
         # Act
         predicate = sentinel.predicate
         augmented_predicate = sentinel.augmented_predicate
@@ -97,7 +97,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         """ Scenario: not found """
         # Arrange
         suite = Mock()
-        obj = TestStepMatcher(suite)
+        obj = TestingStepMatcher(suite)
         # Act
         step_methods = sentinel.step_methods
         predicate = sentinel.predicate
@@ -113,8 +113,8 @@ class IStepMatcherFindTestCase(unittest.TestCase):
         """ Scenario: delegate """
         # Arrange
         suite = Mock()
-        matcher1 = TestStepMatcher(suite)
-        matcher2 = TestStepMatcher(suite)
+        matcher1 = TestingStepMatcher(suite)
+        matcher2 = TestingStepMatcher(suite)
         matcher1.add_matcher(matcher2)
         # Act
         step_methods = sentinel.step_methods
@@ -141,7 +141,7 @@ class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
         all_methods = step_methods + ['method3']
         suite = MagicMock()
         suite.__dir__ = Mock(return_value=all_methods)
-        obj = TestStepMatcher(suite)
+        obj = TestingStepMatcher(suite)
         # Act
         result = obj._get_all_step_methods()
         # Assert
@@ -214,20 +214,24 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
             ('line\nfeed', 'line_feed', ''),
             ('tick\'ed\'', 'tick_ed', ''),
             ('tastes   great', 'tastes_great', ''),
-            ('argu<ment>al', 'argu_ment_al', ', ment'),
-            ('arg<u>ment<al>', 'arg_u_ment_al', ', u, al'),
-            ('str"ing"', 'str_ing', ', ing'),
-            ('"str"i"ngs"', 'str_i_ngs', ', str, ngs'),
+            ('argu<ment>al', 'argu_ment_al', ''),
+            ('arg<u>ment<al>', 'arg_u_ment_al', ''),
+            ('str"ing"', 'str_ing', ''),
+            ('"str"i"ngs"', 'str_i_ngs', ''),
+            ('enter "10" into', 'enter_10_into', ''),
+            ('enter "10" and "20" into', 'enter_10_and_20_into', ''),
         ]
         for predicate, method, args in test_data:
             # Act
-            result = obj.suggest(predicate)
+            suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
             # Assert
             expected = pattern % {
                 'method_name': method,
                 'args': args,
             }
-            self.assertEqual(result, expected)
+            self.assertEqual(suggest, expected)
+            self.assertEqual(suggest_method, method)
+            self.assertEqual(suggest_docstring, '')
 
 
 class DocStringStepMatcherMatchTestCase(unittest.TestCase):
@@ -369,16 +373,20 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
             ('arg<u>ment<al>', 'arg_u_ment_al', r"ur'arg(.+)ment(.+)'", ', u, al'),
             ('str"ing"', 'str_ing', 'ur\'str"([^"]+)"\'', ', ing'),
             ('"str"i"ngs"', 'str_i_ngs', 'ur\'"([^"]+)"i"([^"]+)"\'', ', str, ngs'),
+            ('enter "10" into', 'enter_number_into', 'ur\'enter "([^"]+)" into\'', ', number'),
+            ('enter "10" and "20" into', 'enter_number_and_number_into', 'ur\'enter "([^"]+)" and "([^"]+)" into\'', ', number1, number2'),
         ]
         for predicate, method, docstring, args in test_data:
-            result = obj.suggest(predicate)
+            suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
             # Assert
             expected = pattern % {
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
             }
-            self.assertEqual(result, expected)
+            self.assertEqual(suggest, expected)
+            self.assertEqual(suggest_method, method)
+            self.assertEqual(suggest_docstring, docstring)
 
 
 class ParseStepMatcherMatchTestCase(unittest.TestCase):
@@ -521,13 +529,17 @@ class ParseStepMatcherSuggestTestCase(unittest.TestCase):
             ('arg<u>ment<al>', 'arg_u_ment_al', r"ur'arg{u}ment{al}'", ', u, al'),
             ('str"ing"', 'str_ing', 'ur\'str"{ing}"\'', ', ing'),
             ('"str"i"ngs"', 'str_i_ngs', 'ur\'"{str}"i"{ngs}"\'', ', str, ngs'),
+            ('enter "10" into', 'enter_number_into', 'ur\'enter "{number}" into\'', ', number'),
+            ('enter "10" and "20" into', 'enter_number_and_number_into', 'ur\'enter "{number1}" and "{number2}" into\'', ', number1, number2'),
         ]
         for predicate, method, docstring, args in test_data:
-            result = obj.suggest(predicate)
+            suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
             # Assert
             expected = pattern % {
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
             }
-            self.assertEqual(result, expected)
+            self.assertEqual(suggest, expected)
+            self.assertEqual(suggest_method, method)
+            self.assertEqual(suggest_docstring, docstring)

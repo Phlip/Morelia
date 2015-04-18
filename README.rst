@@ -55,10 +55,10 @@ Write feature description:
 
     Scenario: Add two numbers
         Given I have powered calculator on
-        When I enter 50 into the calculator
-        And I enter 70 into the calculator
+        When I enter "50" into the calculator
+        And I enter "70" into the calculator
         And I press add
-        Then the result should be 120 on the screen
+        Then the result should be "120" on the screen
 
 
 Create standard python's unittest and hook Morelia in it:
@@ -73,7 +73,7 @@ Create standard python's unittest and hook Morelia in it:
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self)
+            Parser().parse_file('calculator.feature').evaluate(self, show_all_missing=True)
 
 Run test exaclty like your regular tests. Here's raw unittest example:
 

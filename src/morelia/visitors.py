@@ -112,10 +112,13 @@ class StepMatcherVisitor(IVisitor):
         try:
             node.find_step(self._suite, self._matcher)
         except MissingStepError as e:
-            self._not_matched[e.suggest] = True
+            if e.docstring:
+                self._not_matched[e.docstring] = e.suggest
+            else:
+                self._not_matched[e.method_name] = e.suggest
 
     def after_feature(self, node):
-        suggest = u''.join(self._not_matched.keys())
+        suggest = u''.join(self._not_matched.values())
         if suggest:
             diagnostic = u'Cannot match steps:\n\n%s' % suggest
             self._suite.fail(diagnostic)

@@ -47,7 +47,7 @@ Scenariusz: when did Bow Wow Wow become classic rock?
 
     Gdy Moralia evaluates this
     Wtedy "culture" contains ['radio', 'g-string', 'battery', 'driven']
-      I the step concept is Given
+      I the step keyword is Zakładając, że
 
 Scenariusz: Convert source predicates into their matching regular expressions
    Zakładając, że a source file with a <predicate>
@@ -74,30 +74,30 @@ Scenariusz: Raise useful errors with incomplete files
   
     |    statements       |   diagnostics
 
-    |  Właściwość yo         | Feature without Scenario(s), line 1
+    |  Właściwość yo         | Feature without Scenario(s)
 
     |  Właściwość comp-      \
-       Właściwość placent    | Only one Feature per file, line 2
+       Właściwość placent    | Only one Feature per file
 
     | Właściwość    resist   \
         Scenariusz syntax   \
-          Step   errors   | Scenario: syntax, line 3
+          Step   errors   | Scenariusz: syntax
 
     |  Właściwość in da      \
-         Step zone        | Feature without Scenario(s), line 1
+         Step zone        | Feature without Scenario(s)
 
     |  Scenariusz: Add two numbers                     \
         Zakładając, że I have entered 50 into the calculator  \
           I I have entered 70 into the calculator  \
          Gdy I press add                            \
-         Wtedy the result should be 121 on the screen | the result should be, line 5
+         Wtedy the result should be 121 on the screen | the result should be
 
     |  Właściwość yo         \
          Scenariusz dude    \
-           Zakładającfoo       | Scenario without step, line 2
+           Zakładającfoo       | Scenario without step
 
     |  Właściwość yo         \
-         Scenariusz dude    | Scenario without step(s) - Step, Given, When, Then, And, or #, line 2
+         Scenariusz dude    | Scenario without step(s) - Step, Given, When, Then, And, or #
 
 
 #  TODO  a row may be a member of a step never a scenario or feature

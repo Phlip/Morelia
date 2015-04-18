@@ -1,3 +1,8 @@
+import sys
+
+import six
+
+
 def to_unicode(text):
     ''' Try convert to unicode independently on python version. '''
     try:
@@ -5,3 +10,16 @@ def to_unicode(text):
     except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
         pass
     return text
+
+
+if six.PY2:
+
+    def fix_exception_encoding(exc):
+        message = exc.args[0]
+        if isinstance(message, unicode):
+            exc.args = (message.encode(sys.stderr.encoding or "ascii", "xmlcharrefreplace"),) + exc.args[1:]
+
+else:
+
+    def fix_exception_encoding(exc):
+        pass

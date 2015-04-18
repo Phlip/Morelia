@@ -16,8 +16,9 @@ from six import moves
 
 from .exceptions import MissingStepError
 from .i18n import TRANSLATIONS
+from .formatters import NullFormatter
 from .matchers import MethodNameStepMatcher, RegexpStepMatcher, ParseStepMatcher
-from .utils import to_unicode
+from .utils import to_unicode, fix_exception_encoding
 from .visitors import TestVisitor, ReportVisitor, StepMatcherVisitor
 
 
@@ -49,9 +50,12 @@ class Morelia(INode):
         self.language = language
         self.additional_data = {}
 
-    def _parse(self, predicate, list=[], line_number=0):
-        self.concept = str(self)
+    def is_executable(self):
+        return False
+
+    def _parse(self, predicate, keyword=None, list=[], line_number=0):
         self.predicate = predicate
+        self.keyword = keyword if keyword is not None else str(self)
         self.steps = []
         self.line_number = line_number
 
@@ -104,17 +108,23 @@ class Morelia(INode):
 
     def enforce(self, condition, diagnostic):
         if not condition:
-            msg = self.format_fault(diagnostic)
-            raise SyntaxError(msg)
+            text = ''
+            offset = 1
+            if self.parent:
+                text = self.parent.reconstruction()
+                offset = 5
+            text += self.reconstruction()
+            text = text.replace('\n\n', '\n').replace('\n', '\n\t')
+            raise SyntaxError(diagnostic, (self.get_filename(), self.line_number, offset, text))
 
     def format_fault(self, diagnostic):
         parent_reconstruction = ''
         if self.parent:
-            parent_reconstruction = self.parent.reconstruction().replace('\n', '\\n')
-        reconstruction = self.reconstruction().replace('\n', '\\n')
+            parent_reconstruction = self.parent.reconstruction().strip('\n')
+        reconstruction = self.reconstruction()
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
         args = tuple([to_unicode(i) for i in args])
-        return u'\n  File "%s", line %s, in %s\n    %s\n%s' % args
+        return u'\n  File "%s", line %s, in %s\n %s\n%s' % args
 
     def reconstruction(self):
         predicate = self.predicate
@@ -122,10 +132,13 @@ class Morelia(INode):
             predicate = predicate.decode('utf-8')
         except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
             pass
-        recon = u'%s%s: %s' % (self.prefix(), self.concept, predicate)
+        recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
         if recon[-1] != u'\n':
             recon += u'\n'
         return recon
+
+    def get_real_reconstruction(self, suite, macher):
+        return self.reconstruction() + '\n'
 
     def get_filename(self):
         node = self
@@ -172,19 +185,26 @@ class Parser:
                 root_matcher = matcher
         return root_matcher
 
-    def evaluate(self, suite, matchers=None):
+    def evaluate(self, suite, matchers=None, formatter=None, show_all_missing=False):
         if matchers is None:
             matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
         matcher = self._create_matcher(suite, matchers)
-        test_visitor = TestVisitor(suite, matcher)
-        step_matcher_visitor = StepMatcherVisitor(suite, matcher)
+        if show_all_missing:
+            step_matcher_visitor = StepMatcherVisitor(suite, matcher)
+            self.rip(step_matcher_visitor)
+        if formatter is None:
+            formatter = NullFormatter()
+        test_visitor = TestVisitor(suite, matcher, formatter)
         try:
             self.rip(test_visitor)
-        except MissingStepError:
-            self.rip(step_matcher_visitor)
+        except SyntaxError as exc:
+            raise
+        except Exception as exc:
+            fix_exception_encoding(exc)
+            raise
 
-    def report(self, suite):
-        rv = ReportVisitor(suite)
+    def report(self, suite, visitor_class=ReportVisitor):
+        rv = visitor_class(suite)
         self.rip(rv)
         return rv
 
@@ -228,7 +248,7 @@ class Parser:
                     self._append_to_previous_node()
                 else:
                     s = Step()
-                    s.concept = '???'
+                    s.keyword = '???'
                     s.predicate = self.line
                     s.line_number = self.line_number
                     feature_name = TRANSLATIONS[self.language].get('feature', u'Feature')
@@ -268,8 +288,9 @@ class Parser:
         predicate = ''
         if len(groups) > 1:
             predicate = groups[1]
+        keyword = groups[0]
         node = self.thang
-        node._parse(predicate, self.steps, self.line_number)
+        node._parse(predicate, keyword, self.steps, self.line_number)
         self.steps.append(node)
         self.last_node = node
         return node
@@ -297,7 +318,7 @@ class Feature(Morelia):
                 <tr style="background-color: #aaffbb;" width="100%%">
                 <td align="right" valign="top" width="100"><em>%s</em>:</td>
                 <td colspan="101">%s</td>
-                </tr></table></div>''' % (self.concept, _clean_html(self.predicate)), '']
+                </tr></table></div>''' % (self.keyword, _clean_html(self.predicate)), '']
 
 
 class Scenario(Morelia):
@@ -368,13 +389,13 @@ class Scenario(Morelia):
         return [step.count_dimensions() for step in self.steps]
 
     def reconstruction(self):
-        return '\n' + self.concept + ': ' + self.predicate
+        return '\n' + self.keyword + ': ' + self.predicate
 
     def to_html(self):
         return ['''\n<div><table width="100%%">
                 <tr style="background-color: #cdffb8;">
                 <td align="right" valign="top" width="100"><em>%s</em>:</td>
-                <td colspan="101">%s</td></tr>''' % (self.concept, _clean_html(self.predicate)),
+                <td colspan="101">%s</td></tr>''' % (self.keyword, _clean_html(self.predicate)),
                 '</table></div>']
 
 
@@ -382,6 +403,9 @@ class Step(Morelia):
 
     def prefix(self):
         return '  '
+
+    def is_executable(self):
+        return True
 
     def __str__(self):
         return u'Step'
@@ -398,6 +422,17 @@ class Step(Morelia):
 
         suggest = matcher.suggest(predicate)
         raise MissingStepError(predicate, suggest)
+
+    def get_real_reconstruction(self, suite, matcher):
+        predicate = self._augment_predicate()
+        try:
+            predicate = predicate.decode('utf-8')
+        except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
+            pass
+        recon = u'%s%s %s' % (self.prefix(), self.keyword, predicate)
+        if recon[-1] != u'\n':
+            recon += u'\n'
+        return recon
 
     def _augment_predicate(self):  # CONSIDER  unsucktacularize me pleeeeeeze
         if self.parent is None:
@@ -432,11 +467,13 @@ class Step(Morelia):
     def test_step(self, suite, matcher):
         try:
             self.evaluate(suite, matcher)
-        except (Exception, SyntaxError) as e:
-            new_exception = self.format_fault(to_unicode(e))
-            e.args = (new_exception,) + (e.args[1:])
-            if type(e) == SyntaxError:
-                raise SyntaxError(repr(new_exception))
+        except MissingStepError as exc:
+            message = self.format_fault(exc.suggest)
+            exc.args = (message,)
+            raise
+        except Exception as exc:
+            message = self.format_fault(exc.args[0])
+            exc.args = (message,) + exc.args[1:]
             raise
 
     def replace_replitron(self, x, q, row_indices):
@@ -460,7 +497,7 @@ class Step(Morelia):
         # CONSIDER  mix replitrons and matchers!
 
     def to_html(self):
-        return '\n<tr><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
+        return '\n<tr><td align="right" valign="top"><em>' + self.keyword + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 
 
 class Given(Step):  # CONSIDER  distinguish these by fault signatures!
@@ -481,7 +518,7 @@ class When(Step):  # TODO  cycle these against the Scenario
         return '   '
 
     def to_html(self):
-        return '\n<tr style="background-color: #cdffb8; background: url(http://www.zeroplayer.com/images/stuff/aqua_gradient.png) no-repeat; background-size: 100%;"><td align="right" valign="top"><em>' + self.concept + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
+        return '\n<tr style="background-color: #cdffb8; background: url(http://www.zeroplayer.com/images/stuff/aqua_gradient.png) no-repeat; background-size: 100%;"><td align="right" valign="top"><em>' + self.keyword + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
 
 
 class Then(Step):
@@ -611,14 +648,3 @@ def _imap(*iterables):
 
 def _clean_html(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')
-
-#  CONSIDER  display all missing steps not just the first
-#  ERGO  Morelia should raise a form in any state!
-#  ERGO  get Morelia working with more Pythons - virtualenv it!
-#  ERGO  moralia should try the regex first then the step name
-#  ERGO  pay for "Bartender" by Sacred Hoop
-
-
-if __name__ == '__main__':
-    import os
-    os.system('python ../tests/morelia_suite.py')   # NOTE  this might not return the correct shell value

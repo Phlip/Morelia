@@ -10,6 +10,7 @@ morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
 from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
                           And, When, Then, TestVisitor, _permute_indices, MissingStepError)
+from morelia.formatters import NullFormatter
 from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
@@ -47,7 +48,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Feature
-        self.assertEqual(step.concept, 'Feature')
+        self.assertEqual(step.keyword, self.feature_keyword)
         self.assertEqual(step.predicate, 'prevent wild animals from eating us')
 
     def test_scenario(self):
@@ -56,7 +57,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Scenario
-        self.assertEqual(step.concept, 'Scenario')
+        self.assertEqual(step.keyword, self.scenario_keyword)
         self.assertEqual(step.predicate, 'range free Vegans')
 
     def test___scenario(self):
@@ -65,7 +66,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Scenario
-        self.assertEqual(step.concept, 'Scenario')
+        self.assertEqual(step.keyword, self.scenario_keyword)
         self.assertEqual(step.predicate, 'with spacies')
 
     def test_given_a_string_with_given_in_it(self):
@@ -77,7 +78,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)  # ^ note the spacies
         step = steps[0]
         assert step.__class__ == Given
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'a string with Given in it')  # <-- note spacies are gone
 
     def test_given_a_broken_string_with_excess_spacies(self):
@@ -86,7 +87,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Given
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
 
     def test_deal_with_pesky_carriage_returns(self):  # because Morse Code will live forever!
@@ -95,7 +96,7 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Given
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'a string with spacies and\nanother string')
 
     def test_given_a_string_with_a_line_breaker_followed_by_a_keyword(self):
@@ -108,7 +109,7 @@ class MoreliaSuite(TestCase):
         assert 1 == len(steps)
         step = steps[0]
         assert step.__class__ == Given
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'a string \\\n And another string')
 
     def test_given_a_string_with_a_line_breaker_followed_by_a_keyword_with_stray_spacies(self):
@@ -121,7 +122,7 @@ class MoreliaSuite(TestCase):
         assert 1 == len(steps)
         step = steps[0]
         assert step.__class__ == Given
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'a string \\\n And another string, without stray spacies')
 
     def test_feature_with_scenario(self):
@@ -134,11 +135,11 @@ class MoreliaSuite(TestCase):
         steps = Parser(language=language).parse_feature(input)
         step = steps[0]
         assert step.__class__ == Feature
-        self.assertEqual(step.concept, 'Feature')
+        self.assertEqual(step.keyword, self.feature_keyword)
         self.assertEqual(step.predicate, 'Civi-lie-zation')
         step = steps[1]
         assert step.__class__ == Scenario
-        self.assertEqual(step.concept, 'Scenario')
+        self.assertEqual(step.keyword, self.scenario_keyword)
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
     # def test_feature_with_lone_comment(self):
@@ -149,7 +150,7 @@ class MoreliaSuite(TestCase):
 
     #     step = steps[1]
     #     assert step.__class__ == Comment
-    #     self.assertEqual(step.concept, 'Comment')
+    #     self.assertEqual(step.keyword, 'Comment')
     #     self.assertEqual(step.predicate, 'I are a comment')
 
     def test_feature_with_lone_comment(self):
@@ -162,12 +163,10 @@ class MoreliaSuite(TestCase):
             assert False  # should fail!
         except SyntaxError as e:
             e = e.args[0]
-            self.assert_regex_contains(r'File "None", line 1, in', e)
-            self.assert_regex_contains(r'\?\?\?: i be a newbie feature', e)
             try:
-                feature_name = TRANSLATIONS[language].get('feature', u'Feature')
+                feature_name = TRANSLATIONS[language].get('feature', self.feature_keyword)
             except KeyError:
-                feature_name = 'Feature'
+                feature_name = self.feature_keyword
             else:
                 feature_name = feature_name.replace('|', ' or ')
             self.assert_regex_contains(r'feature files must start with a %s' % feature_name, e)
@@ -190,7 +189,7 @@ class MoreliaSuite(TestCase):
         assert steps[0].__class__ == Feature
         step = steps[1]
         assert step.__class__ == Comment
-        self.assertEqual(step.concept, 'Comment')
+        self.assertEqual(step.keyword, '#')
 
     def pet_scenario(self):
         return '''%(scenario)s: See all vendors
@@ -210,28 +209,28 @@ class MoreliaSuite(TestCase):
         language = self._get_language()
         steps = Parser(language=language).parse_feature(scenario)
         step_0, step_1, step_2, step_3, step_4 = steps
-        self.assertEqual(step_0.concept, 'Scenario')
+        self.assertEqual(step_0.keyword, self.scenario_keyword)
         self.assertEqual(step_0.predicate, 'See all vendors')
-        self.assertEqual(step_1.concept, 'Given')
+        self.assertEqual(step_1.keyword, self.given_keyword)
         self.assertEqual(step_1.predicate, 'I am logged in as a user in the administrator role')
-        self.assertEqual(step_2.concept, 'And')
+        self.assertEqual(step_2.keyword, self.and_keyword)
         self.assertEqual(step_2.predicate, 'There are 3 vendors')
-        self.assertEqual(step_3.concept, 'When')
+        self.assertEqual(step_3.keyword, self.when_keyword)
         self.assertEqual(step_3.predicate, 'I go to the manage vendors page')
-        self.assertEqual(step_4.concept, 'Then')
+        self.assertEqual(step_4.keyword, self.then_keyword)
         self.assertEqual(step_4.predicate, 'I should see the first 3 vendor names')
 
     def test_strip_predicates(self):
         language = self._get_language()
         step = Parser(language=language).parse_feature('  %s   gangsta girl   \t     ' % self.given_keyword)[0]
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'gangsta girl')
 
     def test_bond_predicates(self):
         return  # CONSIDER  why test_strip_predicates passes and this croaks???
         language = self._get_language()
         step = Parser(language=language).parse_feature('  %s\n   elf quest   \t     ' % self.given_keyword)[0]
-        self.assertEqual(step.concept, 'Given')
+        self.assertEqual(step.keyword, self.given_keyword)
         self.assertEqual(step.predicate, 'elf quest')
 
     def test_scenarios_link_to_their_steps(self):
@@ -330,7 +329,7 @@ class MoreliaSuite(TestCase):
         scenario = self.table_scene.steps[0].steps[0]
         steps_num = len(scenario.steps)
         matcher = RegexpStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
-        visitor = TestVisitor(self, matcher)
+        visitor = TestVisitor(self, matcher, NullFormatter())
         global crunks, zones
         crunks = []
         zones = []
@@ -370,7 +369,7 @@ class MoreliaSuite(TestCase):
         language = self._get_language()
         steps = Parser(language=language).parse_feature(scenario)  # TODO  test that a non-double-When Scenario gives a flat schedule
         scene, step_1, step_2, step_3, step_4, step_5 = steps
-        assert scene.concept == 'Scenario'
+        assert scene.keyword == self.scenario_keyword
         assert [[0, 1, 2], [0, 3, 4]] == scene.step_schedule()  # TODO  mix step schedules and row schedules! (-:
         # TODO  better object model! assert 2 == step_0.count_whens()
 
@@ -446,7 +445,7 @@ class MoreliaSuite(TestCase):
         language = self._get_language()
         p = Parser(language=language).parse_features(self.assemble_short_scene_table())
         step = p.steps[0].steps[0].steps[0]
-        self.assertEqual(step.concept + ': ' + step.predicate, step.reconstruction().strip())
+        self.assertEqual(step.keyword + ': ' + step.predicate, step.reconstruction().strip())
 
     def step_party_element_from_faction(self, element, faction):
         r'party (\w+) from (\w+)'
@@ -467,11 +466,11 @@ class MoreliaSuite(TestCase):
     def test_handle_exceptions(self):
         s = Step()
 
-        s.concept = 'Given'
+        s.keyword = 'Given'
         s.predicate = 'exceptional'
         s.line_number = 42
         matcher = RegexpStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
-        visitor = TestVisitor(self, matcher)
+        visitor = TestVisitor(self, matcher, NullFormatter())
         matcher = self._get_default_machers()
 
         try:
@@ -559,10 +558,10 @@ class MoreliaSuite(TestCase):
         assert filename == step.get_filename()
         omen = 'The Alpine glaciers move'
         diagnostic = step.format_fault(omen)
-        parent_reconstruction = step.parent.reconstruction().replace('\n', '\\n')
-        reconstruction = step.reconstruction().replace('\n', '\\n')
+        parent_reconstruction = step.parent.reconstruction().strip('\n')
+        reconstruction = step.reconstruction()
 
-        expect = '\n  File "%s", line %s, in %s\n    %s\n%s' % \
+        expect = '\n  File "%s", line %s, in %s\n %s\n%s' % \
             (step.get_filename(), step.line_number, parent_reconstruction, reconstruction, omen)
 
         assert expect == diagnostic
@@ -585,7 +584,7 @@ class MoreliaSuite(TestCase):
         r'adventure of love - love and (.+)'
 
         self.culture.append(culture)
-        self.concept = self.step.concept
+        self.keyword = self.step.keyword
 
     def step_Moralia_evaluates_this(self):
         pass
@@ -659,7 +658,7 @@ class MoreliaSuite(TestCase):
             self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
             p.parse_features(self.file_contents).evaluate(self)
             self.steps = p.steps
-        except AssertionError as e:
+        except (MissingStepError, AssertionError) as e:
             self.diagnostic = str(e)
 
     def step_it_prints_a_diagnostic(self, sample):
@@ -677,10 +676,10 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(1, len(self.steps))
 
-    def step_the_step_concept_is_(self, concept):
-        r'the step concept is (.+)'
+    def step_the_step_keyword_is_(self, keyword):
+        r'the step keyword is (.+)'
 
-        self.assertEqual(concept, self.concept)
+        self.assertEqual(keyword, self.keyword)
 
     def step_a_source_file_with_a_Given_(self, predicate):
         r'a source file with a (.+)'
@@ -717,10 +716,7 @@ class MoreliaSuite(TestCase):
             raise Exception('we expect syntax errors here')
         except (SyntaxError, AssertionError) as e:
             e = e.args[0]
-            beef, squeak = diagnostics.split(', line ')
-            squeak = 'line ' + squeak
-            self.assert_regex_contains(re.escape(beef), e)
-            self.assert_regex_contains(re.escape(squeak), e)
+            self.assert_regex_contains(re.escape(diagnostics), e)
 
     def step_errors(self):
         raise SyntaxError('no, you!')
@@ -755,12 +751,12 @@ class PLMoreliaSuite(MoreliaSuite):
 
     def setUp(self):
         self.culture = []
-        self.feature_keyword = 'Właściwość'
-        self.scenario_keyword = 'Scenariusz'
-        self.given_keyword = 'Zakładając, że'
-        self.then_keyword = 'Wtedy'
-        self.when_keyword = 'Gdy'
-        self.and_keyword = 'I'
+        self.feature_keyword = u'Właściwość'
+        self.scenario_keyword = u'Scenariusz'
+        self.given_keyword = u'Zakładając, że'
+        self.then_keyword = u'Wtedy'
+        self.when_keyword = u'Gdy'
+        self.and_keyword = u'I'
 
     def _get_language(self):
         return 'pl'
@@ -770,7 +766,7 @@ class PLMoreliaSuite(MoreliaSuite):
         steps = Parser().parse_feature(input)
         step = steps[0]
         assert step.__class__ == Feature
-        self.assertEqual(step.concept, 'Feature')
+        self.assertEqual(step.keyword, self.feature_keyword)
         self.assertEqual(step.predicate, 'prevent wild animals from eating us')
 
 

@@ -49,6 +49,7 @@ class MoreliaReconstructionTestCase(TestCase):
         # Arrange
         obj = Morelia()
         obj.concept = '???'
+        obj.keyword = '???'
         obj.predicate = u'zażółć gęślą jaźń'
         # Act
         result = obj.reconstruction()
@@ -60,6 +61,7 @@ class MoreliaReconstructionTestCase(TestCase):
         # Arrange
         obj = Morelia()
         obj.concept = '???'
+        obj.keyword = '???'
         obj.predicate = 'zażółć gęślą jaźń'
         # Act
         result = obj.reconstruction()

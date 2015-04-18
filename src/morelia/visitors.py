@@ -35,33 +35,37 @@ class IVisitor(object):
 class TestVisitor(IVisitor):
     """ Visits all steps and run step methods. """
 
-    def __init__(self, suite, matcher):
+    def __init__(self, suite, matcher, formatter):
         self._suite = suite
         self._matcher = matcher
+        self._formatter = formatter
+        self._scenarios_num = 0
+        self._steps_num = 0
 
     def visit(self, node):
         self._suite.step = node
+        self._steps_num += 1
+        line = node.get_real_reconstruction(self._suite, self._matcher)
         start_time = time.time()
-        status = ''
         try:
             try:
                 node.test_step(self._suite, self._matcher)
             except (MissingStepError, AssertionError):
-                status = 'Fail'
+                status = 'fail'
                 raise
             except Exception:
-                status = 'Error'
+                status = 'error'
                 raise
             else:
-                status = 'OK'
+                status = 'pass'
         finally:
             end_time = time.time()
-            additional_data = node.additional_data
-            additional_data['duration'] = end_time - start_time
-            additional_data['status'] = status
+            duration = end_time - start_time
+            self._formatter.output(node, line, status, duration)
 
     def before_scenario(self, node):
         self._suite.setUp()
+        self._scenarios_num += 1
 
     def after_scenario(self, node):
         self._suite.tearDown()
@@ -115,26 +119,3 @@ class StepMatcherVisitor(IVisitor):
         if suggest:
             diagnostic = u'Cannot match steps:\n\n%s' % suggest
             self._suite.fail(diagnostic)
-#
-#
-# class TextReportVisitor(IVisitor):
-#     def __init__(self, suite, matcher):
-#         self._suite = suite
-#         self._result = ''
-#
-#     def visit(self, node):
-#         duration = node.additional_data.get('duration', 0)
-#         if duration:
-#             duration = '#  %.6fs' % duration
-#         else:
-#             duration = ''
-#         self._result += '%-57s %s\n' % (
-#             node.reconstruction().strip('\n'),
-#             duration,
-#         )
-#
-#     def __str__(self):
-#         return self._result
-#
-#     def __unicode__(self):
-#         return unicode(self._result)

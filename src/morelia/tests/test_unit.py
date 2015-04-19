@@ -18,7 +18,7 @@ class ParserParseLanguageDirectiveTestCase(TestCase):
         for lang in ['en', 'pl', 'ja']:
             line = '# language: %s' % lang
             # Act
-            result = obj.parse_language_directive(line)
+            result = obj._parse_language_directive(line)
             # Assert
             self.assertTrue(result)
             self.assertEqual(obj.language, lang)
@@ -35,7 +35,7 @@ class ParserParseLanguageDirectiveTestCase(TestCase):
         ]
         for line in lines:
             # Act
-            result = obj.parse_language_directive(line)
+            result = obj._parse_language_directive(line)
             # Assert
             self.assertFalse(result)
             self.assertEqual(obj.language, DEFAULT_LANGUAGE)
@@ -47,10 +47,7 @@ class MoreliaReconstructionTestCase(TestCase):
     def test_should_reconstruct_unicode(self):
         """ Scenario: unicode input """
         # Arrange
-        obj = Morelia()
-        obj.concept = '???'
-        obj.keyword = '???'
-        obj.predicate = u'zażółć gęślą jaźń'
+        obj = Morelia('???', u'zażółć gęślą jaźń')
         # Act
         result = obj.reconstruction()
         # Assert
@@ -59,10 +56,7 @@ class MoreliaReconstructionTestCase(TestCase):
     def test_should_reconstruct_utf8(self):
         """ Scenario: utf8 input """
         # Arrange
-        obj = Morelia()
-        obj.concept = '???'
-        obj.keyword = '???'
-        obj.predicate = 'zażółć gęślą jaźń'
+        obj = Morelia('???', 'zażółć gęślą jaźń')
         # Act
         result = obj.reconstruction()
         # Assert
@@ -88,8 +82,7 @@ class StepFindStepTestCase(TestCase):
     def test_should_find_method(self):
         """ Scenario: method found """
         # Arrange
-        obj = Step()
-        obj.predicate = 'method'
+        obj = Step('???', 'method')
         # Act
         matcher = Mock()
         matcher.find.return_value = (sentinel.method, [], {})
@@ -100,8 +93,7 @@ class StepFindStepTestCase(TestCase):
     def test_should_not_find_method(self):
         """ Scenario: not found """
         # Arrange
-        obj = Step()
-        obj.predicate = u'some_method'
+        obj = Step('???', u'some_method')
         matcher = Mock()
         matcher.find.return_value = (None, [], {})
         matcher.suggest.return_value = ('suggest', 'method_name', 'docstring')

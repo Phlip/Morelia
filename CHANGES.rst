@@ -8,6 +8,7 @@ ADDED
 ^^^^^
 
   * support for different output formatters
+  * Examples keyword as no-op
 
 CHANGED
 ^^^^^^^

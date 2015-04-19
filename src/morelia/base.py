@@ -14,12 +14,10 @@ from abc import ABCMeta
 
 from six import moves
 
+from .grammar import AST
 from .exceptions import MissingStepError
 from .i18n import TRANSLATIONS
-from .formatters import NullFormatter
-from .matchers import MethodNameStepMatcher, RegexpStepMatcher, ParseStepMatcher
-from .utils import to_unicode, fix_exception_encoding
-from .visitors import TestVisitor, ReportVisitor, StepMatcherVisitor
+from .utils import to_unicode
 
 
 __version__ = '0.3.0'
@@ -42,37 +40,51 @@ class INode(object):
     def find_step(self, suite, matcher):
         pass
 
+    def evaluate_steps(self, visitor):
+        class_name = self.__class__.__name__.lower()
+        self._method_hook(visitor, class_name, 'before_')
+        try:
+            visitor.visit(self)
+            for step in self.steps:
+                step.evaluate_steps(visitor)
+        finally:
+            self._method_hook(visitor, class_name, 'after_')
+
+    def _method_hook(self, visitor, class_name, prefix):
+        method = getattr(visitor, 'after_%s' % class_name, None)
+        if method:
+            method(self)
+
 
 class Morelia(INode):
 
-    def __init__(self, language=DEFAULT_LANGUAGE):
+    def __init__(self, keyword, predicate):
         self.parent = None
-        self.language = language
         self.additional_data = {}
+        self.keyword = keyword
+        self.predicate = predicate
 
     def is_executable(self):
         return False
 
-    def _parse(self, predicate, keyword=None, list=[], line_number=0):
-        self.predicate = predicate
-        self.keyword = keyword if keyword is not None else str(self)
+    def connect_to_parent(self, steps=[], line_number=0):
         self.steps = []
         self.line_number = line_number
 
 #  TODO  escape the sample regices already!
 #  and the default code should be 'print <arg_names, ... >'
 
-        for s in list[::-1]:
-            mpt = self.my_parent_type()
-
-            try:
-                if issubclass(s.__class__, mpt):
-                    s.steps.append(self)  # TODO  squeek if can't find parent
-                    self.parent = s
+        mpt = self.my_parent_type()
+        try:
+            for step in steps[::-1]:
+                if isinstance(step, mpt):
+                    step.steps.append(self)  # TODO  squeek if can't find parent
+                    self.parent = step
                     break
-            except TypeError:
-                self.enforce(False, 'Only one Feature per file')  # CONSIDER  prevent it don't trap it!!!
+        except TypeError:
+            self.enforce(False, 'Only one Feature per file')  # CONSIDER  prevent it don't trap it!!!
 
+        steps.append(self)
         return self
 
     def prefix(self):
@@ -81,20 +93,12 @@ class Morelia(INode):
     def my_parent_type(self):
         return None
 
-    def _my_regex(self):
-        # TODO  calculate name inside
-        name = self.i_look_like()
-        return r'\s*(' + name + '):?\s+(.*)'
-
-    def evaluate_steps(self, visitor):
-        visitor.visit(self)
-        for step in self.steps:
-            step.evaluate_steps(visitor)
-
-    def i_look_like(self):
-        class_name = str(self)
+    @classmethod
+    def get_pattern(cls, language):
+        class_name = cls.__name__
         name = class_name.lower()
-        return TRANSLATIONS[self.language].get(name, class_name)
+        name = TRANSLATIONS[language].get(name, class_name)
+        return r'\s*(?P<keyword>' + name + '):?\s+(?P<predicate>.*)'
 
     def count_dimensions(self):
         ''' Get number of rows. '''
@@ -152,72 +156,34 @@ class Morelia(INode):
 
 
 class Parser:
+
     def __init__(self, language=None):
         self.thangs = [
             Feature, Scenario,
             Given, When, Then, And, But,
-            Row, Comment, Step
+            Row, Comment, Examples, Step
         ]
         self.steps = []
         self.language = DEFAULT_LANGUAGE if language is None else language
+        self._prepare_patterns(self.language)
+
+    def _prepare_patterns(self, language):
+        self._patterns = []
+        for thang in self.thangs:
+            pattern = thang.get_pattern(language)
+            self._patterns.append((re.compile(pattern), thang))
 
     def parse_file(self, filename):
-        prose = open(filename, 'r').read()
-        try:
-            prose = prose.decode('utf-8')
-        except (UnicodeEncodeError, AttributeError):
-            pass
-        self.parse_features(prose)
+        prose = open(filename, 'rb').read().decode('utf-8')
+        ast = self.parse_features(prose)
         self.steps[0].filename = filename
-        return self
+        return ast
 
     def parse_features(self, prose):
         self.parse_feature(prose)
-        return self
+        return AST(self.steps)
 
-    def _create_matcher(self, suite, matcher_classes):
-        root_matcher = None
-        for matcher_class in matcher_classes:
-            matcher = matcher_class(suite)
-            if root_matcher is not None:
-                root_matcher.add_matcher(matcher)
-            else:
-                root_matcher = matcher
-        return root_matcher
-
-    def evaluate(self, suite, matchers=None, formatter=None, show_all_missing=False):
-        if matchers is None:
-            matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
-        matcher = self._create_matcher(suite, matchers)
-        if show_all_missing:
-            step_matcher_visitor = StepMatcherVisitor(suite, matcher)
-            self.rip(step_matcher_visitor)
-        if formatter is None:
-            formatter = NullFormatter()
-        test_visitor = TestVisitor(suite, matcher, formatter)
-        try:
-            self.rip(test_visitor)
-        except SyntaxError as exc:
-            raise
-        except Exception as exc:
-            fix_exception_encoding(exc)
-            raise
-
-    def report(self, suite, visitor_class=ReportVisitor):
-        rv = visitor_class(suite)
-        self.rip(rv)
-        return rv
-
-    def rip(self, visitor):
-        if self.steps != []:
-            node = self.steps[0]
-            visitor.before_feature(node)
-            try:
-                node.evaluate_steps(visitor)
-            finally:
-                visitor.after_feature(node)
-
-    def parse_language_directive(self, line):
+    def _parse_language_directive(self, line):
         """ Parse language directive.
 
         :param str line: line to parse
@@ -227,6 +193,7 @@ class Parser:
         match = LANGUAGE_RE.match(line)
         if match:
             self.language = match.groups()[0]
+            self._prepare_patterns(self.language)
             return True
         return False
 
@@ -237,27 +204,30 @@ class Parser:
         for self.line in lines.split(u'\n'):
             self.line_number += 1
 
-            if self.parse_language_directive(self.line):
+            if not self.line:
                 continue
 
-            if not self.line or self.line.startswith('#'):
+            if self._parse_language_directive(self.line):
                 continue
 
-            if not self.anneal_last_broken_line() and not self._parse_line():
-                if 0 < len(self.steps):
-                    self._append_to_previous_node()
-                else:
-                    s = Step()
-                    s.keyword = '???'
-                    s.predicate = self.line
-                    s.line_number = self.line_number
-                    feature_name = TRANSLATIONS[self.language].get('feature', u'Feature')
-                    feature_name = feature_name.replace('|', ' or ')
-                    s.enforce(False, u'feature files must start with a %s' % feature_name)
+            if self._anneal_last_broken_line():
+                continue
+
+            if self._parse_line():
+                continue
+
+            if 0 < len(self.steps):
+                self._append_to_previous_node()
+            else:
+                s = Step('???', self.line)
+                s.line_number = self.line_number
+                feature_name = TRANSLATIONS[self.language].get('feature', u'Feature')
+                feature_name = feature_name.replace('|', ' or ')
+                s.enforce(False, u'feature files must start with a %s' % feature_name)
 
         return self.steps
 
-    def anneal_last_broken_line(self):
+    def _anneal_last_broken_line(self):
         if self.steps == []:
             return False  # CONSIDER  no need me
         last_line = self.last_node.predicate
@@ -276,24 +246,14 @@ class Parser:
     def _parse_line(self):
         self.line = self.line.rstrip()
 
-        for klass in self.thangs:
-            self.thang = klass(language=self.language)
-            rx = self.thang._my_regex()
-            m = re.compile(rx).match(self.line)
+        for regexp, klass in self._patterns:
+            m = regexp.match(self.line)
 
             if m and len(m.groups()) > 0:
-                return self._register_line(m.groups())
-
-    def _register_line(self, groups):
-        predicate = ''
-        if len(groups) > 1:
-            predicate = groups[1]
-        keyword = groups[0]
-        node = self.thang
-        node._parse(predicate, keyword, self.steps, self.line_number)
-        self.steps.append(node)
-        self.last_node = node
-        return node
+                node = klass(**m.groupdict())
+                node.connect_to_parent(self.steps, self.line_number)
+                self.last_node = node
+                return node
 
     def _append_to_previous_node(self):
         previous = self.steps[-1]
@@ -303,12 +263,6 @@ class Parser:
 
 
 class Feature(Morelia):
-
-    def __str__(self):
-        return u'Feature'
-
-    def my_parent_type(self):
-        return None
 
     def test_step(self, suite, matcher):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
@@ -322,9 +276,6 @@ class Feature(Morelia):
 
 
 class Scenario(Morelia):
-
-    def __str__(self):
-        return u'Scenario'
 
     def my_parent_type(self):
         return Feature
@@ -407,9 +358,6 @@ class Step(Morelia):
     def is_executable(self):
         return True
 
-    def __str__(self):
-        return u'Step'
-
     def my_parent_type(self):
         return Scenario
 
@@ -429,7 +377,7 @@ class Step(Morelia):
             predicate = predicate.decode('utf-8')
         except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
             pass
-        recon = u'%s%s %s' % (self.prefix(), self.keyword, predicate)
+        recon = u'    %s %s' % (self.keyword, predicate)
         if recon[-1] != u'\n':
             recon += u'\n'
         return recon
@@ -454,7 +402,8 @@ class Step(Morelia):
                 if self.table != []:
                     q = 0
 
-                    for self.title in self.table[0].harvest():
+                    row = next(moves.filter(lambda step: isinstance(step, Row), self.table))
+                    for self.title in row.harvest():
                         self.replace_replitron(x, q, row_indices)
                         q += 1
 
@@ -502,17 +451,11 @@ class Step(Morelia):
 
 class Given(Step):  # CONSIDER  distinguish these by fault signatures!
 
-    def __str__(self):
-        return u'Given'
-
     def prefix(self):
         return '  '
 
 
 class When(Step):  # TODO  cycle these against the Scenario
-
-    def __str__(self):
-        return u'When'
 
     def prefix(self):
         return '   '
@@ -523,17 +466,11 @@ class When(Step):  # TODO  cycle these against the Scenario
 
 class Then(Step):
 
-    def __str__(self):
-        return u'Then'
-
     def prefix(self):
         return '   '
 
 
 class And(Step):
-
-    def __str__(self):
-        return u'And'
 
     def prefix(self):
         return '    '
@@ -541,19 +478,16 @@ class And(Step):
 
 class But(And):
 
-    def __str__(self):
-        return u'But'
+    pass
 
 #  CONSIDER  how to validate that every row you think you wrote actually ran?
 
 
 class Row(Morelia):
 
-    def __str__(self):
-        return u'Row'
-
-    def i_look_like(self):
-        return r'\|'
+    @classmethod
+    def get_pattern(cls, language):
+        return r'\s*(?P<keyword>\|):?\s+(?P<predicate>.*)'
 
     def my_parent_type(self):
         return Step
@@ -562,7 +496,7 @@ class Row(Morelia):
         return '        '
 
     def reconstruction(self):  # TODO  strip the reconstruction at error time
-        recon = self.prefix() + '| ' + self.predicate
+        recon = '        | ' + self.predicate
         if recon[-1] != '\n':
             recon += '\n'
         return recon
@@ -600,26 +534,36 @@ class Row(Morelia):
 #  CONSIDER  trailing comments
 
 
-class Comment(Morelia):
+class Examples(Morelia):
 
-    def __str__(self):
-        return u'Comment'
+    def prefix(self):
+        return ' ' * 4
 
-    def i_look_like(self):
-        return r'\#'
+    @classmethod
+    def get_pattern(cls, language):
+        class_name = cls.__name__
+        name = class_name.lower()
+        name = TRANSLATIONS[language].get(name, class_name)
+        return r'\s*(?P<keyword>' + name + '):(?P<predicate>.*)'
 
     def my_parent_type(self):
         return Morelia  # aka "any"
 
-    def _my_regex(self):
-        name = self.i_look_like()
-        return r'\s*(' + name + ')(.*)'
+
+class Comment(Morelia):
+
+    def my_parent_type(self):
+        return Morelia  # aka "any"
+
+    @classmethod
+    def get_pattern(cls, language):
+        return r'\s*(?P<keyword>\#)(?P<predicate>.*)'
 
     def validate_predicate(self):
         self.enforce(self.predicate.count('\n') == 0, 'linefeed in comment')
 
     def reconstruction(self):
-        recon = '  # ' + self.predicate
+        recon = '    # ' + self.predicate
         if recon[-1] != '\n':
             recon += '\n'
         return recon

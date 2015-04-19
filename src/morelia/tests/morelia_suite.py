@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
-
-import unittest
-from unittest import TestCase
+import os
 import re
 import sys
-import os
+
+from unittest import TestCase
+
+from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
+                          And, When, Then, _permute_indices, MissingStepError)
+from morelia.formatters import NullFormatter
+from morelia.i18n import TRANSLATIONS
+from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
+from morelia.visitors import TestVisitor
+from morelia.utils import to_unicode
+
+
 pwd = os.path.dirname(os.path.realpath(__file__))
 morelia_path = os.path.join(pwd, '../morelia')
 sys.path.insert(0, morelia_path)
-from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
-                          And, When, Then, TestVisitor, _permute_indices, MissingStepError)
-from morelia.formatters import NullFormatter
-from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
-from morelia.i18n import TRANSLATIONS
-from morelia.utils import to_unicode
 
 #  CONSIDER  same order as morelia.feature, & vice-versa
 zones = []
@@ -160,7 +163,7 @@ class MoreliaSuite(TestCase):
 
         try:
             p.parse_feature(input)
-            assert False  # should fail!
+            assert False  # should fail!  # pragma: nocover
         except SyntaxError as e:
             e = e.args[0]
             try:
@@ -180,7 +183,7 @@ class MoreliaSuite(TestCase):
                         so pay no attention to the skeptics!''' % self.feature_keyword
         try:
             p.parse_feature(input)
-            assert False  # should raise a SyntaxError
+            assert False  # should raise a SyntaxError  # pragma: nocover
         except SyntaxError as e:
             self.assert_regex_contains('linefeed in comment', str(e))
             self.assert_regex_contains('line 2', str(e))
@@ -228,10 +231,10 @@ class MoreliaSuite(TestCase):
 
     def test_bond_predicates(self):
         return  # CONSIDER  why test_strip_predicates passes and this croaks???
-        language = self._get_language()
-        step = Parser(language=language).parse_feature('  %s\n   elf quest   \t     ' % self.given_keyword)[0]
-        self.assertEqual(step.keyword, self.given_keyword)
-        self.assertEqual(step.predicate, 'elf quest')
+        # language = self._get_language()
+        # step = Parser(language=language).parse_feature('  %s\n   elf quest   \t     ' % self.given_keyword)[0]
+        # self.assertEqual(step.keyword, self.given_keyword)
+        # self.assertEqual(step.predicate, 'elf quest')
 
     def test_scenarios_link_to_their_steps(self):
         language = self._get_language()
@@ -245,13 +248,8 @@ class MoreliaSuite(TestCase):
         assert issubclass(Given, Given)
         assert not issubclass(Scenario, Given)
 
-    def test_i_look_like(self):
-        self.assertEqual('Step', Step().i_look_like())
-        self.assertEqual('Given', Given().i_look_like())
-        self.assertEqual('\\|', Row().i_look_like())
-
     def test_evaluate_step_by_name(self):
-        step = Given()._parse('my milkshake')
+        step = Given(self.given_keyword, 'my milkshake')
         self.youth = 'girls'
         matcher = self._get_default_machers()
         step.evaluate(self, matcher)
@@ -261,8 +259,7 @@ class MoreliaSuite(TestCase):
 
     def test_Row_parse(self):
         sauce = 'buddha | brot |'
-        row = Row()
-        row._parse(sauce, [])
+        row = Row('#', sauce)
         assert row.predicate == sauce
 
     def test_parse_feature_Row(self):
@@ -374,7 +371,7 @@ class MoreliaSuite(TestCase):
         # TODO  better object model! assert 2 == step_0.count_whens()
 
     def test_harvest(self):
-        r = Row()
+        r = Row('\|', '')
 
         def harvest(predicate):
             r.predicate = predicate
@@ -464,10 +461,7 @@ class MoreliaSuite(TestCase):
         x = 1 / 0  # noqa guilty pleasure for programmers!
 
     def test_handle_exceptions(self):
-        s = Step()
-
-        s.keyword = 'Given'
-        s.predicate = 'exceptional'
+        s = Step('Given', 'exceptional')
         s.line_number = 42
         matcher = RegexpStepMatcher(self).add_matcher(MethodNameStepMatcher(self))
         visitor = TestVisitor(self, matcher, NullFormatter())
@@ -475,47 +469,47 @@ class MoreliaSuite(TestCase):
 
         try:
             s.test_step(visitor, matcher)
-            assert False  # should raise!
+            assert False  # should raise!  # pragma: nocover
         except ZeroDivisionError as e:
             assert 'Given: exceptional' in str(e)
 
     def test_find_step_by_name(self):
-        step = Given()._parse('my milkshake')
+        step = Given(self.given_keyword, 'my milkshake')
         matcher = self._get_default_machers()
         method, args, kwargs = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_by_doc_string(self):
-        step = And()._parse('my milkshake brings all the boys to the yard')
+        step = And(self.and_keyword, 'my milkshake brings all the boys to the yard')
         matcher = self._get_default_machers()
         method, args, kwargs = step.find_step(self, matcher)
         expect = self.step_my_milkshake
         self.assertEqual(expect, method)
 
     def test_find_step_with_match(self):
-        step = When()._parse('my milkshake brings all the girls to the yard')
+        step = When(self.when_keyword, 'my milkshake brings all the girls to the yard')
         matcher = self._get_default_machers()
         method, args, kwargs = step.find_step(self, matcher)
         self.assertEqual(('girls', 'the'), args)
 
     def test_step_not_found(self):
-        step = Then()._parse('not there')
+        step = Then(self.then_keyword, 'not there')
         matcher = self._get_default_machers()
         self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_fail_without_enough_function_name(self):
-        step = And()._parse('my milk')
+        step = And(self.and_keyword, 'my milk')
         matcher = self._get_default_machers()
         self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_fail_step_without_enough_doc_string(self):
-        step = Given()._parse("brings all the boys to the yard it's better than yours")
+        step = Given(self.given_keyword, "brings all the boys to the yard it's better than yours")
         matcher = self._get_default_machers()
         self.assertRaises(MissingStepError, step.find_step, self, matcher)
 
     def step_evaluate_step_by_doc_string(self):
-        step = Given()._parse('my milkshake brings all the girls to a yard')
+        step = Given(self.given_keyword, 'my milkshake brings all the girls to a yard')
         self.youth = 'boys'
         matcher = self._get_default_machers()
         step.evaluate(self, matcher)
@@ -713,7 +707,7 @@ class MoreliaSuite(TestCase):
             language = self._get_language()
             p = Parser(language=language).parse_features(statements)
             p.evaluate(self)
-            raise Exception('we expect syntax errors here')
+            raise Exception('we expect syntax errors here')  # pragma: nocover
         except (SyntaxError, AssertionError) as e:
             e = e.args[0]
             self.assert_regex_contains(re.escape(diagnostics), e)
@@ -768,7 +762,3 @@ class PLMoreliaSuite(MoreliaSuite):
         assert step.__class__ == Feature
         self.assertEqual(step.keyword, self.feature_keyword)
         self.assertEqual(step.predicate, 'prevent wild animals from eating us')
-
-
-if __name__ == '__main__':
-    unittest.main()  # NOTE  this seems to return the correct shell value

@@ -207,7 +207,7 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
         """ Scenariusz: suggest """
         # Arrange
         obj = MethodNameStepMatcher(sentinel.suite)
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n\n        # code\n        pass\n\n'
+        pattern = u'    def step_%(method_name)s(self%(args)s):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
             ('tastes great', 'tastes_great', ''),
             ('less filling', 'less_filling', ''),
@@ -228,6 +228,7 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
             expected = pattern % {
                 'method_name': method,
                 'args': args,
+                'predicate': predicate,
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)
@@ -362,19 +363,19 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
         # Arrange
         obj = RegexpStepMatcher(sentinel.suite)
         # Act
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        # code\n        pass\n\n'
+        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
-            ('tastes great', 'tastes_great', r"ur'tastes great'", ''),
-            ('less filling', 'less_filling', r"ur'less filling'", ''),
-            ('line\nfeed', 'line_feed', r"ur'line\nfeed'", ''),
-            ('tick\'ed\'', 'tick_ed', r"ur'tick\'ed\''", ''),
-            ('tastes   great', 'tastes_great', r"ur'tastes\s+great'", ''),
-            ('argu<ment>al', 'argu_ment_al', r"ur'argu(.+)al'", ', ment'),
-            ('arg<u>ment<al>', 'arg_u_ment_al', r"ur'arg(.+)ment(.+)'", ', u, al'),
-            ('str"ing"', 'str_ing', 'ur\'str"([^"]+)"\'', ', ing'),
-            ('"str"i"ngs"', 'str_i_ngs', 'ur\'"([^"]+)"i"([^"]+)"\'', ', str, ngs'),
-            ('enter "10" into', 'enter_number_into', 'ur\'enter "([^"]+)" into\'', ', number'),
-            ('enter "10" and "20" into', 'enter_number_and_number_into', 'ur\'enter "([^"]+)" and "([^"]+)" into\'', ', number1, number2'),
+            ('tastes great', 'tastes_great', r"r'tastes great'", ''),
+            ('less filling', 'less_filling', r"r'less filling'", ''),
+            ('line\nfeed', 'line_feed', r"r'line\nfeed'", ''),
+            ('tick\'ed\'', 'tick_ed', r"r'tick\'ed\''", ''),
+            ('tastes   great', 'tastes_great', r"r'tastes\s+great'", ''),
+            ('argu<ment>al', 'argu_ment_al', r"r'argu(.+)al'", ', ment'),
+            ('arg<u>ment<al>', 'arg_u_ment_al', r"r'arg(.+)ment(.+)'", ', u, al'),
+            ('str"ing"', 'str_ing', 'r\'str"([^"]+)"\'', ', ing'),
+            ('"str"i"ngs"', 'str_i_ngs', 'r\'"([^"]+)"i"([^"]+)"\'', ', str, ngs'),
+            ('enter "10" into', 'enter_number_into', 'r\'enter "([^"]+)" into\'', ', number'),
+            ('enter "10" and "20" into', 'enter_number_and_number_into', 'r\'enter "([^"]+)" and "([^"]+)" into\'', ', number1, number2'),
         ]
         for predicate, method, docstring, args in test_data:
             suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
@@ -383,6 +384,7 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
+                'predicate': predicate,
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)
@@ -518,19 +520,19 @@ class ParseStepMatcherSuggestTestCase(unittest.TestCase):
         # Arrange
         obj = ParseStepMatcher(sentinel.suite)
         # Act
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        # code\n        pass\n\n'
+        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
-            ('tastes great', 'tastes_great', r"ur'tastes great'", ''),
-            ('less filling', 'less_filling', r"ur'less filling'", ''),
-            ('line\nfeed', 'line_feed', r"ur'line\nfeed'", ''),
-            ('tick\'ed\'', 'tick_ed', r"ur'tick\'ed\''", ''),
-            ('tastes   great', 'tastes_great', r"ur'tastes\s+great'", ''),
-            ('argu<ment>al', 'argu_ment_al', r"ur'argu{ment}al'", ', ment'),
-            ('arg<u>ment<al>', 'arg_u_ment_al', r"ur'arg{u}ment{al}'", ', u, al'),
-            ('str"ing"', 'str_ing', 'ur\'str"{ing}"\'', ', ing'),
-            ('"str"i"ngs"', 'str_i_ngs', 'ur\'"{str}"i"{ngs}"\'', ', str, ngs'),
-            ('enter "10" into', 'enter_number_into', 'ur\'enter "{number}" into\'', ', number'),
-            ('enter "10" and "20" into', 'enter_number_and_number_into', 'ur\'enter "{number1}" and "{number2}" into\'', ', number1, number2'),
+            ('tastes great', 'tastes_great', r"r'tastes great'", ''),
+            ('less filling', 'less_filling', r"r'less filling'", ''),
+            ('line\nfeed', 'line_feed', r"r'line\nfeed'", ''),
+            ('tick\'ed\'', 'tick_ed', r"r'tick\'ed\''", ''),
+            ('tastes   great', 'tastes_great', r"r'tastes\s+great'", ''),
+            ('argu<ment>al', 'argu_ment_al', r"r'argu{ment}al'", ', ment'),
+            ('arg<u>ment<al>', 'arg_u_ment_al', r"r'arg{u}ment{al}'", ', u, al'),
+            ('str"ing"', 'str_ing', 'r\'str"{ing}"\'', ', ing'),
+            ('"str"i"ngs"', 'str_i_ngs', 'r\'"{str}"i"{ngs}"\'', ', str, ngs'),
+            ('enter "10" into', 'enter_number_into', 'r\'enter "{number}" into\'', ', number'),
+            ('enter "10" and "20" into', 'enter_number_and_number_into', 'r\'enter "{number1}" and "{number2}" into\'', ', number1, number2'),
         ]
         for predicate, method, docstring, args in test_data:
             suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
@@ -539,6 +541,7 @@ class ParseStepMatcherSuggestTestCase(unittest.TestCase):
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
+                'predicate': predicate,
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)

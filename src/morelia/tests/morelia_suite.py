@@ -5,8 +5,10 @@ import sys
 
 from unittest import TestCase
 
-from morelia.base import (Parser, Feature, Scenario, Given, Comment, Step, Row,
-                          And, When, Then, _permute_indices, MissingStepError)
+from morelia.base import Parser
+from morelia.grammar import (Feature, Scenario, Given, Comment, Step, Row,
+                             And, When, Then, _permute_indices)
+from morelia.exceptions import MissingStepError
 from morelia.formatters import NullFormatter
 from morelia.i18n import TRANSLATIONS
 from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
@@ -53,6 +55,62 @@ class MoreliaSuite(TestCase):
         assert step.__class__ == Feature
         self.assertEqual(step.keyword, self.feature_keyword)
         self.assertEqual(step.predicate, 'prevent wild animals from eating us')
+
+    def test_background(self):
+        language = self._get_language()
+        filename = pwd + '/background%s.feature' % (language or '')
+        ast = Parser(language=language).parse_file(filename)
+        ast.evaluate(self, show_all_missing=True)
+
+    def step_step_ran_is_number(self, number):
+        r'step_ran was "([^"]+)"'
+
+        self._step_ran = int(number)
+
+    def step_alt_step_ran_is_number(self, number):
+        r'alt_step_ran was "([^"]+)"'
+
+        self._alt_step_ran = int(number)
+
+    def step_I_increment_step_ran_by_number(self, number):
+        r'I increment step_ran by "([^"]+)"'
+
+        self._step_ran += int(number)
+
+    def step_increment_alt_step_ran_by_number(self, number):
+        r'increment alt_step_ran by "([^"]+)"'
+
+        self._alt_step_ran += int(number)
+
+    def step_step_ran_equals_number(self, number):
+        r'step_ran will equal "([^"]+)"'
+
+        self.assertEqual(self._step_ran, int(number))
+
+    def step_alt_step_ran_equals_number(self, number):
+        r'alt_step_ran will equal "([^"]+)"'
+
+        self.assertEqual(self._alt_step_ran, int(number))
+
+    def step_angles_step_is_background(self, background):
+        r'angles_step was (.+)'
+
+        self._background = background
+
+    def step_I_increment_angles_step_by_when(self, when):
+        r'I increment angles_step by (.+)'
+
+        self._background = int(self._background) + int(when)
+
+    def step_angles_step_equals_then(self, then):
+        r'angles_step will equal (.+)'
+
+        self.assertEqual(self._background, int(then))
+
+    def step_angles_step_will_be_then(self, then):
+        r'angles_step will be string "([^"]+)"'
+
+        self.assertEqual(self._background, then)
 
     def test_scenario(self):
         input = '%s: range free Vegans' % self.scenario_keyword

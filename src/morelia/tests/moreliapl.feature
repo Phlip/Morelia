@@ -55,19 +55,19 @@ Scenariusz: Convert source predicates into their matching regular expressions
    Wtedy we convert it into a <suggestion>
     I add <extra> arguments
    
-       |   predicate     |   suggestion            |  extra      |
+       |   predicate       |   suggestion           |  extra      |
        
-       | tastes great    | ur'tastes great'        |             |
-       | less filling    | ur'less filling'        |             |
-       | line\nfeed      | ur'line\nfeed'          |             |
-       | tick'ed'        | ur'tick\'ed\''          |             |
-       | tastes   great  | ur'tastes\s+great'      |             |
-       | argu<ment>al    | ur'argu(.+)al'          | , ment      |
-       | arg<u>ment<al>  | ur'arg(.+)ment(.+)'     | , u, al     |
-       | str"ing"        | ur'str"([^"]+)"'        | , ing       |
-       | "str"i"ngs"     | ur'"([^"]+)"i"([^"]+)"' | , str, ngs  |
-
-#      | pipe \| me      | ur'pipe \\\| me'        |             |
+       | tastes great      | r'tastes great'        |             |
+       | less filling      | r'less filling'        |             |
+       | line\nfeed        | r'line\nfeed'          |             |
+       | tick'ed'          | r'tick\'ed\''          |             |
+       | tastes   great    | r'tastes\s+great'      |             |
+       | argu<ment>al      | r'argu(.+)al'          | , ment      |
+       | arg<u>ment<al>    | r'arg(.+)ment(.+)'     | , u, al     |
+       | str"ing"          | r'str"([^"]+)"'        | , ing       |
+       | "str"i"ngs"       | r'"([^"]+)"i"([^"]+)"' | , str, ngs  |
+       | zażółć gęślą jaźń | r'zażółć gęślą jaźń'   |             |
+#      | pipe \| me      | r'pipe \\\| me'          |             |
 
 Scenariusz: Raise useful errors with incomplete files
   Gdy a file contains <statements>, it produces <diagnostics>

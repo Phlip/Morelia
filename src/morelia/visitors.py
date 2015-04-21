@@ -3,6 +3,7 @@ from collections import OrderedDict
 import time
 
 from .exceptions import MissingStepError
+from .utils import to_docstring
 
 
 class IVisitor(object):
@@ -121,4 +122,4 @@ class StepMatcherVisitor(IVisitor):
         suggest = u''.join(self._not_matched.values())
         if suggest:
             diagnostic = u'Cannot match steps:\n\n%s' % suggest
-            self._suite.fail(diagnostic)
+            self._suite.fail(to_docstring(diagnostic))

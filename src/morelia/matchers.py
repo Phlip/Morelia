@@ -64,7 +64,7 @@ class IStepMatcher(object):
         predicate = re.sub(r' \s+', r'\s+', predicate)
 
         arguments = self._format_arguments(arguments)
-        return "ur'%s'" % predicate, arguments
+        return "r'%s'" % predicate, arguments
 
     def _name_arguments(self, extra_arguments):
         if not extra_arguments:
@@ -143,10 +143,9 @@ class MethodNameStepMatcher(IStepMatcher):
         :rtype: (str, str, str)
         """
         method_name = self.slugify(predicate)
-        indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self):\n\n        # code\n        pass\n\n' % {
-            'indent': indent,
+        suggest = u'    def step_%(method_name)s(self):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
+            'predicate': predicate,
         }
         return suggest, method_name, ''
 
@@ -186,12 +185,11 @@ class RegexpStepMatcher(IStepMatcher):
         """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
-        indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
-            'indent': indent,
+        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
             'args': extra_arguments,
-            'doc_string': docstring
+            'docstring': docstring,
+            'predicate': predicate,
         }
         return suggest, method_name, docstring
 
@@ -220,12 +218,11 @@ class ParseStepMatcher(IStepMatcher):
         """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
-        indent = ' ' * 4
-        suggest = u'%(indent)sdef step_%(method_name)s(self%(args)s):\n        %(doc_string)s\n\n        # code\n        pass\n\n' % {
-            'indent': indent,
+        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
             'args': extra_arguments,
-            'doc_string': docstring
+            'docstring': docstring,
+            'predicate': predicate,
         }
         return suggest, method_name, docstring
 

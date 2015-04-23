@@ -8,7 +8,7 @@ setup(
     version="0.3.0",
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
     long_description=long_description,
-    url='http://c2.com/cgi/wiki?MoreliaViridis',
+    url='http://morelia.readthedocs.org/',
     author='Phlip',
     author_email='phlip2005@gmail.com',
     license="MIT",

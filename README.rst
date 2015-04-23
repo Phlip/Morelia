@@ -28,8 +28,6 @@ Morelia
 
 Morelia *viridis* is a Python Behavior Driven Development platform, conceptually derived from Ruby's Cucumber Framework.
 
-It is available both at `the cheeseshop`_ and GitHub_.
-
 **Mascot**:
 
 .. image:: http://www.naturfoto.cz/fotografie/ostatni/krajta-zelena-47784.jpg
@@ -42,7 +40,7 @@ Installation
 Quick usage guide
 =================
 
-Write feature description:
+Write a feature description:
 
 .. code-block:: cucumber
 
@@ -69,69 +67,67 @@ Create standard python's unittest and hook Morelia in it:
 
     import unittest
     from morelia import Parser
+    from morelia.formatter import PlainTextFormatter
 
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self, show_all_missing=True)
+            """ Addition feature """
+            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
 
-Run test exaclty like your regular tests. Here's raw unittest example:
+Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
 
 .. code-block:: console
 
-   python -m unittest -v test_acceptance
+   $ python -m unittest -v test_acceptance  # or
+   $ nosetests -v test_acceptance.py  # or
+   $ py.test -v test_acceptance.py  # or
+   $ trial test_acceptance.py  # or
+   $ # django/pyramid/flask/(place for your favourite test runner)
 
 And you'll see which steps are missing:
 
 .. code-block:: python
-
     F
     ======================================================================
-    FAIL: test_addition (__main__.CalculatorTestCase)
+    FAIL: test_addition (test_acceptance.CalculatorTestCase)
     Addition feature
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "test_acceptance.py", line 43, in test_addition
-        Parser().parse_file('calculator.feature').evaluate(self)
-      File "/.../morelia/base.py", line 184, in evaluate
-        self.rip(step_matcher_visitor)
-      File "/.../morelia/base.py", line 198, in rip
-        visitor.after_feature(node)
-      File "/.../morelia/visitors.py", line 117, in after_feature
-        self._suite.fail(diagnostic)
+      File "test_acceptance.py", line 45, in test_addition
+        Parser().parse_file(filename).evaluate(self, show_all_missing=True)
+      File "(...)/morelia/grammar.py", line 31, in evaluate
+        feature.evaluate_steps(matcher_visitor)
+      File "(...)/morelia/grammar.py", line 76, in evaluate_steps
+        self._method_hook(visitor, class_name, 'after_')
+      File "(...)/morelia/grammar.py", line 85, in _method_hook
+        method(self)
+      File "(...)/morelia/visitors.py", line 125, in after_feature
+        self._suite.fail(to_docstring(diagnostic))
     AssertionError: Cannot match steps:
 
         def step_I_have_powered_calculator_on(self):
-            ur'I have powered calculator on'
+            r'I have powered calculator on'
 
-            # code
-            pass
+            raise NotImplementedError('I have powered calculator on')
 
-        def step_I_enter_50_into_the_calculator(self):
-            ur'I enter 50 into the calculator'
+        def step_I_enter_number_into_the_calculator(self, number):
+            r'I enter "([^"]+)" into the calculator'
 
-            # code
-            pass
-
-        def step_I_enter_70_into_the_calculator(self):
-            ur'I enter 70 into the calculator'
-
-            # code
-            pass
+            raise NotImplementedError('I enter "20" into the calculator')
 
         def step_I_press_add(self):
-            ur'I press add'
+            r'I press add'
 
-            # code
-            pass
+            raise NotImplementedError('I press add')
 
-        def step_the_result_should_be_120_on_the_screen(self):
-            ur'the result should be 120 on the screen'
+        def step_the_result_should_be_number_on_the_screen(self, number):
+            r'the result should be "([^"]+)" on the screen'
 
-            # code
-            pass
+            raise NotImplementedError('the result should be "140" on the screen')
 
-Now implement steps:
+Now implement steps with standard TestCases that you are familiar:
 
 .. code-block:: python
 
@@ -139,25 +135,28 @@ Now implement steps:
 
     import unittest
     from morelia import Parser
+    from morelia.formatter import PlainTextFormatter
     
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self)
+            """ Addition feature """
+            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
     
         def step_I_have_powered_calculator_on(self):
-            ur'I have powered calculator on'
+            r'I have powered calculator on'
             self.stack = []
 
         def step_I_enter_a_number_into_the_calculator(self, number):
-            ur'I enter (\d+) into the calculator'  # match by regexp
+            r'I enter "(\d+)" into the calculator'  # match by regexp
             self.stack.append(int(number))
     
-        def step_I_press_add(self):  #  matched by method name
+        def step_I_press_add(self):  # matched by method name
             self.result = sum(self.stack)
     
         def step_the_result_should_be_on_the_screen(self, number):
-            ur'the result should be {number} on the screen'  # match by format-like string
+            r'the result should be "{number}" on the screen'  # match by format-like string
             assert int(number) == self.result
 
 
@@ -165,13 +164,21 @@ And run it again:
 
 .. code-block:: console
 
-    $ python -m unittest -v test_acceptance
+    $ python -m unittest test_acceptance
 
-    test_addition (test_acceptance.CalculatorTestCase)
-    Addition feature ... ok
-
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    Scenario: Add two numbers
+        Given I have powered calculator on                       # pass  0.000s
+        When I enter "50" into the calculator                    # pass  0.000s
+        And I enter "70" into the calculator                     # pass  0.000s
+        And I press add                                          # pass  0.001s
+        Then the result should be "120" on the screen            # pass  0.001s
+    .
     ----------------------------------------------------------------------
-    Ran 1 test in 0.016s
+    Ran 1 test in 0.028s
 
     OK
 
@@ -180,7 +187,8 @@ just to add a layer of literacy over our testage. Steps are miniature TestCases.
 Your onsite customer need never know, and your unit tests and customer tests
 can share their support methods. The same one test button can run all TDD and BDD tests.
 
-Look at example directory for a little more enhanced example.
+Look at example directory for a little more enhanced example and read full
+documentation for more advanced topics.
 
 Documentation
 =============

@@ -10,9 +10,11 @@ allowed by law. You can copy, modify, distribute and perform the work, even for
 commercial purposes, all without asking permission.
 """
 
+import os
 import unittest
 
 from morelia import Parser
+from morelia.formatters import PlainTextFormatter
 
 from calculator import Calculator
 
@@ -36,11 +38,12 @@ class CalculatorTestCase(unittest.TestCase):
 
     def step_the_result_should_be_on_the_screen(self, number):
         ur'the result should be "{number}" on the screen'  # match by format-like string
-        assert int(number) == self.calculator.get_result()
+        self.assertEqual(int(number), self.calculator.get_result())
 
     def test_addition(self):
         """ Addition feature """
-        Parser().parse_file('calculator.feature').evaluate(self, show_all_missing=True)
+        filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+        Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
 
 
 if __name__ == '__main__':  # pragma: nobranch

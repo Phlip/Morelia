@@ -33,7 +33,7 @@ class PlainTextFormatter(IFormatter):
     def output(self, node, line, status, duration):
         if node.is_executable():
             status = status.lower()
-            text = '%-40s # %-5s %.3fs\n' % (
+            text = '%-60s # %-5s %.3fs\n' % (
                 line.strip('\n'),
                 status,
                 duration,
@@ -49,7 +49,7 @@ class ColorTextFormatter(PlainTextFormatter):
     def output(self, node, line, status, duration):
         if node.is_executable():
             status = status.lower()
-            text = '%s%-40s # %.3fs%s\n' % (
+            text = '%s%-60s # %.3fs%s\n' % (
                 colors[status],
                 line.strip('\n'),
                 duration,

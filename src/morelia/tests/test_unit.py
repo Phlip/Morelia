@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import sentinel, Mock
 
-from morelia.base import Parser, DEFAULT_LANGUAGE
+from morelia.parser import Parser, DEFAULT_LANGUAGE
 from morelia.grammar import Morelia, Step
 from morelia.exceptions import MissingStepError
 

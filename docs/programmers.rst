@@ -1,10 +1,10 @@
-Tutorial for programmers
-========================
+For programmers
+===============
 
 Quick usage guide
 -----------------
 
-Write feature description:
+Write a feature description:
 
 .. code-block:: cucumber
 
@@ -14,16 +14,16 @@ Write feature description:
         In order to avoid silly mistakes
         As a math idiot
         I want to be told the sum of two numbers
-    
+
     Scenario: Add two numbers
         Given I have powered calculator on
-        When I enter 50 into the calculator
-        And I enter 70 into the calculator
+        When I enter "50" into the calculator
+        And I enter "70" into the calculator
         And I press add
-        Then the result should be 120 on the screen
+        Then the result should be "120" on the screen
 
 
-Create standard python's unittest[1]_ and hook Morelia in it:
+Create standard python's unittest [1]_ and hook Morelia into it:
 
 .. code-block:: python
 
@@ -31,17 +31,24 @@ Create standard python's unittest[1]_ and hook Morelia in it:
 
     import unittest
     from morelia import Parser
+    from morelia.formatters import PlainTextFormatter
 
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self)
+            """ Addition feature """
+            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
 
-Run test exaclty like your regular tests. Here's raw unittest example:
+Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
 
 .. code-block:: console
 
-   python -m unittest -v test_acceptance
+   $ python -m unittest -v test_acceptance  # or
+   $ nosetests -v test_acceptance.py  # or
+   $ py.test -v test_acceptance.py  # or
+   $ trial test_acceptance.py  # or
+   $ # django/pyramid/flask/(place for your favourite test runner)
 
 And you'll see which steps are missing:
 
@@ -49,52 +56,43 @@ And you'll see which steps are missing:
 
     F
     ======================================================================
-    FAIL: test_addition (__main__.CalculatorTestCase)
+    FAIL: test_addition (test_acceptance.CalculatorTestCase)
     Addition feature
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "test_acceptance.py", line 43, in test_addition
-        Parser().parse_file('calculator.feature').evaluate(self)
-      File "/.../morelia/base.py", line 184, in evaluate
-        self.rip(step_matcher_visitor)
-      File "/.../morelia/base.py", line 198, in rip
-        visitor.after_feature(node)
-      File "/.../morelia/visitors.py", line 117, in after_feature
-        self._suite.fail(diagnostic)
+      File "test_acceptance.py", line 45, in test_addition
+        Parser().parse_file(filename).evaluate(self, show_all_missing=True)
+      File "(...)/morelia/grammar.py", line 31, in evaluate
+        feature.evaluate_steps(matcher_visitor)
+      File "(...)/morelia/grammar.py", line 76, in evaluate_steps
+        self._method_hook(visitor, class_name, 'after_')
+      File "(...)/morelia/grammar.py", line 85, in _method_hook
+        method(self)
+      File "(...)/morelia/visitors.py", line 125, in after_feature
+        self._suite.fail(to_docstring(diagnostic))
     AssertionError: Cannot match steps:
 
         def step_I_have_powered_calculator_on(self):
-            ur'I have powered calculator on'
+            r'I have powered calculator on'
 
-            # code
-            pass
+            raise NotImplementedError('I have powered calculator on')
 
-        def step_I_enter_50_into_the_calculator(self):
-            ur'I enter 50 into the calculator'
+        def step_I_enter_number_into_the_calculator(self, number):
+            r'I enter "([^"]+)" into the calculator'
 
-            # code
-            pass
-
-        def step_I_enter_70_into_the_calculator(self):
-            ur'I enter 70 into the calculator'
-
-            # code
-            pass
+            raise NotImplementedError('I enter "20" into the calculator')
 
         def step_I_press_add(self):
-            ur'I press add'
+            r'I press add'
 
-            # code
-            pass
+            raise NotImplementedError('I press add')
 
-        def step_the_result_should_be_120_on_the_screen(self):
-            ur'the result should be 120 on the screen'
+        def step_the_result_should_be_number_on_the_screen(self, number):
+            r'the result should be "([^"]+)" on the screen'
 
-            # code
-            pass
+            raise NotImplementedError('the result should be "140" on the screen')
 
-
-Now implement steps:
+Now implement steps with standard TestCases that you are familiar:
 
 .. code-block:: python
 
@@ -102,40 +100,50 @@ Now implement steps:
 
     import unittest
     from morelia import Parser
-
-
+    from morelia.formatter import PlainTextFormatter
+    
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self)
+            """ Addition feature """
+            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
     
         def step_I_have_powered_calculator_on(self):
-            ur'I have powered calculator on'
+            r'I have powered calculator on'
             self.stack = []
 
         def step_I_enter_a_number_into_the_calculator(self, number):
-            ur'I enter (\d+) into the calculator'  # match by regexp
+            r'I enter "(\d+)" into the calculator'  # match by regexp
             self.stack.append(int(number))
     
-        def step_I_press_add(self):  #  matched by method name
+        def step_I_press_add(self):  # matched by method name
             self.result = sum(self.stack)
     
         def step_the_result_should_be_on_the_screen(self, number):
-            ur'the result should be {number} on the screen'  # match by format-like string
-            assert int(number) == self.result
-    
+            r'the result should be "{number}" on the screen'  # match by format-like string
+            self.assertEqual(int(number), self.result)
+
 
 And run it again:
 
 .. code-block:: console
 
-    $ python -m unittest -v test_acceptance
+    $ python -m unittest test_acceptance
 
-    test_addition (test_acceptance.CalculatorTestCase)
-    Addition feature ... ok
-
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    Scenario: Add two numbers
+        Given I have powered calculator on                       # pass  0.000s
+        When I enter "50" into the calculator                    # pass  0.000s
+        And I enter "70" into the calculator                     # pass  0.000s
+        And I press add                                          # pass  0.001s
+        Then the result should be "120" on the screen            # pass  0.001s
+    .
     ----------------------------------------------------------------------
-    Ran 1 test in 0.016s
+    Ran 1 test in 0.028s
 
     OK
 
@@ -144,95 +152,17 @@ just to add a layer of literacy over our testage. Steps are miniature TestCases.
 Your onsite customer need never know, and your unit tests and customer tests
 can share their support methods. The same one test button can run all TDD and BDD tests.
 
-The Gherkin language
---------------------
-
-Language used to describe features is called "Gherkin". It's a little formalized
-natural language that's easy to write by non-programmers.
-
-Each feature should be described in separate document.
-
-Comments
-^^^^^^^^
-
-To include comments inside feature document start line with hash (#).
-Everything after this to the end of line will be treated as a comment.
-
-Language directive
-^^^^^^^^^^^^^^^^^^
-
-If comment is in the form:
-
-.. code-block:: cucumber
-
-   # language: en
-
-Then feature description will be analyzed according to given native language.
-All supported languages with grammar keywords are here:
-
-    https://github.com/kidosoft/Morelia/blob/master/src/morelia/i18n.py
-
-If there's no language directive then English is assumed.
-
-Feature keyword
-^^^^^^^^^^^^^^^
-
-In each document should be one "Feature" keyword. After "Feature" keyword
-goes name of feature and optional description:
-
-.. code-block:: cucumber
-
-    Feature: Addition
-        In order to avoid silly mistakes
-        As a math idiot
-        I want to be told the sum of two numbers
-    
-Note that "In order", "As a", and "I want" are not Morelia keywords.
-That's a description. Description is free formed text although below is 
-suggested form:
-
-.. code-block:: cucumber
-
-        In order to <goal description>
-        As a <role>
-        I want to <action>
-
-That form allows to look at feature from end user's perspective.
-
-Scenario keyword
-^^^^^^^^^^^^^^^^
-
-Each feature consists of one or more scenarios which begins with "Scenario"
-keyword and scenario's name. Then goes steps describing scenario:
-
-.. code-block:: cucumber
-
-    Scenario: Add two numbers
-        Given I have powered calculator on
-        When I enter 50 into the calculator
-        And I enter 70 into the calculator
-        And I press add
-        Then the result should be 120 on the screen
-
-Steps
-^^^^^
-
-Each scenario consists of many steps. Steps have associated meaning:
-
-* "Given" describe initial state of system
-* "When" are used to describe actions
-* "Then" are used to describe final state of system
-
-"And" and "But" are used to enumerate more "Given", "When", "Then" steps.
-
 Matching steps
-^^^^^^^^^^^^^^
+--------------
 
-Method names from test case are matched with:
+Methods from test case object are matched with:
 
 * regular expressions
 * python's format-like expressions
 * method names
+
+
+If you look in example from quick usage guide:
 
 .. code-block:: python
 
@@ -240,43 +170,103 @@ Method names from test case are matched with:
 
     import unittest
     from morelia import Parser
+    from morelia.formatters import PlainTextFormatter
 
 
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
-            Parser().parse_file('calculator.feature').evaluate(self)
+            """ Addition feature """
+            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
     
         def step_I_have_powered_calculator_on(self):
-            ur'I have powered calculator on'
+            r'I have powered calculator on'
             self.stack = []
 
         def step_I_enter_a_number_into_the_calculator(self, number):
-            ur'I enter (\d+) into the calculator'  # match by regexp
+            r'I enter "(\d+)" into the calculator'  # match by regexp
             self.stack.append(int(number))
     
         def step_I_press_add(self):  #  matched by method name
             self.result = sum(self.stack)
     
         def step_the_result_should_be_on_the_screen(self, number):
-            ur'the result should be {number} on the screen'  # match by format-like string
-            assert int(number) == self.result
+            r'the result should be "{number}" on the screen'  # match by format-like string
+            self.assertEqual(int(number), self.result)
     
+You'll see three types of matching.
 
-Regular expressions, such as `(\d+)`, are expanded into step arguments,
-such as `number` in above example.
+Regular expression matching
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Method `step_I_enter_number_into_the_calculator` from example is matched
+by regular expression as it's docstring
+
+.. code-block:: python
+
+        r'I enter "(\d+)" into the calculator'
+
+matches steps:
+
+.. code-block:: cucumber
+
+        When I enter "50" into the calculator
+        And I enter "70" into the calculator
+
+Regular expressions, such as `(\d+)`, are expanded into positional step arguments,
+such as `number` in above example. If you would use named groups like `(?P<number>\d+)`
+then capttured expressions from steps will be put as given keyword argument to method.
+
 Remember to use tight expressions, such as `(\d+)`,
 not expressions like `(\d*)` or `(.*)`, to validate your input.
 
-By analogy same matching with format-like strings. `{number}` is matched
-to `numeber` argument.
+Format-like strings matching
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Method `step_the_result_should_be_on_the_screen` from example is matched
+by format-like strings as it's docstring
+
+.. code-block:: python
+
+        r'the result should be "{number}" on the screen'
+
+matches step:
+
+.. code-block:: cucumber
+
+        Then the result should be "120" on the screen
+
+Method name matching
+^^^^^^^^^^^^^^^^^^^^
+
+Method `step_I_press_add` from example is matched by method name which matches
+step:
+
+.. code-block:: cucumber
+
+        And I press add
+
+Own matchers
+^^^^^^^^^^^^
+
+You can limit matchers for only some types or use your own matchers.
+Matcher classes can be passed to `evaluate` method as keyword parameter:
+
+.. code-block:: python
+
+   from morelia.matchers import RegexpStepMatcher
+   # ...
+   Parser().parse_file(filename).evaluate(self, matchers=[MyOwnMatcher, RegexpStepMatcher])
+
+
+See api for :py:meth:`IStepMatcher`.
 
 
 Tables
 ^^^^^^
 
-To DRY up a series of redundant scenarios, varying by only "payload" variables,
-roll the Scenarios up into a table, using `<angles>` around the payload variable names:
+If you use Scenarios with tables tables, using `<angles>` around the payload variable names:
 
 .. code-block:: cucumber
 
@@ -301,7 +291,7 @@ roll the Scenarios up into a table, using `<angles>` around the payload variable
            |  99.00 | Kuantan, Malaysia      | 55.00 |   no  |
            | 101.00 | Tierra del Fuego       | 55.00 |   no  |
 
-That Scenario will unroll into a series of scenarios,
+then that Scenario will unroll into a series of scenarios,
 each with one value from the table inserted into their placeholders `<total>`,
 `<destination>`, and `<rapid>`.
 So this step method will receive each line in the "destination" column:
@@ -314,58 +304,185 @@ So this step method will receive each line in the "destination" column:
 (And observe that naming the placeholder the same as the method argument
 is a *reeeally* good idea, but naturally unenforceable.)
 
-Morelia Viridis will take each line of the table,
+Morelia will take each line of the table,
 and construct a complete test case out of the Scenario steps,
 running `setUp()` and `tearDown()` around them.
 
-When keyword special behaviour
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The other step keywords (Given, And, Then, etc.) are cosmetic,
-to permit good grammar. They are all aliases for Step.
-The committee may eventually find specific uses for them.
-
-The `When` keyword, however, is special. When a Scenario contains more than one When,
-Morelia splits it up into one Scenario for each When block,
-and runs each one separately. So the following two Feature details are equivalent...
+If you use many tables then Morelia would use permutation of all rows in all tables:
 
 .. code-block:: cucumber
 
-    Scenario: Split When Blocks
-        Given some setup
-          And some condition
-         When a first trigger occurs
-         Then something good happens
+    Scenario: orders above $100.00 to the continental US get free ground shipping
+      When we send an order totaling $<total>, with a 12345 SKU, to our warehouse
+       And the order will ship to <destination>
+       And we choose that delivery should be <speed>
+            | speed   |
+
+            | rapid   |
+            | regular |
+
+      Then the ground shipping cost is $<cost>
     
-    Scenario: Split When Blocks again
-        Given some setup
-          And some condition
-         When another trigger occurs
-         Then something else happens
-
-...and...
-
-.. code-block:: cucumber
-
-    Scenario: Split When Blocks, and again
-        Given some setup
-          And some condition
+           |  total | destination            |  cost | 
     
-         When a first trigger occurs
-         Then something good happens
-    
-         When another trigger occurs
-         Then something else happens
+           |  98.00 | Rhode Island           |  8.25 | 
+           | 101.00 | Rhode Island           |  0.00 | 
+           |  99.00 | Kansas                 |  8.25 | 
 
-The second version DRYs the setup conditions.
+In above example 2 * 3 = 6 different test cases would be generated.
 
-The committee does not yet know what happens if a multi-When Scenario also contains a table, so please don't rely on whatever the current behavior is!
 
-Here's another **sneaky snake**, which might also be a Green Tree Python (a Morelia *viridis*):
+Formatters
+----------
 
-.. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
+Morelia complies with Unix's `Rule of Silence` [2]_ so when you hook it like this:
+.. code-block:: python
+
+    Parser().parse_file(filename).evaluate(self)
+
+and all tests passes it would say nothing:
+
+.. code-block:: console
+
+    $ python -m unittest test_acceptance
+    .
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.028s
+
+    OK
+
+(here's only information from test runner)
+
+But when something went wrong it would complie with Unix's `Rule of Repair` [3]_
+and fail noisily:
+
+.. code-block:: console
+
+    F
+    ======================================================================
+    FAIL: test_addition (test_acceptance.CalculatorTestCase)
+    Addition feature
+    ----------------------------------------------------------------------
+    Traceback (most recent call last):
+      File "test_acceptance.py", line 47, in test_addition
+        Parser().parse_file(filename).evaluate(self)
+      File "(...)/morelia/grammar.py", line 36, in evaluate
+        feature.evaluate_steps(test_visitor)
+      File "(...)/morelia/grammar.py", line 74, in evaluate_steps
+        self._evaluate_child_steps(visitor)
+      File "(...)/morelia/grammar.py", line 80, in _evaluate_child_steps
+        step.evaluate_steps(visitor)
+      File "(...)/morelia/grammar.py", line 226, in evaluate_steps
+        self.evaluate_test_case(visitor, step_indices)  # note this works on reports too!
+      File "(...)/morelia/grammar.py", line 237, in evaluate_test_case
+        step.evaluate_steps(visitor)
+      File "(...)/morelia/grammar.py", line 73, in evaluate_steps
+        visitor.visit(self)
+      File "(...)/morelia/visitors.py", line 53, in visit
+        node.test_step(self._suite, self._matcher)
+      File "(...)/morelia/grammar.py", line 366, in test_step
+        self.evaluate(suite, matcher)
+      File "(...)/morelia/grammar.py", line 362, in evaluate
+        method(*args, **kwargs)
+      File "test_acceptance.py", line 41, in step_the_result_should_be_on_the_screen
+        self.assertEqual(int(number), self.calculator.get_result())
+    AssertionError: 
+      File "calculator.feature", line 11, in Scenario: Add two numbers
+       Then: the result should be "121" on the screen
+
+    121 != 120
+
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.020s
+
+    FAILED (failures=1)
+
+More verbose
+^^^^^^^^^^^^
+
+OK. In Behaviour Driven Development participate both programmers and non-programmers
+and the latter like animations and so on. So to make Morelia a little more verbose
+you can pass a formatter into evaluate method.
+
+For plain text formatter:
+
+
+.. code-block:: python
+
+    from morelia.formatters import PlainTextFormatter
+
+    Parser().parse_file(filename, PlainTextFormatter()).evaluate(self)
+
+.. code-block:: console
+
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    Scenario: Add two numbers
+        Given I have powered calculator on                       # pass  0.000s
+        When I enter "50" into the calculator                    # pass  0.000s
+        And I enter "70" into the calculator                     # pass  0.000s
+        And I press add                                          # pass  0.001s
+        Then the result should be "120" on the screen            # pass  0.001s
+    Scenario: Subsequent additions
+        Given I have powered calculator on                       # pass  0.000s
+        When I enter "50" into the calculator                    # pass  0.000s
+        And I enter "70" into the calculator                     # pass  0.000s
+        And I press add                                          # pass  0.001s
+        And I enter "20" into the calculator                     # pass  0.000s
+        And I press add                                          # pass  0.001s
+        Then the result should be "140" on the screen            # pass  0.001s
+    .
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.027s
+
+    OK
+
+
+For color text formatter:
+
+.. code-block:: python
+
+    from morelia.formatters import ColorTextFormatter
+
+    Parser().parse_file(filename, ColorTextFormatter()).evaluate(self)
+
+.. code-block:: console
+
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    Scenario: Add two numbers
+        Given I have powered calculator on                       # 0.000s
+        When I enter "50" into the calculator                    # 0.000s
+        And I enter "70" into the calculator                     # 0.000s
+        And I press add                                          # 0.001s
+        Then the result should be "120" on the screen            # 0.001s
+    Scenario: Subsequent additions
+        Given I have powered calculator on                       # 0.000s
+        When I enter "50" into the calculator                    # 0.000s
+        And I enter "70" into the calculator                     # 0.000s
+        And I press add                                          # 0.001s
+        And I enter "20" into the calculator                     # 0.000s
+        And I press add                                          # 0.001s
+        Then the result should be "140" on the screen            # 0.001s
+    .
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.027s
+
+    OK
+
+(You have to run above for yourself to see colors - sorry).
+
+Or you can write your own formatter.
+
+See api for :py:meth:`IFormatter`.
 
 .. rubric:: Footnotes
 .. [1] More on Python's unittests https://docs.python.org/library/unittest.html
+.. [2] Rule of Silence http://www.faqs.org/docs/artu/ch01s06.html#id2878450
+.. [3] Rule of Repair http://www.faqs.org/docs/artu/ch01s06.html#id2878538
 
 

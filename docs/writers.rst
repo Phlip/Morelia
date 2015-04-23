@@ -1,5 +1,5 @@
-Tutorial for scenario writers
-=============================
+For scenario writers
+====================
 
 Scenarios are meant as tool for easier communication between developers, QA
 and business participants. This tutorial is written with non-programmers in mind.
@@ -32,7 +32,13 @@ Next, write a name of feature that you need.
     Feature: Add an item to basket
 
 "Feature" is a keyword and have to be used literally. Every language has it's
-own set of keywords. E.g. for German (de) it would be "Funktionalität".
+own set of keywords. E.g. for Spanish (es) it would be look like:
+
+.. code-block:: cucumber
+   
+   # language: es
+   
+   Característica: Agregar un elemento a la cesta
 
 Next goes introductory description. It's an optional free formed text.
 If you want your programmer to better understand what you expect from him
@@ -110,7 +116,7 @@ in French) followed by short description of that case:
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
 In above example a logged user will visit item's description page
 and add item to basket.
@@ -120,20 +126,20 @@ a schema:
 
 .. code-block:: cucumber
 
-            Given <precondition that have to be met>
-            And  <more preconditions>
-            But  <more preconditions>
-            ...
+        Given <precondition that have to be met>
+        And  <more preconditions>
+        But  <more preconditions>
+        ...
 
-            When <action that have to be done>
-            And <next action>
-            But <next action>
-            ...
+        When <action that have to be done>
+        And <next action>
+        But <next action>
+        ...
 
-            Then <observable result of actions>
-            And <more results>
-            But <more results>
-            ...
+        Then <observable result of actions>
+        And <more results>
+        But <more results>
+        ...
 
 "Given", "When", "Then", "And" and "But" are all keywords. In our online store example
 we could write something like this:
@@ -148,22 +154,22 @@ we could write something like this:
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs "50" USD
-            And shipping costs of that item are "5" USD
-            And in my basket are "0" items
-            And value of my basket is "0" USD
-            And shipping costs are "0" USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs "50" USD
+        And shipping costs of that item are "5" USD
+        And in my basket are "0" items
+        And value of my basket is "0" USD
+        And shipping costs are "0" USD
 
-            When I visit an item description page
-            And I click button "Add to basket"
+        When I visit an item description page
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see "1" items in my basket
-            And value of my basket become "50" USD
-            And shipping costs become "5" USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see "1" items in my basket
+        And value of my basket become "50" USD
+        And shipping costs become "5" USD
 
 After "Given" you define what is expected starting state (item is in store;
 basked is empty). After "When" you write what <role> is performing
@@ -187,42 +193,42 @@ for them too:
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs "50" USD
-            And shipping costs of that item are "5" USD
-            And in my basket are "0" items
-            And value of my basket is "0" USD
-            And shipping costs are "0" USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs "50" USD
+        And shipping costs of that item are "5" USD
+        And in my basket are "0" items
+        And value of my basket is "0" USD
+        And shipping costs are "0" USD
 
-            When I visit an item description page
-            And I click button "Add to basket"
+        When I visit an item description page
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see "1" items in my basket
-            And value of my basket become "50" USD
-            And shipping costs become "5" USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see "1" items in my basket
+        And value of my basket become "50" USD
+        And shipping costs become "5" USD
 
-        Scenario: Adding item from search result page
+    Scenario: Adding item from search result page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs "50" USD
-            And shipping costs of each item is "5" USD
-            And in my basket are "0" items
-            And value of my basket is "0" USD
-            And shipping costs are "0" USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs "50" USD
+        And shipping costs of each item is "5" USD
+        And in my basket are "0" items
+        And value of my basket is "0" USD
+        And shipping costs are "0" USD
 
-            When I visit a search page
-            And I enter "Alice in Wonderland" in search box
-            And I click button "Search"
-            And I see button "Add to basket" next to item "Alice in Wonderland"
-            And I click button "Add to basket"
+        When I visit a search page
+        And I enter "Alice in Wonderland" in search box
+        And I click button "Search"
+        And I see button "Add to basket" next to item "Alice in Wonderland"
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see "1" items in my basket
-            And value of my basket become "50" USD
-            And shipping costs become "5" USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see "1" items in my basket
+        And value of my basket become "50" USD
+        And shipping costs become "5" USD
 
 
 Tables
@@ -243,42 +249,42 @@ You can write second scenario for this case:
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs "50" USD
-            And shipping costs of that item are "5" USD
-            And in my basket are "0" items
-            And value of my basket is "0" USD
-            And shipping costs are "0" USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs "50" USD
+        And shipping costs of that item are "5" USD
+        And in my basket are "0" items
+        And value of my basket is "0" USD
+        And shipping costs are "0" USD
 
-            When I visit an item description page
-            And I click button "Add to basket"
+        When I visit an item description page
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see "1" items in my basket
-            And value of my basket become "50" USD
-            And shipping costs become "5" USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see "1" items in my basket
+        And value of my basket become "50" USD
+        And shipping costs become "5" USD
 
-        Scenario: Adding from item's description page without shipping costs
+    Scenario: Adding from item's description page without shipping costs
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs "50" USD
-            And shipping costs of that item are "5" USD
-            And in my basket are "2" items
-            And value of my basket is "90" USD
-            And shipping costs are "5" USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs "50" USD
+        And shipping costs of that item are "5" USD
+        And in my basket are "2" items
+        And value of my basket is "90" USD
+        And shipping costs are "5" USD
 
-            When I visit an item description page
-            And I click button "Add to basket"
+        When I visit an item description page
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see "3" items in my basket
-            And value of my basket become "140" USD
-            And shipping costs become "0" USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see "3" items in my basket
+        And value of my basket become "140" USD
+        And shipping costs become "0" USD
 
-        Scenario: Adding item from search result page
-            # ...
+    Scenario: Adding item from search result page
+        # ...
 
 When more such rules appear sometimes it's easier to make a table.
 Above example can be shortened:
@@ -293,29 +299,29 @@ Above example can be shortened:
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs <cost> USD
-            And shipping costs of each item is "5" USD
-            And in my basket are <initial_items> items
-            And value of my basket is <initial_value> USD
-            And shipping costs are <initial_shipping> USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs <cost> USD
+        And shipping costs of each item is "5" USD
+        And in my basket are <initial_items> items
+        And value of my basket is <initial_value> USD
+        And shipping costs are <initial_shipping> USD
 
-            When I visit an item description page
-            And I click button "Add to basket"
+        When I visit an item description page
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see <items> items in my basket
-            And value of my basket become <value> USD
-            And shipping costs become <shipping> USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see <items> items in my basket
+        And value of my basket become <value> USD
+        And shipping costs become <shipping> USD
 
-                | cost | initial_items | initial_value | initial_shipping | items | value | shipping |
-                | 50   | 0             | 0             | 0                | 1     | 50    | 5        |
-                | 50   | 2             | 90            | 10               | 3     | 140   | 0        |
+            | cost | initial_items | initial_value | initial_shipping | items | value | shipping |
+            | 50   | 0             | 0             | 0                | 1     | 50    | 5        |
+            | 50   | 2             | 90            | 10               | 3     | 140   | 0        |
 
-        Scenario: Adding item from search result page
-            # ...
+    Scenario: Adding item from search result page
+        # ...
 
 Names within `<angles>` will be replaced with values from rows
 in table. You can easily extend table for other special cases adding new rows.
@@ -336,29 +342,27 @@ line beginning with "#":
 
         Adding item to basket should not reload page
 
-        Scenario: Adding from item's description page
+    Scenario: Adding from item's description page
 
-            Given that the "Alice in Wonderland book" is in online store
-            And that item costs <cost> USD
-            And shipping costs of each item is "5" USD
-            And in my basket are <initial_items> items
-            And value of my basket is <initial_value> USD
-            And shipping costs are <initial_shipping> USD
+        Given that the "Alice in Wonderland book" is in online store
+        And that item costs <cost> USD
+        And shipping costs of each item is "5" USD
+        And in my basket are <initial_items> items
+        And value of my basket is <initial_value> USD
+        And shipping costs are <initial_shipping> USD
 
-            When I visit an item description page
-            # see description page mockup in file "description_page.jpg"
-            And I click button "Add to basket"
+        When I visit an item description page
+        # see description page mockup in file "description_page.jpg"
+        And I click button "Add to basket"
 
-            Then I see message "'Alice in Wonderland' has been added to basket"
-            And I see <items> items in my basket
-            And value of my basket become <value> USD
-            And shipping costs become <shipping> USD
+        Then I see message "'Alice in Wonderland' has been added to basket"
+        And I see <items> items in my basket
+        And value of my basket become <value> USD
+        And shipping costs become <shipping> USD
 
-                | cost | initial_items | initial_value | initial_shipping | items | value | shipping |
-                | 50   | 0             | 0             | 0                | 1     | 50    | 5        |
-                | 50   | 2             | 90            | 10               | 3     | 140   | 0        |
+            | cost | initial_items | initial_value | initial_shipping | items | value | shipping |
+            | 50   | 0             | 0             | 0                | 1     | 50    | 5        |
+            | 50   | 2             | 90            | 10               | 3     | 140   | 0        |
 
-        Scenario: Adding item from search result page
-            # ...
 
 .. _ISO 639-1: https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes

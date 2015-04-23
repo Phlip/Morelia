@@ -7,6 +7,7 @@ Version: 0.4.0 (Unreleased)
 ADDED
 ^^^^^
 
+  * support for Background keyword
   * support for different output formatters
   * Examples keyword as no-op
 

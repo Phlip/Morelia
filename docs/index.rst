@@ -25,6 +25,7 @@ Contents
    install
    programmers
    writers
+   gherkin
    integration
 
 Indices and tables

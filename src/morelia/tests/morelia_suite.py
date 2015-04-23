@@ -5,7 +5,7 @@ import sys
 
 from unittest import TestCase
 
-from morelia.base import Parser
+from morelia.parser import Parser
 from morelia.grammar import (Feature, Scenario, Given, Comment, Step, Row,
                              And, When, Then, _permute_indices)
 from morelia.exceptions import MissingStepError

@@ -15,9 +15,10 @@ def to_unicode(text):
 if six.PY2:
 
     def fix_exception_encoding(exc):
-        message = exc.args[0]
-        if isinstance(message, unicode):
-            exc.args = (message.encode(sys.stderr.encoding or "ascii", "xmlcharrefreplace"),) + exc.args[1:]
+        if len(exc.args):
+            message = exc.args[0]
+            if isinstance(message, unicode):
+                exc.args = (message.encode(sys.stderr.encoding or "ascii", "xmlcharrefreplace"),) + exc.args[1:]
 
     def to_docstring(text):
         return text.encode('utf-8')

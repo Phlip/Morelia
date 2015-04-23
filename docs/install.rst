@@ -44,7 +44,7 @@ Using a Source Distribution
 
     Scenario: installation with source distribution
 
-        Given that source distribution is published on pypi
+        Given that source distribution was published on pypi
         When you download source distribution from pypi
         And unpack it
         And enter into directory "Morelia-<version>"

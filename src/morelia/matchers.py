@@ -10,7 +10,7 @@ from .utils import to_unicode
 class IStepMatcher(object):
     """ Matches methods to steps.
 
-    Chain of Responsibility.
+    Subclasses should implement at least `match` and `suggest` methods.
     """
 
     __metaclass__ = ABCMeta
@@ -48,10 +48,26 @@ class IStepMatcher(object):
 
     @abstractmethod
     def match(self, predicate, augmented_predicate, step_methods):
+        """ Match method from suite to given predicate.
+
+        :param str predicate: step predicate
+        :param str augmented_predicate: step augmented_predicate
+        :param list step_methods: list of all step methods from suite
+        :returns: (method object, args, kwargs)
+        :rtype: (method, tuple, dict)
+        """
         pass  # pragma: nocover
 
     @abstractmethod
     def suggest(self, predicate):
+        """ Suggest method definition.
+
+        Method is used to suggest methods that should be implemented.
+
+        :param str predicate: step predicate
+        :returns: (suggested method definition, suggested method name, suggested docstring)
+        :rtype: (str, str, str)
+        """
         pass  # pragma: nocover
 
     def _suggest_doc_string(self, predicate):

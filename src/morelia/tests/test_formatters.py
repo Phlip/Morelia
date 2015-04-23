@@ -36,7 +36,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         node.is_executable.return_value = True
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-40s # pass  0.010s\n' % line
+        expected = '%-60s # pass  0.010s\n' % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_fail(self):
@@ -52,7 +52,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         node.is_executable.return_value = True
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-40s # fail  0.010s\n' % line
+        expected = '%-60s # fail  0.010s\n' % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_error(self):
@@ -68,7 +68,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         node.is_executable.return_value = True
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-40s # error 0.010s\n' % line
+        expected = '%-60s # error 0.010s\n' % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_not_step(self):
@@ -106,7 +106,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         # Assert
         green = u'\x1b[32m'
         reset = u'\x1b[0m'
-        expected = '%s%-40s # 0.010s%s\n' % (green, line, reset)
+        expected = '%s%-60s # 0.010s%s\n' % (green, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_fail(self):
@@ -124,7 +124,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         # Assert
         red = u'\x1b[31m'
         reset = u'\x1b[0m'
-        expected = '%s%-40s # 0.010s%s\n' % (red, line, reset)
+        expected = '%s%-60s # 0.010s%s\n' % (red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_error(self):
@@ -142,7 +142,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         # Assert
         red = u'\x1b[31m'
         reset = u'\x1b[0m'
-        expected = '%s%-40s # 0.010s%s\n' % (red, line, reset)
+        expected = '%s%-60s # 0.010s%s\n' % (red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_not_step(self):

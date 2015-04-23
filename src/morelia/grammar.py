@@ -21,7 +21,7 @@ class AST(object):
         self._test_visitor_class = test_visitor_class
         self._matcher_visitor_class = matcher_visitor_class
 
-    def evaluate(self, suite, matchers=None, formatter=None, show_all_missing=False):
+    def evaluate(self, suite, formatter=None, matchers=None, show_all_missing=False):
         if matchers is None:
             matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
         matcher = self._create_matchers_chain(suite, matchers)
@@ -192,16 +192,20 @@ class Feature(Morelia):
                 <td colspan="101">%s</td>
                 </tr></table></div>''' % (self.keyword, _clean_html(self.predicate)), '']
 
-    def append_background_steps(self, scenario):
+    def prepend_steps(self, scenario):
         background = scenario.parent.steps[0]
-        if isinstance(background, Background):
-            background = scenario.parent.steps[0]
-            new_steps = []
-            for step in background.steps:
-                new_step = copy.copy(step)
-                new_step.parent = scenario
-                new_steps.append(new_step)
-            scenario.steps = new_steps + scenario.steps
+        try:
+            background.prepend_steps(scenario)
+        except AttributeError:
+            pass
+
+    def reconstruction(self):
+        predicate = to_unicode(self.predicate)
+        predicate = predicate.replace('\n', '\n    ')
+        recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
+        if recon[-1] != u'\n':
+            recon += u'\n'
+        return recon
 
 
 class Scenario(Morelia):
@@ -211,7 +215,7 @@ class Scenario(Morelia):
 
     def evaluate_steps(self, visitor):
         if self.parent:
-            self.parent.append_background_steps(self)
+            self.parent.prepend_steps(self)
         step_schedule = visitor.step_schedule(self)  # TODO  test this permuter directly (and rename it already)
 
         for step_indices in step_schedule:   # TODO  think of a way to TDD this C-:
@@ -286,11 +290,16 @@ class Background(Morelia):
     def my_parent_type(self):
         return Feature
 
-    # def count_Row_dimensions(self):
-    #     return [0]
-
     def _evaluate_child_steps(self, visitor):
         pass
+
+    def prepend_steps(self, scenario):
+        new_steps = []
+        for step in self.steps:
+            new_step = copy.copy(step)
+            new_step.parent = scenario
+            new_steps.append(new_step)
+        scenario.steps = new_steps + scenario.steps
 
 
 class Step(Morelia):
@@ -360,8 +369,10 @@ class Step(Morelia):
             exc.args = (message,)
             raise
         except Exception as exc:
-            message = self.format_fault(exc.args[0])
-            exc.args = (message,) + exc.args[1:]
+            if len(exc.args):
+                message = exc.args[0]
+                message = self.format_fault(message)
+                exc.args = (message,) + exc.args[1:]
             raise
 
     def replace_replitron(self, x, q, row_indices):

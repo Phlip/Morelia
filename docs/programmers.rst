@@ -1,176 +1,25 @@
 For programmers
 ===============
 
-Quick usage guide
------------------
-
-Write a feature description:
-
-.. code-block:: cucumber
-
-    # calculator.feature
-
-    Feature: Addition
-        In order to avoid silly mistakes
-        As a math idiot
-        I want to be told the sum of two numbers
-
-    Scenario: Add two numbers
-        Given I have powered calculator on
-        When I enter "50" into the calculator
-        And I enter "70" into the calculator
-        And I press add
-        Then the result should be "120" on the screen
-
-
-Create standard python's unittest [1]_ and hook Morelia into it:
-
-.. code-block:: python
-
-    # test_acceptance.py
-
-    import unittest
-    from morelia import Parser
-    from morelia.formatters import PlainTextFormatter
-
-    class CalculatorTestCase(unittest.TestCase):
-    
-        def test_addition(self):
-            """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
-
-Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
-
-.. code-block:: console
-
-   $ python -m unittest -v test_acceptance  # or
-   $ nosetests -v test_acceptance.py  # or
-   $ py.test -v test_acceptance.py  # or
-   $ trial test_acceptance.py  # or
-   $ # django/pyramid/flask/(place for your favourite test runner)
-
-And you'll see which steps are missing:
-
-.. code-block:: python
-
-    F
-    ======================================================================
-    FAIL: test_addition (test_acceptance.CalculatorTestCase)
-    Addition feature
-    ----------------------------------------------------------------------
-    Traceback (most recent call last):
-      File "test_acceptance.py", line 45, in test_addition
-        Parser().parse_file(filename).evaluate(self, show_all_missing=True)
-      File "(...)/morelia/grammar.py", line 31, in evaluate
-        feature.evaluate_steps(matcher_visitor)
-      File "(...)/morelia/grammar.py", line 76, in evaluate_steps
-        self._method_hook(visitor, class_name, 'after_')
-      File "(...)/morelia/grammar.py", line 85, in _method_hook
-        method(self)
-      File "(...)/morelia/visitors.py", line 125, in after_feature
-        self._suite.fail(to_docstring(diagnostic))
-    AssertionError: Cannot match steps:
-
-        def step_I_have_powered_calculator_on(self):
-            r'I have powered calculator on'
-
-            raise NotImplementedError('I have powered calculator on')
-
-        def step_I_enter_number_into_the_calculator(self, number):
-            r'I enter "([^"]+)" into the calculator'
-
-            raise NotImplementedError('I enter "20" into the calculator')
-
-        def step_I_press_add(self):
-            r'I press add'
-
-            raise NotImplementedError('I press add')
-
-        def step_the_result_should_be_number_on_the_screen(self, number):
-            r'the result should be "([^"]+)" on the screen'
-
-            raise NotImplementedError('the result should be "140" on the screen')
-
-Now implement steps with standard TestCases that you are familiar:
-
-.. code-block:: python
-
-    # test_acceptance.py
-
-    import unittest
-    from morelia import Parser
-    from morelia.formatter import PlainTextFormatter
-    
-    class CalculatorTestCase(unittest.TestCase):
-    
-        def test_addition(self):
-            """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
-    
-        def step_I_have_powered_calculator_on(self):
-            r'I have powered calculator on'
-            self.stack = []
-
-        def step_I_enter_a_number_into_the_calculator(self, number):
-            r'I enter "(\d+)" into the calculator'  # match by regexp
-            self.stack.append(int(number))
-    
-        def step_I_press_add(self):  # matched by method name
-            self.result = sum(self.stack)
-    
-        def step_the_result_should_be_on_the_screen(self, number):
-            r'the result should be "{number}" on the screen'  # match by format-like string
-            self.assertEqual(int(number), self.result)
-
-
-And run it again:
-
-.. code-block:: console
-
-    $ python -m unittest test_acceptance
-
-    Feature: Addition
-        In order to avoid silly mistakes
-        As a math idiot
-        I want to be told the sum of two numbers
-    Scenario: Add two numbers
-        Given I have powered calculator on                       # pass  0.000s
-        When I enter "50" into the calculator                    # pass  0.000s
-        And I enter "70" into the calculator                     # pass  0.000s
-        And I press add                                          # pass  0.001s
-        Then the result should be "120" on the screen            # pass  0.001s
-    .
-    ----------------------------------------------------------------------
-    Ran 1 test in 0.028s
-
-    OK
-
-Note that Morelia does not waste anyone's time inventing a new testing back-end
-just to add a layer of literacy over our testage. Steps are miniature TestCases.
-Your onsite customer need never know, and your unit tests and customer tests
-can share their support methods. The same one test button can run all TDD and BDD tests.
-
 Matching steps
 --------------
 
 Methods from test case object are matched with:
 
-* regular expressions
-* python's format-like expressions
-* method names
+* `Regular expressions`_
+* `Format-like strings`_
+* `Method names`_
 
 
-If you look in example from quick usage guide:
+If you look in example from :ref:`usage-guide`:
 
 .. code-block:: python
 
     # test_acceptance.py
 
     import unittest
-    from morelia import Parser
-    from morelia.formatters import PlainTextFormatter
+
+    from morelia import run
 
 
     class CalculatorTestCase(unittest.TestCase):
@@ -178,7 +27,7 @@ If you look in example from quick usage guide:
         def test_addition(self):
             """ Addition feature """
             filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
+            run(filename, self, verbose=True, show_all_missing=True)
     
         def step_I_have_powered_calculator_on(self):
             r'I have powered calculator on'
@@ -197,11 +46,11 @@ If you look in example from quick usage guide:
     
 You'll see three types of matching.
 
-Regular expression matching
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Regular expressions
+^^^^^^^^^^^^^^^^^^^
 
-Method `step_I_enter_number_into_the_calculator` from example is matched
-by regular expression as it's docstring
+Method ``step_I_enter_number_into_the_calculator`` from example is matched
+by :py:mod:`regular expression <re>` as it's docstring
 
 .. code-block:: python
 
@@ -214,18 +63,18 @@ matches steps:
         When I enter "50" into the calculator
         And I enter "70" into the calculator
 
-Regular expressions, such as `(\d+)`, are expanded into positional step arguments,
-such as `number` in above example. If you would use named groups like `(?P<number>\d+)`
+Regular expressions, such as ``(\d+)``, are expanded into positional step arguments,
+such as ``number`` in above example. If you would use named groups like ``(?P<number>\d+)``
 then capttured expressions from steps will be put as given keyword argument to method.
 
-Remember to use tight expressions, such as `(\d+)`,
-not expressions like `(\d*)` or `(.*)`, to validate your input.
+Remember to use tight expressions, such as ``(\d+)``,
+not expressions like ``(\d*)`` or ``(.*)``, to validate your input.
 
-Format-like strings matching
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Format-like strings
+^^^^^^^^^^^^^^^^^^^
 
-Method `step_the_result_should_be_on_the_screen` from example is matched
-by format-like strings as it's docstring
+Method ``step_the_result_should_be_on_the_screen`` from example is matched
+by :py:class:`format-like strings <string.Formatter>` as it's docstring
 
 .. code-block:: python
 
@@ -237,10 +86,10 @@ matches step:
 
         Then the result should be "120" on the screen
 
-Method name matching
-^^^^^^^^^^^^^^^^^^^^
+Method names
+^^^^^^^^^^^^
 
-Method `step_I_press_add` from example is matched by method name which matches
+Method ``step_I_press_add`` from example is matched by method name which matches
 step:
 
 .. code-block:: cucumber
@@ -251,22 +100,22 @@ Own matchers
 ^^^^^^^^^^^^
 
 You can limit matchers for only some types or use your own matchers.
-Matcher classes can be passed to `evaluate` method as keyword parameter:
+Matcher classes can be passed to :py:func:`morelia.run` method as keyword parameter:
 
 .. code-block:: python
 
    from morelia.matchers import RegexpStepMatcher
    # ...
-   Parser().parse_file(filename).evaluate(self, matchers=[MyOwnMatcher, RegexpStepMatcher])
+   run(filename, self, matchers=[MyOwnMatcher, RegexpStepMatcher])
 
 
-See api for :py:meth:`IStepMatcher`.
+See api for :py:meth:`morelia.matchers.IStepMatcher`.
 
 
 Tables
 ^^^^^^
 
-If you use Scenarios with tables tables, using `<angles>` around the payload variable names:
+If you use Scenarios with tables and `<angles>` around the payload variable names:
 
 .. code-block:: cucumber
 
@@ -306,7 +155,7 @@ is a *reeeally* good idea, but naturally unenforceable.)
 
 Morelia will take each line of the table,
 and construct a complete test case out of the Scenario steps,
-running `setUp()` and `tearDown()` around them.
+running :py:meth:`unittest.TestCase.setUp()` and :py:meth:`unittest.TestCase.tearDown()` around them.
 
 If you use many tables then Morelia would use permutation of all rows in all tables:
 
@@ -335,10 +184,11 @@ In above example 2 * 3 = 6 different test cases would be generated.
 Formatters
 ----------
 
-Morelia complies with Unix's `Rule of Silence` [2]_ so when you hook it like this:
+Morelia complies with Unix's `Rule of Silence` [#ROS]_ so when you hook it like this:
+
 .. code-block:: python
 
-    Parser().parse_file(filename).evaluate(self)
+    run(filename, self)
 
 and all tests passes it would say nothing:
 
@@ -353,7 +203,7 @@ and all tests passes it would say nothing:
 
 (here's only information from test runner)
 
-But when something went wrong it would complie with Unix's `Rule of Repair` [3]_
+But when something went wrong it would complie with Unix's `Rule of Repair` [#ROR]_
 and fail noisily:
 
 .. code-block:: console
@@ -364,8 +214,10 @@ and fail noisily:
     Addition feature
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "test_acceptance.py", line 47, in test_addition
-        Parser().parse_file(filename).evaluate(self)
+      File "test_acceptance.py", line 45, in test_addition
+        run(filename, self, show_all_missing=True)
+      File "(..)/morelia/__init__.py", line 22, in run
+        return ast.evaluate(suite, **kwargs)
       File "(...)/morelia/grammar.py", line 36, in evaluate
         feature.evaluate_steps(test_visitor)
       File "(...)/morelia/grammar.py", line 74, in evaluate_steps
@@ -402,16 +254,16 @@ More verbose
 
 OK. In Behaviour Driven Development participate both programmers and non-programmers
 and the latter like animations and so on. So to make Morelia a little more verbose
-you can pass a formatter into evaluate method.
+you can pass a formatter into :py:func:`morelia.run` method.
 
-For plain text formatter:
+For :py:class:`plain text formatter <morelia.formatters.PlainTextFormatter>`.
 
 
 .. code-block:: python
 
     from morelia.formatters import PlainTextFormatter
 
-    Parser().parse_file(filename, PlainTextFormatter()).evaluate(self)
+    run(filename, self, formatter=PlainTextFormatter())
 
 .. code-block:: console
 
@@ -440,13 +292,13 @@ For plain text formatter:
     OK
 
 
-For color text formatter:
+For :py:class:`color text formatter <morelia.formatters.ColorTextFormatter>`.
 
 .. code-block:: python
 
     from morelia.formatters import ColorTextFormatter
 
-    Parser().parse_file(filename, ColorTextFormatter()).evaluate(self)
+    run(filename, self, formatter=ColorTextFormatter())
 
 .. code-block:: console
 
@@ -478,11 +330,28 @@ For color text formatter:
 
 Or you can write your own formatter.
 
-See api for :py:meth:`IFormatter`.
+See api for :py:class:`morelia.formatters.IFormatter`.
+
+Shortcuts
+---------
+
+In examples you've probably seen such call:
+
+
+.. code-block:: python
+
+    run(filename, verbose=True, show_all_missing=True)
+
+
+``verbose`` param tries to use :py:class:`morelia.formatters.ColorTextFormatter` if avaiable in system
+and fallbacks to :py:class:`morelia.formatters.PlainTextFormatter` if can't show colors.
+
+If you pass ``show_all_missing`` parameter then Morelia would print all missing
+steps instead of the first one.
 
 .. rubric:: Footnotes
-.. [1] More on Python's unittests https://docs.python.org/library/unittest.html
-.. [2] Rule of Silence http://www.faqs.org/docs/artu/ch01s06.html#id2878450
-.. [3] Rule of Repair http://www.faqs.org/docs/artu/ch01s06.html#id2878538
+
+.. [#ROS] Rule of Silence - When a program has nothing surprising to say, it should say nothing http://www.faqs.org/docs/artu/ch01s06.html#id2878450
+.. [#ROR] Rule of Repair - Repair what you can - but when you must fail, fail noisily and as soon as possible http://www.faqs.org/docs/artu/ch01s06.html#id2878538
 
 

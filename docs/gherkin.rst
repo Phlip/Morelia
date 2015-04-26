@@ -1,5 +1,5 @@
-Gherkin language
-================
+Gherkin language reference
+==========================
 
 Language used to describe features is called "Gherkin". It's a little formalized
 natural language that's easy to write by non-programmers.
@@ -72,6 +72,8 @@ with "Scenario" keyword and it's name. Then go steps describing scenario:
         And I enter "70" into the calculator
         And I press add
         Then the result should be "120" on the screen
+
+.. _steps:
 
 Steps
 -----
@@ -214,14 +216,13 @@ When keyword special behaviour
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. deprecated:: 0.4.0
-
    Use `Background` keyword.
 
 The other step keywords (Given, And, Then, etc.) are cosmetic,
 to permit good grammar. They are all aliases for Step.
 The committee may eventually find specific uses for them.
 
-The `When` keyword, however, is special. When a Scenario contains more than one When,
+The :ref:`When <steps>` keyword, however, is special. When a Scenario contains more than one When,
 Morelia splits it up into one Scenario for each When block,
 and runs each one separately. So the following two Feature details are equivalent...
 
@@ -258,9 +259,3 @@ The second version DRYs the setup conditions.
 The committee does not yet know what happens if a multi-When Scenario also contains a table, so please don't rely on whatever the current behavior is!
 
 .. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
-
-.. rubric:: Footnotes
-.. [1] More on Python's unittests https://docs.python.org/library/unittest.html
-.. [2] Rule of Silence http://www.faqs.org/docs/artu/ch01s06.html#id2878450
-
-

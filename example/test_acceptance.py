@@ -13,8 +13,7 @@ commercial purposes, all without asking permission.
 import os
 import unittest
 
-from morelia import Parser
-from morelia.formatters import PlainTextFormatter
+from morelia import run
 
 from calculator import Calculator
 
@@ -43,7 +42,7 @@ class CalculatorTestCase(unittest.TestCase):
     def test_addition(self):
         """ Addition feature """
         filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-        Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
+        run(filename, self, show_all_missing=True)
 
 
 if __name__ == '__main__':  # pragma: nobranch

@@ -380,9 +380,7 @@ class Step(Morelia):
             return
         at = row_indices[x] + 1
 
-        if at >= len(self.table):
-            print('CONSIDER this should never happen')
-            return
+        assert at >= len(self.table), 'CONSIDER this should never happen'
 
         #  CONSIDER  we hit this too many times - hit once and stash the result
         #  CONSIDER  better diagnostics when we miss these
@@ -440,7 +438,7 @@ class Row(Morelia):
         return ' ' * 8
 
     def reconstruction(self):  # TODO  strip the reconstruction at error time
-        recon = '        | ' + self.predicate
+        recon = self.prefix() + '| ' + self.predicate
         if recon[-1] != '\n':
             recon += '\n'
         return recon

@@ -141,7 +141,11 @@ class IStepMatcher(object):
 
 class MethodNameStepMatcher(IStepMatcher):
 
+    ''' Matcher that matches steps by method name. '''
+
     def match(self, predicate, augmented_predicate, step_methods):
+        ''' See :py:meth:`IStepMatcher.match` '''
+
         clean = re.sub(r'[^\w]', '_?', predicate)
         pattern = '^step_' + clean + '$'
         regexp = re.compile(pattern)
@@ -152,12 +156,8 @@ class MethodNameStepMatcher(IStepMatcher):
         return None, (), {}
 
     def suggest(self, predicate):
-        """ Suggest method definition.
+        ''' See :py:meth:`IStepMatcher.suggest` '''
 
-        :param str predicate: step predicate
-        :returns: suggested method definition, suggested method name, suggested docstring
-        :rtype: (str, str, str)
-        """
         method_name = self.slugify(predicate)
         suggest = u'    def step_%(method_name)s(self):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
@@ -174,7 +174,11 @@ class MethodNameStepMatcher(IStepMatcher):
 
 class RegexpStepMatcher(IStepMatcher):
 
+    ''' Matcher that matches steps by regexp in docstring. '''
+
     def match(self, predicate, augmented_predicate, step_methods):
+        ''' See :py:meth:`IStepMatcher.match` '''
+
         for method_name in step_methods:
             method = self._suite.__getattribute__(method_name)
             doc = method.__doc__
@@ -193,12 +197,8 @@ class RegexpStepMatcher(IStepMatcher):
         return None, (), {}
 
     def suggest(self, predicate):
-        """ Suggest method definition.
+        ''' See :py:meth:`IStepMatcher.suggest` '''
 
-        :param str predicate: step predicate
-        :returns: suggested method definition, suggested method name, suggested docstring
-        :rtype: (str, str, str)
-        """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
@@ -212,7 +212,11 @@ class RegexpStepMatcher(IStepMatcher):
 
 class ParseStepMatcher(IStepMatcher):
 
+    ''' Matcher that matches steps by format-like string in docstring. '''
+
     def match(self, predicate, augmented_predicate, step_methods):
+        ''' See :py:meth:`IStepMatcher.match` '''
+
         for method_name in step_methods:
             method = self._suite.__getattribute__(method_name)
             doc = method.__doc__
@@ -226,12 +230,8 @@ class ParseStepMatcher(IStepMatcher):
         return None, (), {}
 
     def suggest(self, predicate):
-        """ Suggest method definition.
+        ''' See :py:meth:`IStepMatcher.suggest` '''
 
-        :param str predicate: step predicate
-        :returns: suggested method definition, suggested method name, suggested docstring
-        :rtype: (str, str, str)
-        """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
         suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {

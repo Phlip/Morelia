@@ -3,11 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Morelia's documentation!
-===================================
-
-Getting started
----------------
+Welcome to Morelia!
+===================
 
 Morelia *viridis* is a Python Behavior Driven Development [#BDD]_ platform,
 conceptually derived from Ruby's Cucumber Framework [#CUKES]_.
@@ -23,10 +20,11 @@ Contents
    :maxdepth: 2
 
    install
+   usage
    programmers
    writers
    gherkin
-   integration
+   modules
 
 Indices and tables
 ==================

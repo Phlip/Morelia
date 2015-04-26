@@ -380,7 +380,7 @@ class Step(Morelia):
             return
         at = row_indices[x] + 1
 
-        assert at >= len(self.table), 'CONSIDER this should never happen'
+        assert at < len(self.table), 'CONSIDER this should never happen'
 
         #  CONSIDER  we hit this too many times - hit once and stash the result
         #  CONSIDER  better diagnostics when we miss these

@@ -59,22 +59,23 @@ Write a feature description:
         Then the result should be "120" on the screen
 
 
-Create standard python's unittest and hook Morelia in it:
+Create standard python's `unittest` and hook Morelia into it:
 
 .. code-block:: python
 
     # test_acceptance.py
 
     import unittest
-    from morelia import Parser
-    from morelia.formatter import PlainTextFormatter
+
+    from morelia import run
+
 
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
             """ Addition feature """
             filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
+            run(filename, self, verbose=True, show_all_missing=True)
 
 Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
 
@@ -89,6 +90,7 @@ Run test with your favourite runner: unittest, nose, py.test, trial. You name it
 And you'll see which steps are missing:
 
 .. code-block:: python
+
     F
     ======================================================================
     FAIL: test_addition (test_acceptance.CalculatorTestCase)
@@ -96,14 +98,16 @@ And you'll see which steps are missing:
     ----------------------------------------------------------------------
     Traceback (most recent call last):
       File "test_acceptance.py", line 45, in test_addition
-        Parser().parse_file(filename).evaluate(self, show_all_missing=True)
-      File "(...)/morelia/grammar.py", line 31, in evaluate
+        run(filename, self, verbose=True, show_all_missing=True)
+      File "(..)/morelia/__init__.py", line 22, in run
+        return ast.evaluate(suite, **kwargs)
+      File "(..)/morelia/grammar.py", line 31, in evaluate
         feature.evaluate_steps(matcher_visitor)
-      File "(...)/morelia/grammar.py", line 76, in evaluate_steps
+      File "(..)/morelia/grammar.py", line 76, in evaluate_steps
         self._method_hook(visitor, class_name, 'after_')
-      File "(...)/morelia/grammar.py", line 85, in _method_hook
+      File "(..)/morelia/grammar.py", line 85, in _method_hook
         method(self)
-      File "(...)/morelia/visitors.py", line 125, in after_feature
+      File "(..)/morelia/visitors.py", line 125, in after_feature
         self._suite.fail(to_docstring(diagnostic))
     AssertionError: Cannot match steps:
 
@@ -127,22 +131,26 @@ And you'll see which steps are missing:
 
             raise NotImplementedError('the result should be "140" on the screen')
 
-Now implement steps with standard TestCases that you are familiar:
+    ----------------------------------------------------------------------
+    Ran 1 test in 0.029s
+
+Now implement steps with standard `TestCases` that you are familiar:
 
 .. code-block:: python
 
     # test_acceptance.py
 
     import unittest
-    from morelia import Parser
-    from morelia.formatter import PlainTextFormatter
+
+    from morelia import run
     
+
     class CalculatorTestCase(unittest.TestCase):
     
         def test_addition(self):
             """ Addition feature """
             filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            Parser().parse_file(filename).evaluate(self, PlainTextFormatter(), show_all_missing=True)
+            run(filename, self, verbose=True, show_all_missing=True)
     
         def step_I_have_powered_calculator_on(self):
             r'I have powered calculator on'
@@ -157,7 +165,7 @@ Now implement steps with standard TestCases that you are familiar:
     
         def step_the_result_should_be_on_the_screen(self, number):
             r'the result should be "{number}" on the screen'  # match by format-like string
-            assert int(number) == self.result
+            self.assertEqual(int(number), self.result)
 
 
 And run it again:
@@ -183,7 +191,7 @@ And run it again:
     OK
 
 Note that Morelia does not waste anyone's time inventing a new testing back-end
-just to add a layer of literacy over our testage. Steps are miniature TestCases.
+just to add a layer of literacy over our testage. Steps are miniature `TestCases`.
 Your onsite customer need never know, and your unit tests and customer tests
 can share their support methods. The same one test button can run all TDD and BDD tests.
 

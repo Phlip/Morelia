@@ -17,9 +17,6 @@ from .i18n import TRANSLATIONS
 from .utils import to_unicode
 
 
-__version__ = '0.3.0'
-
-
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
 

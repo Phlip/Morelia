@@ -54,7 +54,7 @@ class TestVisitor(IVisitor):
             except (MissingStepError, AssertionError):
                 status = 'fail'
                 raise
-            except Exception:
+            except (SystemExit, Exception):
                 status = 'error'
                 raise
             else:

@@ -1,9 +1,9 @@
 import unittest
 from collections import OrderedDict
-from mock import Mock, sentinel
+from mock import Mock, sentinel, ANY
 
 from morelia.exceptions import MissingStepError
-from morelia.visitors import StepMatcherVisitor
+from morelia.visitors import StepMatcherVisitor, TestVisitor
 
 
 class StepMatcherVisitorVisitTestCase(unittest.TestCase):
@@ -72,3 +72,19 @@ class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
         obj.after_feature(sentinel.node)
         # Assert
         self.assertFalse(suite.fail.called)
+
+
+class TestVisitorVisitTestCase(unittest.TestCase):
+    """ Test :py:meth:`TestVisitor.visit`. """
+
+    def test_should_catch_SystemExit(self):
+        """ Scenario: SystemExit """
+        # Arrange
+        formatter = Mock()
+        node = Mock()
+        obj = TestVisitor(sentinel.suite, sentinel.matcher, formatter)
+        node.test_step.side_effect = [SystemExit]
+        # Act
+        # Assert
+        self.assertRaises(SystemExit, obj.visit, node)
+        formatter.output.assert_called_once_with(node, ANY, 'error', ANY)

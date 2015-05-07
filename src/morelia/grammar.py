@@ -343,17 +343,17 @@ class Step(Morelia):
         self.copy = self.predicate[:]
         row_indices = self.parent.row_indices
 
-        for self.replitron in replitrons:
+        for replitron in replitrons:
             for x in range(0, len(row_indices)):
-                self.table = self.parent.steps[x].steps
+                table = self.parent.steps[x].steps
 
-                if self.table != []:
-                    q = 0
-
-                    row = next(moves.filter(lambda step: isinstance(step, Row), self.table))
-                    for self.title in row.harvest():
-                        self.replace_replitron(x, q, row_indices)
-                        q += 1
+                try:
+                    row = next(moves.filter(lambda step: isinstance(step, Row), table))
+                except StopIteration:
+                    pass
+                else:
+                    for q, title in enumerate(row.harvest()):
+                        self.replace_replitron(x, q, row_indices, table, title, replitron)
 
         return self.copy
 
@@ -375,21 +375,21 @@ class Step(Morelia):
                 exc.args = (message,) + exc.args[1:]
             raise
 
-    def replace_replitron(self, x, q, row_indices):
-        if self.title != self.replitron:
+    def replace_replitron(self, x, q, row_indices, table, title, replitron):
+        if title != replitron:
             return
         at = row_indices[x] + 1
 
-        assert at < len(self.table), 'CONSIDER this should never happen'
+        assert at < len(table), 'CONSIDER this should never happen'
 
         #  CONSIDER  we hit this too many times - hit once and stash the result
         #  CONSIDER  better diagnostics when we miss these
 
-        stick = self.table[at].harvest()
+        stick = table[at].harvest()
         found = stick[q]  # CONSIDER  this array overrun is what you get when your table is ragged
         # CONSIDER  only if it's not nothing?
         found = found.replace('\n', '\\n')  # CONSIDER  crack the multi-line argument bug, and take this hack out!
-        self.copy = self.copy.replace('<%s>' % self.replitron, found)
+        self.copy = self.copy.replace('<%s>' % replitron, found)
 
         # CONSIDER  mix replitrons and matchers!
 

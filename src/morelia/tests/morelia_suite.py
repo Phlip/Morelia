@@ -27,39 +27,11 @@ factions = []
 elements = []
 
 
-class MoreliaSuite(TestCase):
-
-    def step_I_have_entered_a_number_into_the_calculator(self, number):
-        r'I have entered (\d+) into the calculator'
-
-        if not hasattr(self, 'stack'):
-            self.stack = []
-        self.stack.append(int(number))
-
-    def step_I_press_add(self):
-        self.result = sum(self.stack)
-
-    def step_the_result_should_be_on_the_screen(self, number):
-        "the result should be (\d+) on the screen"
-
-        self.assertEqual(int(number), self.result)
-
-    def _get_language(self):
-        return None
-
-    def test_feature(self):
-        language = self._get_language()
-        input = '%s: prevent wild animals from eating us' % self.feature_keyword
-        steps = Parser(language=language).parse_feature(input)
-        step = steps[0]
-        assert step.__class__ == Feature
-        self.assertEqual(step.keyword, self.feature_keyword)
-        self.assertEqual(step.predicate, 'prevent wild animals from eating us')
+class BackgroundTest(TestCase):
 
     def test_background(self):
-        language = self._get_language()
-        filename = pwd + '/background%s.feature' % (language or '')
-        ast = Parser(language=language).parse_file(filename)
+        filename = pwd + '/background.feature'
+        ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 
     def step_step_ran_is_number(self, number):
@@ -111,6 +83,36 @@ class MoreliaSuite(TestCase):
         r'angles_step will be string "([^"]+)"'
 
         self.assertEqual(self._background, then)
+
+
+class MoreliaSuite(TestCase):
+
+    def step_I_have_entered_a_number_into_the_calculator(self, number):
+        r'I have entered (\d+) into the calculator'
+
+        if not hasattr(self, 'stack'):
+            self.stack = []
+        self.stack.append(int(number))
+
+    def step_I_press_add(self):
+        self.result = sum(self.stack)
+
+    def step_the_result_should_be_on_the_screen(self, number):
+        "the result should be (\d+) on the screen"
+
+        self.assertEqual(int(number), self.result)
+
+    def _get_language(self):
+        return None
+
+    def test_feature(self):
+        language = self._get_language()
+        input = '%s: prevent wild animals from eating us' % self.feature_keyword
+        steps = Parser(language=language).parse_feature(input)
+        step = steps[0]
+        assert step.__class__ == Feature
+        self.assertEqual(step.keyword, self.feature_keyword)
+        self.assertEqual(step.predicate, 'prevent wild animals from eating us')
 
     def test_scenario(self):
         input = '%s: range free Vegans' % self.scenario_keyword

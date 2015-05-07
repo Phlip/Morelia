@@ -228,7 +228,7 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
             expected = pattern % {
                 'method_name': method,
                 'args': args,
-                'predicate': predicate,
+                'predicate': predicate.replace("'", r"\'"),
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)
@@ -376,6 +376,7 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
             ('"str"i"ngs"', 'str_i_ngs', 'r\'"([^"]+)"i"([^"]+)"\'', ', str, ngs'),
             ('enter "10" into', 'enter_number_into', 'r\'enter "([^"]+)" into\'', ', number'),
             ('enter "10" and "20" into', 'enter_number_and_number_into', 'r\'enter "([^"]+)" and "([^"]+)" into\'', ', number1, number2'),
+            ('''some'quote' and "double quote"''', 'some_quote_and_double_quote', 'r\'some\\\'quote\\\' and "([^"]+)"\'', ', double_quote'),
         ]
         for predicate, method, docstring, args in test_data:
             suggest, suggest_method, suggest_docstring = obj.suggest(predicate)
@@ -384,7 +385,7 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
-                'predicate': predicate,
+                'predicate': predicate.replace("'", r"\'"),
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)
@@ -541,7 +542,7 @@ class ParseStepMatcherSuggestTestCase(unittest.TestCase):
                 'method_name': method,
                 'docstring': docstring,
                 'args': args,
-                'predicate': predicate,
+                'predicate': predicate.replace("'", r"\'"),
             }
             self.assertEqual(suggest, expected)
             self.assertEqual(suggest_method, method)

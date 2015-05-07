@@ -161,7 +161,7 @@ class MethodNameStepMatcher(IStepMatcher):
         method_name = self.slugify(predicate)
         suggest = u'    def step_%(method_name)s(self):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
-            'predicate': predicate,
+            'predicate': predicate.replace("'", "\\'"),
         }
         return suggest, method_name, ''
 
@@ -205,7 +205,7 @@ class RegexpStepMatcher(IStepMatcher):
             'method_name': method_name,
             'args': extra_arguments,
             'docstring': docstring,
-            'predicate': predicate,
+            'predicate': predicate.replace("'", "\\'"),
         }
         return suggest, method_name, docstring
 
@@ -238,7 +238,7 @@ class ParseStepMatcher(IStepMatcher):
             'method_name': method_name,
             'args': extra_arguments,
             'docstring': docstring,
-            'predicate': predicate,
+            'predicate': predicate.replace("'", "\\'"),
         }
         return suggest, method_name, docstring
 

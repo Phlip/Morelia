@@ -184,6 +184,7 @@ class RegexpStepMatcher(IStepMatcher):
             doc = method.__doc__
             if not doc:
                 continue
+            doc = to_unicode(doc)
             doc = re.compile('^' + doc + '$')  # CONSIDER deal with users who put in the ^$
             m = doc.match(augmented_predicate)
 

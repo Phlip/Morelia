@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 
 from mock import Mock, sentinel, patch, MagicMock
@@ -353,6 +355,24 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         # Assert
         self.assertEqual(result_method, method)
         self.assertEqual(result_args, ('boys', 'the'))
+
+    def test_should_match_with_utf8_string(self):
+        """ Scenario: match with utf8 string """
+        # Arrange
+        predicate = u'zażółć gęślą jaźń'
+        augmented_predicate = u'zażółć gęślą jaźń'
+        method_name = 'step_utf8_match'
+        docstring = r'zażółć gęślą jaźń'
+        method = Mock(__doc__=docstring)
+        methods = {
+            method_name: method
+        }
+        suite = Mock(**methods)
+        obj = RegexpStepMatcher(suite)
+        # Act
+        result_method, result_args, result_kwargs = obj.match(predicate, augmented_predicate, methods.keys())
+        # Assert
+        self.assertEqual(result_method, method)
 
 
 class DocStringStepMatcherSuggestTestCase(unittest.TestCase):

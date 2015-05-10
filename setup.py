@@ -13,7 +13,7 @@ setup(
     author_email='phlip2005@gmail.com, jakub.stolarski@gmail.com',
     license="MIT",
     keywords="test bdd behavior",
-    packages=find_packages('src', exclude=['example*']),
+    packages=find_packages('src', exclude=['example*', '*.tests', 'tests.*', '*.tests.*', 'tests']),
     package_dir={'': 'src'},
     install_requires=[
         'six',

@@ -4,7 +4,7 @@ import sys
 from .formatters import PlainTextFormatter, ColorTextFormatter
 from .parser import Parser  # noqa
 
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 
 def has_color_support():

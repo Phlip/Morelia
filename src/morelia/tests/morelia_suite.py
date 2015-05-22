@@ -44,11 +44,6 @@ class CommentsTest(TestCase):
 
         pass
 
-    def step_I_have_some_data_in_table(self, data):
-        r'I have some (.+) in table'
-
-        pass
-
     def step_I_execute_this_scenario(self):
         pass
 

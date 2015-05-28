@@ -5,6 +5,7 @@ import sys
 
 from unittest import TestCase
 
+from morelia.decorators import tags
 from morelia.parser import Parser
 from morelia.grammar import (Feature, Scenario, Given, Comment, Step, Row,
                              And, When, Then, _permute_indices)
@@ -27,10 +28,11 @@ factions = []
 elements = []
 
 
+@tags(['acceptance'])
 class CommentsTest(TestCase):
 
     def test_comments(self):
-        filename = pwd + '/comments.feature'
+        filename = pwd + '/features/comments.feature'
         ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 
@@ -51,10 +53,11 @@ class CommentsTest(TestCase):
         assert True
 
 
+@tags(['acceptance'])
 class BackgroundTest(TestCase):
 
     def test_background(self):
-        filename = pwd + '/background.feature'
+        filename = pwd + '/features/background.feature'
         ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 
@@ -109,6 +112,33 @@ class BackgroundTest(TestCase):
         self.assertEqual(self._background, then)
 
 
+@tags(['acceptance'])
+class LabelTest(TestCase):
+
+    def test_labels(self):
+        filename = pwd + '/features/labels.feature'
+        ast = Parser().parse_file(filename)
+        ast.evaluate(self, show_all_missing=True)
+
+    def step_with_labels(self, _labels=None):
+        r'step with _labels'
+
+        self.assertIsNotNone(_labels)
+        self.assertEqual(set(['label1', 'label2']), set(_labels))
+
+    def step_with_kwargs(self, **kwargs):
+        r'step with kwargs'
+
+        _labels = kwargs['_labels']
+        self.assertIsNotNone(_labels)
+        self.assertEqual(set(['label1', 'label3', 'label4']), set(_labels))
+
+    def step_without_labels(self):
+        r'step without _labels'
+        pass
+
+
+@tags(['acceptance'])
 class MoreliaSuite(TestCase):
 
     def step_I_have_entered_a_number_into_the_calculator(self, number):
@@ -620,7 +650,7 @@ class MoreliaSuite(TestCase):
 
     def test_record_filename(self):
         language = self._get_language()
-        filename = pwd + '/morelia%s.feature' % (language or '')
+        filename = pwd + '/features/morelia%s.feature' % (language or '')
         thang = Parser(language=language).parse_file(filename)
         feature = thang.steps[0]
         assert feature.__class__ == Feature
@@ -630,7 +660,7 @@ class MoreliaSuite(TestCase):
 
     def test_format_faults_like_python_errors(self):
         language = self._get_language()
-        filename = pwd + '/morelia%s.feature' % (language or '')
+        filename = pwd + '/features/morelia%s.feature' % (language or '')
         thang = Parser(language=language).parse_file(filename)
         step = thang.steps[0].steps[3].steps[1]
         assert filename == step.get_filename()
@@ -646,7 +676,7 @@ class MoreliaSuite(TestCase):
 
     def test_evaluate_file(self):
         language = self._get_language()
-        thang = Parser(language=language).parse_file(pwd + '/morelia%s.feature' % (language or ''))
+        thang = Parser(language=language).parse_file(pwd + '/features/morelia%s.feature' % (language or ''))
         thang.evaluate(self)
 
     def setUp(self):
@@ -701,7 +731,7 @@ class MoreliaSuite(TestCase):
 
     def test_report_file(self):
         language = self._get_language()
-        thang = Parser(language=language).parse_file(pwd + '/morelia%s.feature' % (language or ''))
+        thang = Parser(language=language).parse_file(pwd + '/features/morelia%s.feature' % (language or ''))
         div_count = len(thang.steps[0].steps)  # CONSIDER  this off-by-one and on-by-one; dunno why, needs fixed
 
         rep = thang.report(self)._result

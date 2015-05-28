@@ -6,11 +6,13 @@ from unittest import TestCase
 from mock import sentinel, Mock, patch
 
 from morelia import run
+from morelia.decorators import tags
 from morelia.parser import Parser, DEFAULT_LANGUAGE
 from morelia.grammar import Morelia, Step
 from morelia.exceptions import MissingStepError
 
 
+@tags(['unit'])
 class ParserParseLanguageDirectiveTestCase(TestCase):
     """ Test :py:meth:`Parser.parse_language_directive`. """
 
@@ -44,6 +46,7 @@ class ParserParseLanguageDirectiveTestCase(TestCase):
             self.assertEqual(obj.language, DEFAULT_LANGUAGE)
 
 
+@tags(['unit'])
 class MoreliaReconstructionTestCase(TestCase):
     """ Test :py:meth:`Morelia.reconstruction`. """
 
@@ -66,6 +69,7 @@ class MoreliaReconstructionTestCase(TestCase):
         self.assertEqual(result, u'???: zażółć gęślą jaźń\n')
 
 
+@tags(['unit'])
 class MissingStepErrorTestCase(TestCase):
     """ Test :py:meth:`MissingStepError`. """
 
@@ -79,6 +83,7 @@ class MissingStepErrorTestCase(TestCase):
         self.assertEqual(result.predicate, 'predicate line')
 
 
+@tags(['unit'])
 class StepFindStepTestCase(TestCase):
     """ Test :py:meth:`Step.find_step`. """
 
@@ -103,6 +108,7 @@ class StepFindStepTestCase(TestCase):
         self.assertRaises(MissingStepError, obj.find_step, sentinel.suite, matcher)
 
 
+@tags(['unit'])
 class RunTestCase(TestCase):
     """ Test :py:func:`run`. """
 

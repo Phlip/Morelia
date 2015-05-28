@@ -2,10 +2,12 @@ import unittest
 from collections import OrderedDict
 from mock import Mock, sentinel, ANY
 
+from morelia.decorators import tags
 from morelia.exceptions import MissingStepError
 from morelia.visitors import StepMatcherVisitor, TestVisitor
 
 
+@tags(['unit'])
 class StepMatcherVisitorVisitTestCase(unittest.TestCase):
     """ Test :py:meth:`StepMatcherVisitor.visit`. """
 
@@ -48,6 +50,7 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         self.assertTrue(sentinel.method_name in obj._not_matched)
 
 
+@tags(['unit'])
 class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
     """ Test :py:meth:`StepMatcherVisitor.after_feature`. """
 
@@ -74,6 +77,7 @@ class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
         self.assertFalse(suite.fail.called)
 
 
+@tags(['unit'])
 class TestVisitorVisitTestCase(unittest.TestCase):
     """ Test :py:meth:`TestVisitor.visit`. """
 

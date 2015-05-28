@@ -9,3 +9,7 @@ class MissingStepError(MoreliaError):
         self.suggest = suggest
         self.method_name = method_name
         self.docstring = docstring
+
+
+class WrongNodeTaggedError(MoreliaError):
+    pass

@@ -12,7 +12,7 @@ def should_skip(tags_list, pattern):
     negative_tags = [tag[1:] for tag in matching_tags if tag.startswith('-')]
     positive_tags = [tag for tag in matching_tags if not tag.startswith('-')]
     if negative_tags:
-        return set(negative_tags).issubset(tags_list)
+        return bool(set(negative_tags) & tags_list)
     if positive_tags:
         return not set(positive_tags).issubset(tags_list)
     return False

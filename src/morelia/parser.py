@@ -15,6 +15,7 @@ from .grammar import (AST, Feature, Background, Scenario, Given, When, Then,
                       And, But, Row, Comment, Examples, Step)
 from .i18n import TRANSLATIONS
 from .utils import to_unicode
+from .exceptions import WrongNodeTaggedError
 
 
 #  TODO  what happens with blank table items?
@@ -35,6 +36,7 @@ class Parser:
         self.steps = []
         self.language = DEFAULT_LANGUAGE if language is None else language
         self._prepare_patterns(self.language)
+        self._labels_parser = LabelParser()
 
     def _prepare_patterns(self, language):
         self._patterns = []
@@ -79,6 +81,9 @@ class Parser:
             if self._parse_language_directive(self.line):
                 continue
 
+            if self._labels_parser.parse(self.line):
+                continue
+
             if self._anneal_last_broken_line():
                 continue
 
@@ -120,6 +125,7 @@ class Parser:
 
             if m and len(m.groups()) > 0:
                 node = klass(**m.groupdict())
+                self._labels_parser.append_to(node)
                 node.connect_to_parent(self.steps, self.line_number)
                 self.last_node = node
                 return node
@@ -129,3 +135,42 @@ class Parser:
         previous.predicate += '\n' + self.line.strip()
         previous.predicate = previous.predicate.strip()
         previous.validate_predicate()
+
+
+class LabelParser(object):
+
+    def __init__(self, labels_pattern='@\w+'):
+        self._labels = []
+        self._labels_re = re.compile(labels_pattern)
+
+    def parse(self, line):
+        """ Parse labels.
+
+        :param str line: line to parse
+        :returns: True if line contains labels
+        :side effects: sets self._labels to parsed labels
+        """
+        matches = self._labels_re.findall(line)
+        if matches:
+            self._labels.extend(matches)
+            return True
+        return False
+
+    def append_to(self, node):
+        """ Attaches labels to node.
+
+        Attaches labels to node and cleans gathered labels stack.
+        Raises exception if node should not be labeled.
+
+        :param node: node to append labels
+        :raises: WrongNodeTaggedError
+        """
+        if self._labels:
+            labels = [label.strip('@') for label in self._labels]
+            try:
+                node.add_labels(labels)
+            except AttributeError:
+                raise WrongNodeTaggedError(node)
+            else:
+                self._labels = []
+        return False

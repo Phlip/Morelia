@@ -4,6 +4,7 @@ import unittest
 
 from mock import Mock, sentinel, patch, MagicMock
 
+from morelia.decorators import tags
 from morelia.matchers import (MethodNameStepMatcher, IStepMatcher,
                               RegexpStepMatcher, ParseStepMatcher)
 
@@ -17,6 +18,7 @@ class TestingStepMatcher(IStepMatcher):
         pass  # pragma: nocover
 
 
+@tags(['unit'])
 class IStepMatcherAddMatcherTestCase(unittest.TestCase):
     """ Test :py:meth:`IStepMatcher.add_matcher`. """
 
@@ -59,6 +61,7 @@ class IStepMatcherAddMatcherTestCase(unittest.TestCase):
         self.assertEqual(matcher2._next, matcher3)
 
 
+@tags(['unit'])
 class IStepMatcherFindTestCase(unittest.TestCase):
     """ Test :py:meth:`IStepMatcher.find`. """
 
@@ -133,6 +136,7 @@ class IStepMatcherFindTestCase(unittest.TestCase):
                 self.assertEqual(method, sentinel.method)
 
 
+@tags(['unit'])
 class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
     """ Test :py:meth:`IStepMatcher._get_all_step_methods`. """
 
@@ -150,6 +154,7 @@ class IStepMatcherGetAllStepMethodsTestCase(unittest.TestCase):
         self.assertEqual(result, step_methods)
 
 
+@tags(['unit'])
 class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
     """ Test :py:meth:`MethodNameStepMatcher.match`. """
 
@@ -202,6 +207,7 @@ class MethodNameStepMatcherMatchTestCase(unittest.TestCase):
         self.assertEqual(result_method, None)
 
 
+@tags(['unit'])
 class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
     """ Test :py:meth:`MethodNameStepMatcher.suggest`. """
 
@@ -237,6 +243,7 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
             self.assertEqual(suggest_docstring, '')
 
 
+@tags(['unit'])
 class DocStringStepMatcherMatchTestCase(unittest.TestCase):
     """ Test :py:meth:`DocStringStepMatcher.match`. """
 
@@ -375,6 +382,7 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
         self.assertEqual(result_method, method)
 
 
+@tags(['unit'])
 class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
     """ Test :py:meth:`DocStringStepMatcher.suggest`. """
 
@@ -412,6 +420,7 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
             self.assertEqual(suggest_docstring, docstring)
 
 
+@tags(['unit'])
 class ParseStepMatcherMatchTestCase(unittest.TestCase):
     """ Test :py:meth:`ParseStepMatcher.match`. """
 
@@ -533,6 +542,7 @@ class ParseStepMatcherMatchTestCase(unittest.TestCase):
         self.assertEqual(result_kwargs, {'who': 'boys'})
 
 
+@tags(['unit'])
 class ParseStepMatcherSuggestTestCase(unittest.TestCase):
     """ Test :py:meth:`ParseStepMatcher.suggest`. """
 

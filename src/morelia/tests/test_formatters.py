@@ -3,9 +3,11 @@ import unittest
 
 from mock import sentinel, Mock
 
+from morelia.decorators import tags
 from morelia.formatters import NullFormatter, PlainTextFormatter, ColorTextFormatter
 
 
+@tags(['unit'])
 class NullFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`NullFormatter.output`. """
 
@@ -20,6 +22,7 @@ class NullFormatterOutputTestCase(unittest.TestCase):
         obj.output(sentinel.node, line, status, duration)
 
 
+@tags(['unit'])
 class PlainTextFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`PlainTextFormatter.output`. """
 
@@ -88,6 +91,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         self.assertEqual(stream.getvalue(), expected)
 
 
+@tags(['unit'])
 class ColorTextFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`ColorTextFormatter.output`. """
 

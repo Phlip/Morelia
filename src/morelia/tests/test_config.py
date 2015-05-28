@@ -2,9 +2,11 @@ import unittest
 
 from mock import Mock, patch
 from morelia.config import Config, get_config
+from morelia.decorators import tags
 from six.moves.configparser import NoSectionError, NoOptionError, SafeConfigParser
 
 
+@tags(['unit'])
 class ConfigGetTagsPatternTestCase(unittest.TestCase):
     """ Test :py:meth:`Config.get_tags_pattern`. """
 
@@ -88,6 +90,7 @@ class ConfigGetTagsPatternTestCase(unittest.TestCase):
         self.assertEqual(pattern, 'tag1,tag2')
 
 
+@tags(['unit'])
 class ConfigInitTestCase(unittest.TestCase):
     """ Test :py:meth:`Config.__init__`. """
 
@@ -108,6 +111,7 @@ class ConfigInitTestCase(unittest.TestCase):
         self.assertTrue(issubclass(SafeConfigParser, obj._config_parser_class))
 
 
+@tags(['unit'])
 class GetConfigTestCase(unittest.TestCase):
     """ Test :py:meth:`get_config`. """
 

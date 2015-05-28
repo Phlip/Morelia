@@ -1,5 +1,6 @@
 from abc import ABCMeta
 import copy
+import inspect
 import itertools
 import re
 
@@ -180,7 +181,23 @@ class Morelia(INode):
         return None
 
 
-class Feature(Morelia):
+class LabeledNode(object):
+
+    def __init__(self, *args, **kwargs):
+        super(LabeledNode, self).__init__(*args, **kwargs)
+        self._labels = []
+
+    def add_labels(self, tags):
+        self._labels.extend(tags)
+
+    def get_labels(self):
+        labels = self._labels
+        if self.parent:
+            labels.extend(self.parent.get_labels())
+        return labels
+
+
+class Feature(LabeledNode, Morelia):
 
     def test_step(self, suite, matcher):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
@@ -208,7 +225,7 @@ class Feature(Morelia):
         return recon
 
 
-class Scenario(Morelia):
+class Scenario(LabeledNode, Morelia):
 
     def my_parent_type(self):
         return Feature
@@ -359,6 +376,9 @@ class Step(Morelia):
 
     def evaluate(self, suite, matcher):
         method, args, kwargs = self.find_step(suite, matcher)
+        spec = inspect.getargspec(method)
+        if '_labels' in spec.args or spec.keywords:
+            kwargs['_labels'] = self.parent.get_labels()
         method(*args, **kwargs)
 
     def test_step(self, suite, matcher):

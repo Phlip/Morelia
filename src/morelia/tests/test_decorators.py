@@ -4,6 +4,7 @@ from mock import patch, Mock
 from morelia.decorators import should_skip, tags
 
 
+@tags(['unit'])
 class ShouldSkipTestCase(unittest.TestCase):
 
     def test_should_skip(self):
@@ -19,12 +20,14 @@ class ShouldSkipTestCase(unittest.TestCase):
             ('-tag3', False),
             ('tag1 -tag3', False),
             ('tag1 tag2 -tag3', False),
+            ('-tag1 -tag2 -tag3', True),
         ]
         for pattern, expected in test_data:
             result = should_skip(tags_list, pattern)
             self.assertEqual(result, expected)
 
 
+@tags(['unit'])
 class TagsTestCase(unittest.TestCase):
 
     def setUp(self):

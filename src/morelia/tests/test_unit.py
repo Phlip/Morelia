@@ -7,43 +7,9 @@ from mock import sentinel, Mock, patch
 
 from morelia import run
 from morelia.decorators import tags
-from morelia.parser import Parser, DEFAULT_LANGUAGE
+from morelia.parser import Parser
 from morelia.grammar import Morelia, Step
 from morelia.exceptions import MissingStepError
-
-
-@tags(['unit'])
-class ParserParseLanguageDirectiveTestCase(TestCase):
-    """ Test :py:meth:`Parser.parse_language_directive`. """
-
-    def test_should_return_true_on_language_directive_line(self):
-        """ Scenario: line with language directive """
-        # Arrange
-        obj = Parser()
-        for lang in ['en', 'pl', 'ja']:
-            line = '# language: %s' % lang
-            # Act
-            result = obj._parse_language_directive(line)
-            # Assert
-            self.assertTrue(result)
-            self.assertEqual(obj.language, lang)
-
-    def test_should_return_false_if_no_language_directive(self):
-        """ Scenario: line without language directive """
-        # Arrange
-        obj = Parser()
-        lines = [
-            '# language: ',  # missing language
-            'Feature:',  # not a language directive
-            'language: pl',  # missing comment
-            '# comment',  # comment
-        ]
-        for line in lines:
-            # Act
-            result = obj._parse_language_directive(line)
-            # Assert
-            self.assertFalse(result)
-            self.assertEqual(obj.language, DEFAULT_LANGUAGE)
 
 
 @tags(['unit'])

@@ -6,12 +6,12 @@ Version: 0.5.0 (Unreleased)
 TODO
 ^^^^
 
-* tags
 * step's text payload
 
 ADDED
 ^^^^^
 
+  * labels in feature files
   * tags decorator
 
 

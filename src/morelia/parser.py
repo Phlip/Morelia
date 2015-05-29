@@ -21,9 +21,6 @@ from .exceptions import WrongNodeTaggedError
 #  TODO  what happens with blank table items?
 #  ERGO  river is to riparian as pond is to ___?
 
-LANGUAGE_RE = re.compile(r'^# language: (\w+)')
-DEFAULT_LANGUAGE = 'en'
-
 
 class Parser:
 
@@ -34,8 +31,8 @@ class Parser:
             Row, Comment, Examples, Step
         ]
         self.steps = []
-        self.language = DEFAULT_LANGUAGE if language is None else language
-        self._prepare_patterns(self.language)
+        self._language_parser = LanguageParser(default_language=language)
+        self._prepare_patterns(self._language_parser.get_language())
         self._labels_parser = LabelParser()
 
     def _prepare_patterns(self, language):
@@ -54,20 +51,6 @@ class Parser:
         self.parse_feature(prose)
         return AST(self.steps)
 
-    def _parse_language_directive(self, line):
-        """ Parse language directive.
-
-        :param str line: line to parse
-        :returns: True if line contains correct language directive
-        :side effects: sets self.language to parsed language
-        """
-        match = LANGUAGE_RE.match(line)
-        if match:
-            self.language = match.groups()[0]
-            self._prepare_patterns(self.language)
-            return True
-        return False
-
     def parse_feature(self, lines):
         lines = to_unicode(lines)
         self.line_number = 0
@@ -78,7 +61,9 @@ class Parser:
             if not self.line:
                 continue
 
-            if self._parse_language_directive(self.line):
+            if self._language_parser.parse(self.line):
+                language = self._language_parser.get_language()
+                self._prepare_patterns(language)
                 continue
 
             if self._labels_parser.parse(self.line):
@@ -95,7 +80,7 @@ class Parser:
             else:
                 s = Step('???', self.line)
                 s.line_number = self.line_number
-                feature_name = TRANSLATIONS[self.language].get('feature', u'Feature')
+                feature_name = TRANSLATIONS[self._language_parser.get_language()].get('feature', u'Feature')
                 feature_name = feature_name.replace('|', ' or ')
                 s.enforce(False, u'feature files must start with a %s' % feature_name)
 
@@ -174,3 +159,28 @@ class LabelParser(object):
             else:
                 self._labels = []
         return False
+
+
+class LanguageParser(object):
+
+    def __init__(self, lang_pattern='^# language: (\w+)', default_language=None):
+        if default_language is None:
+            default_language = 'en'
+        self._language = default_language
+        self._lang_re = re.compile(lang_pattern)
+
+    def parse(self, line):
+        """ Parse language directive.
+
+        :param str line: line to parse
+        :returns: True if line contains language directive
+        :side effects: sets self._language to parsed language
+        """
+        match = self._lang_re.match(line)
+        if match:
+            self._language = match.groups()[0]
+            return True
+        return False
+
+    def get_language(self):
+        return self._language

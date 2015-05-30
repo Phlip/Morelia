@@ -3,7 +3,20 @@ import os
 from six.moves.configparser import SafeConfigParser, NoSectionError, NoOptionError
 
 
+DEFAULT_CONFIG_FILES = ['.moreliarc', '~/.moreliarc', '/etc/morelia.rc']
+
+
 class Config(object):
+    """ Configuration object.
+
+    Configuration is read from ini-style files and environment variables
+    prefixed with `MORELIA_`.
+    By default Morelia search for files:
+
+        * .moreliarc
+        * ~/.moreliarc
+        * /etc/morelia.rc
+    """
 
     def __init__(self, config_files=None, config_parser_class=None):
         self._env_prefix = 'MORELIA_'
@@ -14,7 +27,7 @@ class Config(object):
             'show_all_missing': False,
         }
         if config_files is None:
-            config_files = ['.moreliarc', '~/.moreliarc', '/etc/morelia.rc']
+            config_files = DEFAULT_CONFIG_FILES
         self._default_section = 'morelia'
         self._config_files = [os.path.abspath(os.path.expandvars(os.path.expanduser(config_file)))
                               for config_file in config_files]

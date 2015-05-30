@@ -13,6 +13,19 @@ conceptually derived from Ruby's Cucumber Framework [#CUKES]_.
 
 .. image:: http://www.naturfoto.cz/fotografie/ostatni/krajta-zelena-47784.jpg
 
+
+If you're scenario writer (product owner/product manager/proffesional tester)
+we recommended reading the:
+
+* :ref:`writers-tutorial` and then
+* :ref:`gherkin` when you need to create some more advanced scenarios
+
+If you're programmer we recommended reading the:
+
+* :ref:`usage-guide` and then
+* :ref:`gherkin` and
+* :ref:`api`
+
 Contents
 --------
 
@@ -21,9 +34,8 @@ Contents
 
    install
    usage
-   programmers
-   writers
    gherkin
+   writers
    modules
 
 Indices and tables

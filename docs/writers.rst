@@ -1,5 +1,7 @@
-For scenario writers
-====================
+.. _writers-tutorial:
+
+Tutorial for scenario writers
+=============================
 
 Scenarios are meant as tool for easier communication between developers, QA
 and business participants. This tutorial is written with non-programmers in mind.

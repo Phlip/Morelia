@@ -131,11 +131,36 @@ class LabelTest(TestCase):
 
         _labels = kwargs['_labels']
         self.assertIsNotNone(_labels)
-        self.assertEqual(set(['label1', 'label3', 'label4']), set(_labels))
 
     def step_without_labels(self):
         r'step without _labels'
         pass
+
+    def step_I_should_get_labels(self, labels, _labels):
+        r'I should get labels "([^"]+)"'
+
+        expected = ['label%s' % label for label in labels.split(',')]
+        self.assertEqual(set(expected), set(_labels))
+
+
+@tags(['acceptance'])
+class DocStringTest(TestCase):
+
+    def test_docstrings_should_be_passed_as_text_to_step(self):
+        filename = pwd + '/features/docstrings.feature'
+        ast = Parser().parse_file(filename)
+        ast.evaluate(self, show_all_missing=True)
+
+    def step_with_docstring(self, _text=None):
+        r'step with docstring'
+
+        self.assertIsNotNone(_text)
+        self._text = _text
+
+    def step_step_without_docstring(self):
+        r'step without docstring'
+
+        self.assertEqual(self._text, 'Docstring line1\nline2')
 
 
 @tags(['acceptance'])

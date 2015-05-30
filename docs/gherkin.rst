@@ -1,3 +1,5 @@
+.. _gherkin:
+
 Gherkin language reference
 ==========================
 
@@ -89,6 +91,10 @@ Each scenario consists of many steps. Steps have associated meaning:
 It is suggested that sentences in "Given" part should be written in past tense.
 "When" part should be written in present tense and "Then" in future tense.
 
+.. note:: **For programmers**
+
+   For information how methods are matched to steps see :ref:`matching-steps`.
+
 Background keyword
 ------------------
 
@@ -126,10 +132,17 @@ you can write:
          When another trigger occurs
          Then something else happens
 
+.. note:: **For programmers**
+
+   Refuse temptation to put into background steps that you need to perform
+   in order to set up tests, which are of no use for scenario writer (e.g. "Set up database")
+   Remember that you use :py:class:`TestCases <unittest.TestCase>` so you can use
+   :py:meth:`setUp <unittest.TestCase.setUp>`/:py:meth:`tearDown <unittest.TestCase.tearDown>` methods!
+
 Tables
 ------
 
-To DRY up a series of redundant scenarios, varying by only "payload" variables,
+To DRY [#DRY]_ up a series of redundant scenarios, varying by only "payload" variables,
 roll the Scenarios up into a table, using `<angles>` around the payload variable names:
 
 .. code-block:: cucumber
@@ -159,7 +172,7 @@ That Scenario will unroll into a series of 12 scenarios,
 each with one value from the table inserted into their placeholders `<total>`,
 `<destination>`, and `<rapid>`.
 
-You can use many tables. It would be equivalent of permutation of all given rows:
+You can use many tables. It would be equivalent of permutation of all given rows.
 
 Example
 ^^^^^^^
@@ -206,14 +219,83 @@ Is equvalent of series of scenarios:
 
 In above example 2 * 3 = 6 different scenarios would be generated.
 
-.. note:: Compatibility
+.. note:: **Compatibility**
 
    For compatibility with other Behavior Driven Development tools you
    can use "Scenario Outline" keyword instead of "Scenario" and mark table
    with "Examples" keyword if you prefer. Morelia would not enforce you to do that.
 
+.. note:: **For programmers**
+
+   For information how methods are matched to steps with tables see :ref:`matching-tables`.
+
+Doc Strings
+-----------
+
+Sometimes you need to include some larger chunks of text in steps as data.
+In order to accomplish this you can use doc-strings syntax:
+
+.. code-block:: cucumber
+
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    
+    Scenario: Add two numbers
+        Given I have powered calculator on
+        When I enter "50" into the calculator
+        And I enter "70" into the calculator
+        And I press add
+        Then I would see on the screen
+            """
+            Calculator example
+            ==================
+             50
+            +70
+            ---
+            120
+            """
+
+Text enclosed within tripple double-quotes will be attached as step's data.
+
+.. note:: **For programmers**
+
+   Look at :ref:`matching-docstrings` for information how to access data in steps.
+
+
+Labels
+------
+
+Each feature or scenario can be labeled:
+
+.. code-block:: cucumber
+
+    @web
+    @android @ios
+    Feature: Addition
+        In order to avoid silly mistakes
+        As a math idiot
+        I want to be told the sum of two numbers
+    
+    @wip
+    Scenario: Add two numbers
+        Given I have powered calculator on
+        When I enter "50" into the calculator
+        And I enter "70" into the calculator
+        And I press add
+        Then the result should be "120" on the screen
+
+Labels are inherited. In above example all steps will be labeled
+with "web", "android", "ios", "wip".
+Labels allows to implement custom logic depending on labels given.
+
+.. note:: **For programmers**
+
+   Look at :ref:`labels-matching` for information how to access labels in steps.
+
 When keyword special behaviour
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 .. deprecated:: 0.4.0
    Use `Background` keyword.
@@ -259,3 +341,7 @@ The second version DRYs the setup conditions.
 The committee does not yet know what happens if a multi-When Scenario also contains a table, so please don't rely on whatever the current behavior is!
 
 .. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
+
+.. rubric:: Footnotes
+
+.. [#DRY] Don't repeat yourself http://en.wikipedia.org/wiki/Don%27t_repeat_yourself

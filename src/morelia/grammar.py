@@ -93,6 +93,16 @@ class Morelia(INode):
         self.additional_data = {}
         self.keyword = keyword
         self.predicate = predicate if predicate is not None else ''
+        self._labels = []
+
+    def add_labels(self, tags):
+        self._labels.extend(tags)
+
+    def get_labels(self):
+        labels = self._labels
+        if self.parent:
+            labels.extend(self.parent.get_labels())
+        return labels
 
     def is_executable(self):
         return False
@@ -321,6 +331,10 @@ class Background(Morelia):
 
 class Step(Morelia):
 
+    def __init__(self, *args, **kwargs):
+        super(Step, self).__init__(*args, **kwargs)
+        self.payload = ''
+
     def prefix(self):
         return '  '
 
@@ -379,6 +393,8 @@ class Step(Morelia):
         spec = inspect.getargspec(method)
         if '_labels' in spec.args or spec.keywords:
             kwargs['_labels'] = self.parent.get_labels()
+        if '_text' in spec.args or spec.keywords:
+            kwargs['_text'] = self.payload
         method(*args, **kwargs)
 
     def test_step(self, suite, matcher):

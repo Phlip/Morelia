@@ -3,16 +3,12 @@ Version History
 
 Version: 0.5.0 (Unreleased)
 
-TODO
-^^^^
-
-* step's text payload
-
 ADDED
 ^^^^^
 
   * labels in feature files
   * tags decorator
+  * step's text payload
 
 
 Version: 0.4.2 (2015-05-10)

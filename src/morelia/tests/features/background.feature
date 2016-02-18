@@ -3,6 +3,7 @@ Feature: Background support
         Given step_ran was "1"
         And alt_step_ran was "0"
         And angles_step was <background>
+        And background_only_step_ran incremented
 
     Scenario: execute background steps
         When I increment step_ran by "1"
@@ -30,3 +31,5 @@ Feature: Background support
             | background | when | then |
             | 1          | 2    | 3    |
 
+    Scenario: background steps should be run once per scenario
+        Then background_only_step_ran will equal scenarios number

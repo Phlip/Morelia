@@ -59,6 +59,7 @@ class BackgroundTest(TestCase):
     def test_background(self):
         filename = pwd + '/features/background.feature'
         ast = Parser().parse_file(filename)
+        self._scenarios_num = sum(1 for s in ast.steps if isinstance(s, Scenario))
         ast.evaluate(self, show_all_missing=True)
 
     def step_step_ran_is_number(self, number):
@@ -110,6 +111,19 @@ class BackgroundTest(TestCase):
         r'angles_step will be string "([^"]+)"'
 
         self.assertEqual(self._background, then)
+
+    def step_background_only_step_ran_incremented(self):
+        r'background_only_step_ran incremented'
+
+        try:
+            self._background_only_step_ran += 1
+        except AttributeError:
+            self._background_only_step_ran = 1
+
+    def step_background_only_step_ran_will_equal_scenarios_number(self):
+        r'background_only_step_ran will equal scenarios number'
+
+        self.assertEqual(self._background_only_step_ran, self._scenarios_num)
 
 
 @tags(['acceptance'])
@@ -880,6 +894,7 @@ class MoreliaSuite(TestCase):
 # CONSIDER  count test cases correctly regarding entire batch - if pyUnit's architecture permits
 
 
+@tags(['acceptance'])
 class PLMoreliaSuite(MoreliaSuite):
 
     def setUp(self):

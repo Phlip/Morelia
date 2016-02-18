@@ -5,15 +5,15 @@ with open('README.rst') as file:
 
 setup(
     name='Morelia',
-    version="0.5.0",
+    version='0.5.0',
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
     long_description=long_description,
     url='http://morelia.readthedocs.org/',
-    author='Phlip, Jakub STOLARSKI',
-    author_email='phlip2005@gmail.com, jakub.stolarski@gmail.com',
-    license="MIT",
-    keywords="test bdd behavior",
-    packages=find_packages('src', exclude=['example*', '*.tests', 'tests.*', '*.tests.*', 'tests']),
+    author='Phlip, Jakub STOLARSKI (Dryobates)',
+    author_email='phlip2005@gmail.com, jakub.stolarski@kidosoft.pl',
+    license='MIT',
+    keywords='test bdd behavior',
+    packages=find_packages('src'),  # , exclude=['example*', '*.tests', 'tests.*', '*.tests.*', 'tests']),
     package_dir={'': 'src'},
     install_requires=[
         'six',

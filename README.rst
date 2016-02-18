@@ -35,7 +35,8 @@ Morelia *viridis* is a Python Behavior Driven Development platform, conceptually
 Installation
 ============
 
-    sudo pip install Morelia
+.. code-block:: console
+    pip install Morelia
 
 Quick usage guide
 =================

@@ -321,12 +321,17 @@ class Background(Morelia):
         pass
 
     def prepend_steps(self, scenario):
-        new_steps = []
-        for step in self.steps:
-            new_step = copy.copy(step)
-            new_step.parent = scenario
-            new_steps.append(new_step)
-        scenario.steps = new_steps + scenario.steps
+        try:
+            return scenario.background_steps
+        except AttributeError:
+            background_steps = []
+            for step in self.steps:
+                new_step = copy.copy(step)
+                new_step.parent = scenario
+                background_steps.append(new_step)
+            scenario.steps = background_steps + scenario.steps
+            scenario.background_steps = background_steps
+            return background_steps
 
 
 class Step(Morelia):

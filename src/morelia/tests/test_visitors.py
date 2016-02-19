@@ -86,7 +86,8 @@ class TestVisitorVisitTestCase(unittest.TestCase):
         # Arrange
         formatter = Mock()
         node = Mock()
-        obj = TestVisitor(sentinel.suite, sentinel.matcher, formatter)
+        suite = Mock()
+        obj = TestVisitor(suite, sentinel.matcher, formatter)
         node.test_step.side_effect = [SystemExit]
         # Act
         # Assert

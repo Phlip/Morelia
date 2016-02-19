@@ -46,10 +46,11 @@ class ASTEvaluateTestCase(TestCase):
         feature = Mock(Feature)
         steps = [feature]
         obj = AST(steps, matcher_visitor_class=matcher_visitor)
+        suite = Mock()
         # Act
-        obj.evaluate(sentinel.suite, show_all_missing=True)
+        obj.evaluate(suite, show_all_missing=True)
         # Assert
-        matcher_visitor.assert_called_once_with(sentinel.suite, ANY)
+        matcher_visitor.assert_called_once_with(suite, ANY)
 
 
 @tags(['unit'])

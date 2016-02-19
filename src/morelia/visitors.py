@@ -33,11 +33,18 @@ class IVisitor(object):
         pass  # pragma: nocover
 
 
+def noop():
+    pass
+
+
 class TestVisitor(IVisitor):
     """ Visits all steps and run step methods. """
 
     def __init__(self, suite, matcher, formatter):
+        self._setUp = suite.setUp
+        self._tearDown = suite.tearDown
         self._suite = suite
+        self._suite.setUp = self._suite.tearDown = noop
         self._matcher = matcher
         self._formatter = formatter
         self._scenarios_num = 0
@@ -65,11 +72,12 @@ class TestVisitor(IVisitor):
             self._formatter.output(node, line, status, duration)
 
     def before_scenario(self, node):
-        self._suite.setUp()
+        if self._scenarios_num != 0:
+            self._setUp()
         self._scenarios_num += 1
 
     def after_scenario(self, node):
-        self._suite.tearDown()
+        self._tearDown()
 
     def permute_schedule(self, node):
         return node.permute_schedule()

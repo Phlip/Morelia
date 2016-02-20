@@ -7,6 +7,7 @@ Version: 0.5.1 (Unreleased)
 FIXED
 ^^^^^
 
+  * bug with setUp/tearDown methods called twice
   * bug with double run of background steps when show_all_missing=True
 
 

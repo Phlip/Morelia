@@ -27,6 +27,17 @@ class SetUpTearDownTest(TestCase):
         ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 
+    def test_many_test_methods(self):
+        filename = pwd + '/features/setupteardown.feature'
+        ast = Parser().parse_file(filename)
+        ast.evaluate(self, show_all_missing=True)
+
+    def test_not_morelia_test(self):
+        setup_count = getattr(self, '_setup_count', 0)
+        teardown_count = getattr(self, '_teardown_count', 0)
+        self.assertEqual(setup_count, 1)
+        self.assertEqual(teardown_count, 0)
+
     def step_step_one(self):
         r'step one'
 

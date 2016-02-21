@@ -78,12 +78,16 @@ class StepFindStepTestCase(TestCase):
 class RunTestCase(TestCase):
     """ Test :py:func:`run`. """
 
+    @patch('morelia.has_color_support')
+    @patch('morelia.PlainTextFormatter')
     @patch.object(Parser, 'parse_file')
-    def test_should_parse_file_and_evaluate_tests(self, parse_file):
+    def test_should_parse_file_and_evaluate_tests(self, parse_file, PlainTextFormatter, has_color_support):
         """ Scenario: run and evaluate """
+        has_color_support.return_value = False
         run(sentinel.filename, sentinel.suite)
         parse_file.assert_called_once_with(sentinel.filename)
-        parse_file.return_value.evaluate.assert_called_once_with(sentinel.suite)
+        parse_file.return_value.evaluate.assert_called_once_with(
+            sentinel.suite, show_all_missing=True)
 
     @patch('morelia.has_color_support')
     @patch('morelia.PlainTextFormatter')
@@ -93,7 +97,9 @@ class RunTestCase(TestCase):
         has_color_support.return_value = False
         run(sentinel.filename, sentinel.suite, verbose=True)
         parse_file.assert_called_once_with(sentinel.filename)
-        parse_file.return_value.evaluate.assert_called_once_with(sentinel.suite, formatter=PlainTextFormatter.return_value)
+        parse_file.return_value.evaluate.assert_called_once_with(
+            sentinel.suite, formatter=PlainTextFormatter.return_value,
+            show_all_missing=True)
 
     @patch('morelia.has_color_support')
     @patch('morelia.ColorTextFormatter')
@@ -103,11 +109,15 @@ class RunTestCase(TestCase):
         has_color_support.return_value = True
         run(sentinel.filename, sentinel.suite, verbose=True)
         parse_file.assert_called_once_with(sentinel.filename)
-        parse_file.return_value.evaluate.assert_called_once_with(sentinel.suite, formatter=ColorTextFormatter.return_value)
+        parse_file.return_value.evaluate.assert_called_once_with(
+            sentinel.suite, formatter=ColorTextFormatter.return_value,
+            show_all_missing=True)
 
     @patch.object(Parser, 'parse_file')
     def test_should_use_provided_formatter(self, parse_file):
         """ Scenario: run verbose on systems with color support """
         run(sentinel.filename, sentinel.suite, verbose=True, formatter=sentinel.formatter)
         parse_file.assert_called_once_with(sentinel.filename)
-        parse_file.return_value.evaluate.assert_called_once_with(sentinel.suite, formatter=sentinel.formatter)
+        parse_file.return_value.evaluate.assert_called_once_with(
+            sentinel.suite, formatter=sentinel.formatter,
+            show_all_missing=True)

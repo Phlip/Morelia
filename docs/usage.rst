@@ -37,8 +37,7 @@ Create standard python's :py:mod:`unittest` and hook Morelia into it:
     
         def test_addition(self):
             """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            run(filename, self, verbose=True, show_all_missing=True)
+            run('calculator.feature', self, verbose=True)
 
 Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
 
@@ -61,7 +60,7 @@ And you'll see which steps are missing:
     ----------------------------------------------------------------------
     Traceback (most recent call last):
       File "test_acceptance.py", line 45, in test_addition
-        run(filename, self, verbose=True, show_all_missing=True)
+        run('calculator.feature', self, verbose=True)
       File "(..)/morelia/__init__.py", line 22, in run
         return ast.evaluate(suite, **kwargs)
       File "(..)/morelia/grammar.py", line 31, in evaluate
@@ -112,8 +111,7 @@ Now implement steps with standard :py:class:`TestCases <unittest.TestCase>` that
     
         def test_addition(self):
             """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            run(filename, self, verbose=True, show_all_missing=True)
+            run('calculator.feature', self, verbose=True)
     
         def step_I_have_powered_calculator_on(self):
             r'I have powered calculator on'

@@ -42,7 +42,7 @@ class CalculatorTestCase(unittest.TestCase):
     def test_addition(self):
         """ Addition feature """
         filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-        run(filename, self, show_all_missing=True)
+        run(filename, self)
 
 
 if __name__ == '__main__':  # pragma: nobranch

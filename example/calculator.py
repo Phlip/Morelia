@@ -12,33 +12,54 @@ commercial purposes, all without asking permission.
 
 
 class CalculatorNotPoweredError(Exception):
+
+    """ Exception raised when calculator is powered off."""
+
     pass
 
 
 class Calculator(object):
+
     """ Calculator. """
 
     def __init__(self):
+        """Initialize calculator in powered off state."""
         self._powered = False
 
     def on(self):
+        """Switch on calculator."""
         self._powered = True
         self._stack = []
 
     def off(self):
+        """Switch off calculator."""
         self._powered = False
 
     def push(self, number):
+        """Push number into stack.
+
+        :param number: number to operate on.
+        :raises: CalculatorNotPoweredError
+        """
         if not self._powered:
             raise CalculatorNotPoweredError
         self._stack.append(number)
 
     def add(self):
+        """Add numbers.
+
+        :raises: CalculatorNotPoweredError
+        """
         if not self._powered:
             raise CalculatorNotPoweredError
         self._stack = [sum(self._stack)]
 
     def get_result(self):
+        """Return computation result.
+
+        :returns: computation result
+        :raises: CalculatorNotPoweredError
+        """
         if not self._powered:
             raise CalculatorNotPoweredError
         return self._stack[-1]

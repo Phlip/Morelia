@@ -1,5 +1,79 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Decorators
+----------
+
+Sometimes you need selectively run tests. For that reason you can tag your tests:
+
+.. code-block:: python
+
+    # test_acceptance.py
+
+    import unittest
+
+    from morelia import run
+    from morelia.decorators import tags
+
+
+    class CalculatorTestCase(unittest.TestCase):
+
+        @tags(['basic'])
+        def test_addition(self):
+            ''' Addition feature '''
+            filename = os.path.join(os.path.dirname(__file__), 'add.feature')
+            run(filename, self)
+            # ...
+
+        @tags(['advanced'])
+        def test_substraction(self):
+            ''' Substraction feature '''
+            filename = os.path.join(os.path.dirname(__file__), 'substract.feature')
+            run(filename, self)
+            # ...
+
+        @tags(['slow', 'advanced'])
+        def test_multiplication(self):
+            ''' Multiplication feature '''
+            filename = os.path.join(os.path.dirname(__file__), 'multiplication.feature')
+            run(filename, self)
+            # ...
+
+And run tests only for selected features:
+
+.. code-block:: console
+
+    $ MORELIA_TAGS=basic python -m unittest test_acceptance
+
+    .ss
+    ----------------------------------------------------------------------
+    Ran 3 test in 0.018s
+
+    OK (skipped=2)
+
+    $ MORELIA_TAGS=advanced python -m unittest test_acceptance
+
+    s..
+    ----------------------------------------------------------------------
+    Ran 3 test in 0.048s
+
+    OK (skipped=2)
+
+    $ MORELIA_TAGS=-slow python -m unittest test_acceptance
+
+    ..s
+    ----------------------------------------------------------------------
+    Ran 3 test in 0.028s
+
+    OK (skipped=1)
+
+    $ MORELIA_TAGS=advanced,-slow python -m unittest test_acceptance
+
+    s.s
+    ----------------------------------------------------------------------
+    Ran 3 test in 0.022s
+
+    OK (skipped=2)
+"""
 
 import unittest
 

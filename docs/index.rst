@@ -6,8 +6,20 @@
 Welcome to Morelia!
 ===================
 
-Morelia *viridis* is a Python Behavior Driven Development [#BDD]_ platform,
-conceptually derived from Ruby's Cucumber Framework [#CUKES]_.
+Morelia is a Python Behavior Driven Development (BDD [#BDD]_) library.
+
+BDD is an agile software development process that encourages
+collaboration between developers, QA and business participants.
+
+Test scenarios written in natural language make BDD foundation. They are comprehensible
+for non-technical participants who wrote them yet unambiguous for developers and QA.
+
+Morelia makes it easy for developers to integrate BDD into their existing unittest frameworks.
+It is easy to run under nose, pytest, tox or integrate with django, flask or any other python framework
+because no special code have to be written.
+
+You as developer are in charge of how tests are organized. No need to fit into
+rigid rules forced by some other BDD frameworks.
 
 **Mascot**:
 
@@ -49,4 +61,3 @@ Indices and tables
 .. rubric:: Footnotes
 
 .. [#BDD] Behavior Driven Development https://en.wikipedia.org/wiki/Behavior-driven_development
-.. [#CUKES] Cucumber https://cukes.info/

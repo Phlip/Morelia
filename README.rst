@@ -2,15 +2,19 @@
 Morelia
 #######
 
-.. image:: https://pypip.in/wheel/Morelia/badge.svg
+.. image:: https://img.shields.io/pypi/wheel/Morelia.svg
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: Wheel Status
 
-.. image:: https://pypip.in/version/Morelia/badge.svg
+.. image:: https://img.shields.io/pypi/pyversions/Morelia.svg
+    :target: https://pypi.python.org/pypi/Morelia/
+    :alt: Python versions
+
+.. image:: https://img.shields.io/pypi/v/Morelia.svg
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: Latest Version
 
-.. image:: https://pypip.in/license/Morelia/badge.svg
+.. image:: https://img.shields.io/pypi/l/Morelia.svg
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: License
 
@@ -26,7 +30,26 @@ Morelia
     :target: https://morelia.readthedocs.org
     :alt: Documetation
 
-Morelia *viridis* is a Python Behavior Driven Development platform, conceptually derived from Ruby's Cucumber Framework.
+.. image:: https://img.shields.io/gemnasium/kidosoft/Morelia.svg
+    :target: https://gemnasium.com/kidosoft/Morelia/
+    :alt: Dependencies
+
+Morelia is a Python Behavior Driven Development (BDD) library.
+
+BDD is an agile software development process that encourages
+collaboration between developers, QA and business participants.
+
+Test scenarios written in natural language make BDD foundation.
+They are comprehensible for non-technical participants who wrote them
+and unambiguous for developers and QA.
+
+Morelia makes it easy for developers to integrate BDD into their existing
+unittest frameworks.  It is easy to run under nose, pytest, tox, trial or integrate
+with django, flask or any other python framework because no special code
+have to be written.
+
+You as developer are in charge of how tests are organized. No need to fit into
+rigid rules forced by some other BDD frameworks.
 
 **Mascot**:
 
@@ -36,6 +59,7 @@ Installation
 ============
 
 .. code-block:: console
+
     pip install Morelia
 
 Quick usage guide
@@ -60,7 +84,7 @@ Write a feature description:
         Then the result should be "120" on the screen
 
 
-Create standard python's `unittest` and hook Morelia into it:
+Create standard Python's `unittest` and hook Morelia into it:
 
 .. code-block:: python
 
@@ -75,8 +99,7 @@ Create standard python's `unittest` and hook Morelia into it:
     
         def test_addition(self):
             """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            run(filename, self, verbose=True, show_all_missing=True)
+            run('calculator.feature', self, verbose=True)
 
 Run test with your favourite runner: unittest, nose, py.test, trial. You name it!
 
@@ -99,7 +122,7 @@ And you'll see which steps are missing:
     ----------------------------------------------------------------------
     Traceback (most recent call last):
       File "test_acceptance.py", line 45, in test_addition
-        run(filename, self, verbose=True, show_all_missing=True)
+        run('calculator.feature', self, verbose=True)
       File "(..)/morelia/__init__.py", line 22, in run
         return ast.evaluate(suite, **kwargs)
       File "(..)/morelia/grammar.py", line 31, in evaluate
@@ -150,8 +173,7 @@ Now implement steps with standard `TestCases` that you are familiar:
     
         def test_addition(self):
             """ Addition feature """
-            filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-            run(filename, self, verbose=True, show_all_missing=True)
+            run('calculator.feature', self, verbose=True)
     
         def step_I_have_powered_calculator_on(self):
             r'I have powered calculator on'

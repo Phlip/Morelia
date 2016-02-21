@@ -22,7 +22,7 @@ import sys
 from .formatters import PlainTextFormatter, ColorTextFormatter
 from .parser import Parser  # noqa
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 
 
 def has_color_support():

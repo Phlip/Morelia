@@ -5,7 +5,7 @@ with open('README.rst') as file:
 
 setup(
     name='Morelia',
-    version='0.5.1',
+    version='0.5.2',
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
     long_description=long_description,
     url='http://morelia.readthedocs.org/',

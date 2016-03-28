@@ -1,8 +1,11 @@
 from abc import ABCMeta
 import copy
+from gettext import ngettext
 import inspect
 import itertools
 import re
+import sys
+import traceback
 
 from six import moves
 
@@ -88,11 +91,12 @@ class INode(object):
 
 class Morelia(INode):
 
-    def __init__(self, keyword, predicate):
+    def __init__(self, keyword, predicate, steps=[]):
         self.parent = None
         self.additional_data = {}
         self.keyword = keyword
         self.predicate = predicate if predicate is not None else ''
+        self.steps = steps
         self._labels = []
 
     def add_labels(self, tags):
@@ -208,6 +212,33 @@ class LabeledNode(object):
 
 
 class Feature(LabeledNode, Morelia):
+
+    def _evaluate_child_steps(self, visitor):
+        exceptions = []
+        scenarios_failed = 0
+        scenarios_passed = 0
+        for step in self.steps:
+            try:
+                step.evaluate_steps(visitor)
+            except AssertionError:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                tb = traceback.extract_tb(exc_traceback)[:-2]
+                prefix = '-' * 66
+                exceptions.append('{}{}\n{}{}'.format(
+                    prefix,
+                    step.reconstruction(),
+                    ''.join(traceback.format_list(tb)),
+                    ''.join(traceback.format_exception_only(exc_type, exc_value))
+                ))
+                scenarios_failed += 1
+            else:
+                scenarios_passed += 1
+        if scenarios_failed:
+            failed_msg = ngettext('{} scenario failed', '{} scenarios failed', scenarios_failed)
+            passed_msg = ngettext('{} scenario passed', '{} scenarios passed', scenarios_passed)
+            msg = '{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
+            msg += ''.join(''.join('    {:4}\n'.format(line) for line in exc.splitlines()) for exc in exceptions)
+            assert scenarios_failed == 0, msg
 
     def test_step(self, suite, matcher):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')

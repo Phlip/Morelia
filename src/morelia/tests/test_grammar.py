@@ -3,7 +3,8 @@ from unittest import TestCase
 from mock import sentinel, Mock, ANY
 
 from morelia.decorators import tags
-from morelia.grammar import AST, Feature
+from morelia.grammar import AST, Feature, Morelia, Step
+
 from morelia.visitors import IVisitor
 from morelia.matchers import IStepMatcher
 from morelia.formatters import IFormatter
@@ -80,3 +81,106 @@ class LabeledNodeGetLabelsTestCase(TestCase):
         result = obj.get_labels()
         # Assert
         self.assertEqual(result, expected)
+
+
+@tags(['unit'])
+class INodeEvaluateStepsTest(TestCase):
+
+    node_class = Morelia
+
+    def test_should_call_visitor(self):
+        # Arrange
+        node = self.node_class('Feature', 'Some feature')
+        visitor = Mock(IVisitor)
+        # Act
+        node.evaluate_steps(visitor)
+        # Assert
+        visitor.visit.assert_called_once_with(node)
+
+    def test_should_evaluate_child_steps(self):
+        # Arrange
+        steps = [Mock(Step), Mock(Step)]
+        node = self.node_class('Feature', 'Some feature', steps=steps)
+        visitor = Mock(IVisitor)
+        # Act
+        node.evaluate_steps(visitor)
+        # Assert
+        visitor.visit.assert_called_once_with(node)
+        for step in steps:
+            step.evaluate_steps.assert_called_once_with(visitor)
+
+
+@tags(['unit'])
+class FeatureEvaluateChildStepsTest(INodeEvaluateStepsTest):
+
+    node_class = Feature
+
+    def test_should_raise_assertion_error_if_first_scenario_fail(self):
+        # Arrange
+        steps = []
+        for i in range(2):
+            step = Mock(Step)
+            if i == 0:
+                step.evaluate_steps.side_effect = AssertionError('{} scenario failure'.format(i))
+            steps.append(step)
+        node = self.node_class('Feature', 'Some feature', steps=steps)
+        visitor = Mock(IVisitor)
+        # Act
+        try:
+            node.evaluate_steps(visitor)
+        except AssertionError as exc:
+            self.assertIn('1 scenario failed, 1 scenario passed', exc.message)
+        else:
+            self.fail('AssertionError not raised')
+        # Assert
+        visitor.visit.assert_called_once_with(node)
+        for step in steps:
+            step.evaluate_steps.assert_called_once_with(visitor)
+
+    def test_should_raise_assertion_error_if_second_scenario_fail(self):
+        # Arrange
+        steps = []
+        for i in range(3):
+            step = Mock(Step)
+            if i == 1:
+                step.evaluate_steps.side_effect = AssertionError('{} scenario failure'.format(i))
+            steps.append(step)
+        node = self.node_class('Feature', 'Some feature', steps=steps)
+        visitor = Mock(IVisitor)
+        # Act
+        try:
+            node.evaluate_steps(visitor)
+        except AssertionError as exc:
+            self.assertIn('1 scenario failed, 2 scenarios passed', exc.message)
+        else:
+            self.fail('AssertionError not raised')
+        # Assert
+        visitor.visit.assert_called_once_with(node)
+        for step in steps:
+            step.evaluate_steps.assert_called_once_with(visitor)
+
+    def test_should_raise_assertion_error_with_tracebacks_from_all_exceptions(self):
+        # Arrange
+        steps = []
+        for i in range(4):
+            step = Mock(Step)
+            if i in (1, 2):
+                step.evaluate_steps.side_effect = AssertionError('{} scenario failure'.format(i))
+            step.reconstruction.return_value = '\nStep'
+            steps.append(step)
+        node = self.node_class('Feature', 'Some feature', steps=steps)
+        visitor = Mock(IVisitor)
+        # Act
+        try:
+            node.evaluate_steps(visitor)
+        except AssertionError as exc:
+            self.assertIn('2 scenarios failed, 2 scenarios passed', exc.message)
+            self.assertIn('AssertionError: 1 scenario failure', exc.message)
+            self.assertIn('AssertionError: 2 scenario failure', exc.message)
+            self.assertIn('in _evaluate_child_steps', exc.message)
+        else:
+            self.fail('AssertionError not raised')
+        # Assert
+        visitor.visit.assert_called_once_with(node)
+        for step in steps:
+            step.evaluate_steps.assert_called_once_with(visitor)

@@ -26,8 +26,8 @@ Morelia
     :target: https://coveralls.io/r/kidosoft/Morelia
     :alt: Coverage
 
-.. image:: https://readthedocs.org/projects/morelia/badge/?format=svg
-    :target: https://morelia.readthedocs.org
+.. image:: http://readthedocs.org/projects/morelia/badge/?format=svg
+    :target: http://morelia.readthedocs.org
     :alt: Documetation
 
 .. image:: https://img.shields.io/gemnasium/kidosoft/Morelia.svg

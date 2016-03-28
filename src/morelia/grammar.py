@@ -221,24 +221,29 @@ class Feature(LabeledNode, Morelia):
             try:
                 step.evaluate_steps(visitor)
             except AssertionError:
-                exc_type, exc_value, exc_traceback = sys.exc_info()
-                tb = traceback.extract_tb(exc_traceback)[:-2]
-                prefix = '-' * 66
-                exceptions.append('{}{}\n{}{}'.format(
-                    prefix,
+                etype, evalue, etraceback = sys.exc_info()
+                tb = traceback.extract_tb(etraceback)[:-2]
+                exceptions.append((
                     step.reconstruction(),
-                    ''.join(traceback.format_list(tb)),
-                    ''.join(traceback.format_exception_only(exc_type, exc_value))
+                    traceback.format_list(tb),
+                    traceback.format_exception_only(etype, evalue)
                 ))
                 scenarios_failed += 1
             else:
                 scenarios_passed += 1
         if scenarios_failed:
-            failed_msg = ngettext('{} scenario failed', '{} scenarios failed', scenarios_failed)
-            passed_msg = ngettext('{} scenario passed', '{} scenarios passed', scenarios_passed)
-            msg = '{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
-            msg += ''.join(''.join('    {:4}\n'.format(line) for line in exc.splitlines()) for exc in exceptions)
-            assert scenarios_failed == 0, msg
+            self._format_exception(scenarios_failed, scenarios_passed, exceptions)
+
+    def _format_exception(self, scenarios_failed, scenarios_passed, exceptions):
+        failed_msg = ngettext('{} scenario failed', '{} scenarios failed', scenarios_failed)
+        passed_msg = ngettext('{} scenario passed', '{} scenarios passed', scenarios_passed)
+        msg = '{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
+        prefix = '-' * 66
+        for step_line, tb, exc in exceptions:
+            tb_str = ''.join('{:4}'.format(line) for line in tb)
+            exc_str = ''.join('{:4}'.format(line) for line in exc)
+            msg += '{}{}{}{}'.format(prefix, step_line, tb_str, exc_str)
+        assert scenarios_failed == 0, msg
 
     def test_step(self, suite, matcher):
         self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')

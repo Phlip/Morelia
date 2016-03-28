@@ -5,7 +5,7 @@ from unittest import TestCase
 from morelia.decorators import tags
 from morelia.parser import Parser
 
-PWD = os.path.dirname(os.path.realpath(__file__))
+pwd = os.path.dirname(os.path.realpath(__file__))
 
 
 @tags(['acceptance', 'regression'])
@@ -27,13 +27,13 @@ class SetUpTearDownTest(TestCase):
 
     def test_setup_teardown(self):
         """Check for multiple setUp/tearDown calls."""
-        filename = PWD + '/features/setupteardown.feature'
+        filename = os.path.join(pwd, 'features/setupteardown.feature')
         ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 
     def test_many_test_methods(self):
         """Check setUp/tearDown when many tests in one TestCase."""
-        filename = PWD + '/features/setupteardown.feature'
+        filename = os.path.join(pwd, 'features/setupteardown.feature')
         ast = Parser().parse_file(filename)
         ast.evaluate(self, show_all_missing=True)
 

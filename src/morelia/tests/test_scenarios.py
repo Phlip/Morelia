@@ -71,7 +71,7 @@ class InfoOnAllFailingScenariosTest(TestCase):
 
     def step_feature_with_number_scenarios_has_been_described_in_file(self, feature_file):
         r'that feature with 4 scenarios has been described in file "([^"]+)"'
-        filename = pwd + '/features/%s' % feature_file
+        filename = pwd + '/features/{}'.format(feature_file)
         self._ast = Parser().parse_file(filename)
 
     def step_that_test_case_passing_number_and_number_scenario_and_failing_number_and_number_has_been_written(self):
@@ -171,13 +171,14 @@ class InfoOnAllFailingScenariosTest(TestCase):
     def step_I_will_get_assertion_error_with_information_number_scenarios_passed_number_scenarios_failed(self, message):
         r'I will get assertion error with information "([^"]+)"'
 
-        self.assertTrue(self._catch_exception.message.startswith(message))
+        message = self._catch_exception.args[0]
+        self.assertTrue(message.startswith(message))
 
     def step_I_will_get_traceback_of_each_failing_scenario(self):
         r'I will get traceback of each failing scenario'
 
         patterns = self._failing_patterns
-        message = self._catch_exception.message
+        message = self._catch_exception.args[0]
         for pattern in patterns:
             self.assertRegexpMatches(message, pattern)
 

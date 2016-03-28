@@ -129,7 +129,7 @@ class FeatureEvaluateChildStepsTest(INodeEvaluateStepsTest):
         try:
             node.evaluate_steps(visitor)
         except AssertionError as exc:
-            self.assertIn('1 scenario failed, 1 scenario passed', exc.message)
+            self.assertIn('1 scenario failed, 1 scenario passed', exc.args[0])
         else:
             self.fail('AssertionError not raised')
         # Assert
@@ -151,7 +151,7 @@ class FeatureEvaluateChildStepsTest(INodeEvaluateStepsTest):
         try:
             node.evaluate_steps(visitor)
         except AssertionError as exc:
-            self.assertIn('1 scenario failed, 2 scenarios passed', exc.message)
+            self.assertIn('1 scenario failed, 2 scenarios passed', exc.args[0])
         else:
             self.fail('AssertionError not raised')
         # Assert
@@ -174,10 +174,11 @@ class FeatureEvaluateChildStepsTest(INodeEvaluateStepsTest):
         try:
             node.evaluate_steps(visitor)
         except AssertionError as exc:
-            self.assertIn('2 scenarios failed, 2 scenarios passed', exc.message)
-            self.assertIn('AssertionError: 1 scenario failure', exc.message)
-            self.assertIn('AssertionError: 2 scenario failure', exc.message)
-            self.assertIn('in _evaluate_child_steps', exc.message)
+            message = exc.args[0]
+            self.assertIn('2 scenarios failed, 2 scenarios passed', message)
+            self.assertIn('AssertionError: 1 scenario failure', message)
+            self.assertIn('AssertionError: 2 scenario failure', message)
+            self.assertIn('in _evaluate_child_steps', message)
         else:
             self.fail('AssertionError not raised')
         # Assert

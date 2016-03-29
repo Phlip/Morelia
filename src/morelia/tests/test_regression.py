@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Regression tests."""
 import os
 from unittest import TestCase
@@ -59,3 +61,17 @@ class SetUpTearDownTest(TestCase):
         teardown_count = getattr(self, '_teardown_count', 0)
         self.assertEqual(setup_count, 2)
         self.assertEqual(teardown_count, 1)
+
+
+@tags(['acceptance', 'regression'])
+class EncodingErrorInTraceback(TestCase):
+
+    def test_should_report_on_all_failing_scenarios(self):
+        filename = os.path.join(pwd, 'features/encoding_error_in_regression.feature')
+        ast = Parser().parse_file(filename)
+        self.assertRaisesRegexp(AssertionError, 'Given: Zażółć gęślą jaźń', ast.evaluate, self)
+
+    def step_failing(self):
+        r'Zażółć gęślą jaźń'
+
+        assert False, u'Zażółć gęślą jaźń Эх, чужак! Общий съём цен шляп (юфть) — вдрызг!'

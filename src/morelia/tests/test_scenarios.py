@@ -65,13 +65,13 @@ class InfoOnAllFailingScenariosTest(TestCase):
         self._substract_failure_pattern = re.compile('Scenario: Subtract two numbers\n\s*Then: the result should be "80" on the screen\n\s*\n\s*70 != 80')
         self._multiply_failure_pattern = re.compile('Scenario: Multiply two numbers\n\s*Then: the result should be "12" on the screen\n\s*\n\s*3 != 12')
         self._division_failure_pattern = re.compile('Scenario: Divide two numbers\n\s*Then: the result should be "4" on the screen\n\s*\n\s*2 != 4')
-        filename = pwd + '/features/info_on_all_failing_scenarios.feature'
+        filename = os.path.join(pwd, 'features/info_on_all_failing_scenarios.feature')
         ast = Parser().parse_file(filename)
         ast.evaluate(self)
 
     def step_feature_with_number_scenarios_has_been_described_in_file(self, feature_file):
         r'that feature with 4 scenarios has been described in file "([^"]+)"'
-        filename = pwd + '/features/{}'.format(feature_file)
+        filename = os.path.join(pwd, 'features/{}'.format(feature_file))
         self._ast = Parser().parse_file(filename)
 
     def step_that_test_case_passing_number_and_number_scenario_and_failing_number_and_number_has_been_written(self):

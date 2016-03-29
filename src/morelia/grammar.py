@@ -223,10 +223,11 @@ class Feature(LabeledNode, Morelia):
             except AssertionError:
                 etype, evalue, etraceback = sys.exc_info()
                 tb = traceback.extract_tb(etraceback)[:-2]
+                fix_exception_encoding(evalue)
                 exceptions.append((
                     step.reconstruction(),
-                    traceback.format_list(tb),
-                    traceback.format_exception_only(etype, evalue)
+                    [to_unicode(line) for line in traceback.format_list(tb)],
+                    [to_unicode(line) for line in traceback.format_exception_only(etype, evalue)]
                 ))
                 scenarios_failed += 1
             else:
@@ -237,12 +238,12 @@ class Feature(LabeledNode, Morelia):
     def _format_exception(self, scenarios_failed, scenarios_passed, exceptions):
         failed_msg = ngettext('{} scenario failed', '{} scenarios failed', scenarios_failed)
         passed_msg = ngettext('{} scenario passed', '{} scenarios passed', scenarios_passed)
-        msg = '{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
+        msg = u'{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
         prefix = '-' * 66
         for step_line, tb, exc in exceptions:
-            tb_str = ''.join('{:4}'.format(line) for line in tb)
-            exc_str = ''.join('{:4}'.format(line) for line in exc)
-            msg += '{}{}{}{}'.format(prefix, step_line, tb_str, exc_str)
+            tb_str = u''.join(u'{:4}'.format(line) for line in tb)
+            exc_str = u''.join(u'{:4}'.format(line) for line in exc)
+            msg += u'\n{}{}\n{}{}'.format(prefix, step_line, tb_str, exc_str)
         assert scenarios_failed == 0, msg
 
     def test_step(self, suite, matcher):

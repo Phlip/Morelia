@@ -4,6 +4,7 @@ import unittest
 from mock import sentinel, Mock
 
 from morelia.decorators import tags
+from morelia.grammar import Step, Scenario
 from morelia.formatters import NullFormatter, PlainTextFormatter, ColorTextFormatter
 
 
@@ -35,8 +36,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'pass'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         expected = '%-60s # pass  0.010s\n' % line
@@ -51,8 +51,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'fail'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         expected = '%-60s # fail  0.010s\n' % line
@@ -67,8 +66,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'error'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         expected = '%-60s # error 0.010s\n' % line
@@ -83,8 +81,7 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Scenario: some number'
         status = 'pass'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = False
+        node = Mock(Scenario)
         obj.output(node, line, status, duration)
         # Assert
         expected = '%s\n' % line
@@ -104,8 +101,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'pass'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         green = u'\x1b[32m'
@@ -122,8 +118,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'fail'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         red = u'\x1b[31m'
@@ -140,8 +135,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Given some number'
         status = 'error'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = True
+        node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
         red = u'\x1b[31m'
@@ -158,8 +152,7 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         line = 'Scenario: some number'
         status = 'pass'
         duration = 0.01
-        node = Mock()
-        node.is_executable.return_value = False
+        node = Mock(Scenario)
         obj.output(node, line, status, duration)
         # Assert
         expected = '%s\n' % line

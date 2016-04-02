@@ -18,3 +18,14 @@ Scenario: Subsequent additions
     And I enter "20" into the calculator
     And I press add
     Then the result should be "140" on the screen
+
+Scenario: Add two numbers - table
+    Given I have powered calculator on
+    When I enter "<num1>" into the calculator
+    And I enter "<num2>" into the calculator
+    And I press add
+    Then the result should be "<result>" on the screen
+        | num1 | num2 | result |
+        | 2    | 3    | 5      |
+        | 4    | 5    | 9      |
+

@@ -1,102 +1,46 @@
 from abc import ABCMeta
 import copy
-from gettext import ngettext
-import inspect
 import itertools
 import re
-import sys
-import traceback
 
 from six import moves
 
 from .exceptions import MissingStepError
-from .formatters import NullFormatter
 from .i18n import TRANSLATIONS
-from .matchers import RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
-from .utils import fix_exception_encoding, to_unicode
-from .visitors import StepMatcherVisitor, TestVisitor, ReportVisitor
-
-
-class AST(object):
-
-    def __init__(self, steps, test_visitor_class=TestVisitor,
-                 matcher_visitor_class=StepMatcherVisitor):
-        self.steps = steps
-        self._test_visitor_class = test_visitor_class
-        self._matcher_visitor_class = matcher_visitor_class
-
-    def evaluate(self, suite, formatter=None, matchers=None, show_all_missing=True):
-        if matchers is None:
-            matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
-        matcher = self._create_matchers_chain(suite, matchers)
-        feature = self.steps[0]
-        if show_all_missing:
-            matcher_visitor = self._matcher_visitor_class(suite, matcher)
-            feature.evaluate_steps(matcher_visitor)
-        if formatter is None:
-            formatter = NullFormatter()
-        test_visitor = self._test_visitor_class(suite, matcher, formatter)
-        try:
-            feature.evaluate_steps(test_visitor)
-        except SyntaxError as exc:
-            raise
-        except Exception as exc:
-            fix_exception_encoding(exc)
-            raise
-
-    def _create_matchers_chain(self, suite, matcher_classes):
-        root_matcher = None
-        for matcher_class in matcher_classes:
-            matcher = matcher_class(suite)
-            try:
-                root_matcher.add_matcher(matcher)
-            except AttributeError:
-                root_matcher = matcher
-        return root_matcher
-
-    def report(self, suite, visitor_class=ReportVisitor):
-        rv = visitor_class(suite)
-        self.steps[0].evaluate_steps(rv)
-        return rv
+from .utils import to_unicode
 
 
 class INode(object):
 
     __metaclass__ = ABCMeta
 
-    def test_step(self, suite, matcher):
+    def find_step(self, matcher):
+        """Find method matching step.
+
+        :param IStepMatcher matcher: object matching methods by given predicate
+        :returns: (method, args, kwargs) tuple
+        :rtype: tuple
+        :raises MissingStepError: if method maching step not found
+        """
         pass
 
-    def find_step(self, suite, matcher):
-        pass
+    def accept(self, visitor):
+        """Iterate through grammar tree accepting visitor.
 
-    def evaluate_steps(self, visitor):
-        class_name = self.__class__.__name__.lower()
-        self._method_hook(visitor, class_name, 'before_')
+        :param IVisitor visitor: visitor object
+        """
         try:
             visitor.visit(self)
-            self._evaluate_child_steps(visitor)
+            for step in self.steps:
+                step.accept(visitor)
         finally:
-            self._method_hook(visitor, class_name, 'after_')
-
-    def _evaluate_child_steps(self, visitor):
-        for step in self.steps:
-            step.evaluate_steps(visitor)
-
-    def _method_hook(self, visitor, class_name, prefix):
-        method = getattr(visitor, 'after_%s' % class_name, None)
-        if method:
-            method(self)
+            visitor.after_visit(self)
 
 
-class Morelia(INode):
+class LabeledNode(object):
 
-    def __init__(self, keyword, predicate, steps=[]):
-        self.parent = None
-        self.additional_data = {}
-        self.keyword = keyword
-        self.predicate = predicate if predicate is not None else ''
-        self.steps = steps
+    def __init__(self, *args, **kwargs):
+        super(LabeledNode, self).__init__(*args, **kwargs)
         self._labels = []
 
     def add_labels(self, tags):
@@ -108,25 +52,30 @@ class Morelia(INode):
             labels.extend(self.parent.get_labels())
         return labels
 
-    def is_executable(self):
-        return False
+
+class Morelia(LabeledNode, INode):
+
+    def __init__(self, keyword, predicate, steps=[]):
+        super(Morelia, self).__init__()
+        self.parent = None
+        self.additional_data = {}
+        self.keyword = keyword
+        self.predicate = predicate if predicate is not None else ''
+        self.steps = steps
 
     def connect_to_parent(self, steps=[], line_number=0):
         self.steps = []
         self.line_number = line_number
 
-#  TODO  escape the sample regices already!
-#  and the default code should be 'print <arg_names, ... >'
-
         mpt = self.my_parent_type()
         try:
             for step in steps[::-1]:
                 if isinstance(step, mpt):
-                    step.steps.append(self)  # TODO  squeek if can't find parent
+                    step.steps.append(self)
                     self.parent = step
                     break
         except TypeError:
-            self.enforce(False, 'Only one Feature per file')  # CONSIDER  prevent it don't trap it!!!
+            self.enforce(False, 'Only one Feature per file')
 
         steps.append(self)
         return self
@@ -148,7 +97,7 @@ class Morelia(INode):
         ''' Get number of rows. '''
         return sum([step.count_dimension() for step in self.steps])
 
-    def count_dimension(self):  # CONSIDER  beautify this crud!
+    def count_dimension(self):
         return 0
 
     def validate_predicate(self):
@@ -177,87 +126,30 @@ class Morelia(INode):
     def reconstruction(self):
         predicate = to_unicode(self.predicate)
         recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
-        if recon[-1] != u'\n':
-            recon += u'\n'
+        recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
-    def get_real_reconstruction(self, suite, macher):
+    def get_real_reconstruction(self):
         return self.reconstruction() + '\n'
 
     def get_filename(self):
         node = self
 
         while node:
-            if not node.parent and hasattr(node, 'filename'):
-                return node.filename
+            if not node.parent:
+                try:
+                    return node.filename
+                except AttributeError:
+                    pass
             node = node.parent
 
         return None
 
 
-class LabeledNode(object):
-
-    def __init__(self, *args, **kwargs):
-        super(LabeledNode, self).__init__(*args, **kwargs)
-        self._labels = []
-
-    def add_labels(self, tags):
-        self._labels.extend(tags)
-
-    def get_labels(self):
-        labels = self._labels
-        if self.parent:
-            labels.extend(self.parent.get_labels())
-        return labels
-
-
-class Feature(LabeledNode, Morelia):
-
-    def _evaluate_child_steps(self, visitor):
-        exceptions = []
-        scenarios_failed = 0
-        scenarios_passed = 0
-        for step in self.steps:
-            try:
-                step.evaluate_steps(visitor)
-            except AssertionError:
-                etype, evalue, etraceback = sys.exc_info()
-                tb = traceback.extract_tb(etraceback)[:-2]
-                fix_exception_encoding(evalue)
-                exceptions.append((
-                    step.reconstruction(),
-                    [to_unicode(line) for line in traceback.format_list(tb)],
-                    [to_unicode(line) for line in traceback.format_exception_only(etype, evalue)]
-                ))
-                scenarios_failed += 1
-            else:
-                scenarios_passed += 1
-        if scenarios_failed:
-            self._format_exception(scenarios_failed, scenarios_passed, exceptions)
-
-    def _format_exception(self, scenarios_failed, scenarios_passed, exceptions):
-        failed_msg = ngettext('{} scenario failed', '{} scenarios failed', scenarios_failed)
-        passed_msg = ngettext('{} scenario passed', '{} scenarios passed', scenarios_passed)
-        msg = u'{}, {}'.format(failed_msg, passed_msg).format(scenarios_failed, scenarios_passed)
-        prefix = '-' * 66
-        for step_line, tb, exc in exceptions:
-            tb_str = u''.join(u'{:4}'.format(line) for line in tb)
-            exc_str = u''.join(u'{:4}'.format(line) for line in exc)
-            msg += u'\n{}{}\n{}{}'.format(prefix, step_line, tb_str, exc_str)
-        assert scenarios_failed == 0, msg
-
-    def test_step(self, suite, matcher):
-        self.enforce(0 < len(self.steps), 'Feature without Scenario(s)')
-
-    def to_html(self):
-        return ['''\n<div><table>
-                <tr style="background-color: #aaffbb;" width="100%%">
-                <td align="right" valign="top" width="100"><em>%s</em>:</td>
-                <td colspan="101">%s</td>
-                </tr></table></div>''' % (self.keyword, _clean_html(self.predicate)), '']
+class Feature(Morelia):
 
     def prepend_steps(self, scenario):
-        background = scenario.parent.steps[0]
+        background = self.steps[0]
         try:
             background.prepend_steps(scenario)
         except AttributeError:
@@ -267,73 +159,27 @@ class Feature(LabeledNode, Morelia):
         predicate = to_unicode(self.predicate)
         predicate = predicate.replace('\n', '\n    ')
         recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
-        if recon[-1] != u'\n':
-            recon += u'\n'
+        recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
 
-class Scenario(LabeledNode, Morelia):
+class Scenario(Morelia):
 
     def my_parent_type(self):
         return Feature
 
-    def evaluate_steps(self, visitor):
-        if self.parent:
-            self.parent.prepend_steps(self)
-        step_schedule = visitor.step_schedule(self)  # TODO  test this permuter directly (and rename it already)
-
-        for step_indices in step_schedule:   # TODO  think of a way to TDD this C-:
-            schedule = visitor.permute_schedule(self)
-
-            for indices in schedule:
-                self.row_indices = indices
-                self.evaluate_test_case(visitor, step_indices)  # note this works on reports too!
-
-    def evaluate_test_case(self, visitor, step_indices):  # note this permutes reports too!
+    def accept(self, visitor):
+        self.parent.prepend_steps(self)
         self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')
+        schedule = visitor.permute_schedule(self)
 
-        visitor.before_scenario(self)
-        try:
-            self.result = visitor.visit(self)
+        for indices in schedule:
+            self.row_indices = indices
+            super(Scenario, self).accept(visitor)
 
-            for idx, step in enumerate(self.steps):
-                if idx in step_indices:
-                    step.evaluate_steps(visitor)
-        finally:
-            visitor.after_scenario(self)
-
-    def permute_schedule(self):  # TODO  rename to permute_row_schedule
+    def permute_schedule(self):
         dims = self.count_Row_dimensions()
         return _permute_indices(dims)
-
-    def step_schedule(self):  # TODO  rename to permute_step_schedule !
-        sched = []
-        pre_slug = []
-
-        #  TODO   deal with steps w/o whens
-
-        for idx, s in enumerate(self.steps):
-            if s.__class__ == When:
-                break
-            else:
-                pre_slug.append(idx)
-
-        for idx, s in enumerate(self.steps):
-            if s.__class__ == When:
-                slug = pre_slug[:]
-                slug.append(idx)
-
-                for idx in range(idx + 1, len(self.steps)):
-                    s = self.steps[idx]
-                    if s.__class__ == When:
-                        break
-                    slug.append(idx)
-
-                sched.append(slug)
-
-        if sched == []:
-            return [pre_slug]
-        return sched
 
     def count_Row_dimensions(self):
         return [step.count_dimensions() for step in self.steps]
@@ -341,21 +187,17 @@ class Scenario(LabeledNode, Morelia):
     def reconstruction(self):
         return '\n' + self.keyword + ': ' + self.predicate
 
-    def to_html(self):
-        return ['''\n<div><table width="100%%">
-                <tr style="background-color: #cdffb8;">
-                <td align="right" valign="top" width="100"><em>%s</em>:</td>
-                <td colspan="101">%s</td></tr>''' % (self.keyword, _clean_html(self.predicate)),
-                '</table></div>']
-
 
 class Background(Morelia):
 
     def my_parent_type(self):
         return Feature
 
-    def _evaluate_child_steps(self, visitor):
-        pass
+    def accept(self, visitor):
+        try:
+            visitor.visit(self)
+        finally:
+            visitor.after_visit(self)
 
     def prepend_steps(self, scenario):
         try:
@@ -380,13 +222,17 @@ class Step(Morelia):
     def prefix(self):
         return '  '
 
-    def is_executable(self):
-        return True
-
     def my_parent_type(self):
         return (Scenario, Background)
 
-    def find_step(self, suite, matcher):
+    def find_step(self, matcher):
+        """Find method matching step.
+
+        :param IStepMatcher matcher: object matching methods by given predicate
+        :returns: (method, args, kwargs) tuple
+        :rtype: tuple
+        :raises MissingStepError: if method maching step not found
+        """
         predicate = self.predicate
         augmented_predicate = self._augment_predicate()
         method, args, kwargs = matcher.find(predicate, augmented_predicate)
@@ -396,14 +242,13 @@ class Step(Morelia):
         suggest, method_name, docstring = matcher.suggest(predicate)
         raise MissingStepError(predicate, suggest, method_name, docstring)
 
-    def get_real_reconstruction(self, suite, matcher):
+    def get_real_reconstruction(self):
         predicate = to_unicode(self._augment_predicate())
         recon = u'    %s %s' % (self.keyword, predicate)
-        if recon[-1] != u'\n':
-            recon += u'\n'
+        recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
-    def _augment_predicate(self):  # CONSIDER  unsucktacularize me pleeeeeeze
+    def _augment_predicate(self):
         if self.parent is None:
             return self.predicate
         dims = self.parent.count_Row_dimensions()
@@ -430,60 +275,27 @@ class Step(Morelia):
 
         return self.copy
 
-    def evaluate(self, suite, matcher):
-        method, args, kwargs = self.find_step(suite, matcher)
-        spec = inspect.getargspec(method)
-        if '_labels' in spec.args or spec.keywords:
-            kwargs['_labels'] = self.parent.get_labels()
-        if '_text' in spec.args or spec.keywords:
-            kwargs['_text'] = self.payload
-        method(*args, **kwargs)
-
-    def test_step(self, suite, matcher):
-        try:
-            self.evaluate(suite, matcher)
-        except MissingStepError as exc:
-            message = self.format_fault(exc.suggest)
-            exc.args = (message,)
-            raise
-        except Exception as exc:
-            if len(exc.args):
-                message = exc.args[0]
-                message = self.format_fault(message)
-                exc.args = (message,) + exc.args[1:]
-            raise
-
     def replace_replitron(self, x, q, row_indices, table, title, replitron):
         if title != replitron:
             return
         at = row_indices[x] + 1
 
-        assert at < len(table), 'CONSIDER this should never happen'
-
-        #  CONSIDER  we hit this too many times - hit once and stash the result
-        #  CONSIDER  better diagnostics when we miss these
+        assert at < len(table), 'this should never happen'
 
         stick = table[at].harvest()
-        found = stick[q]  # CONSIDER  this array overrun is what you get when your table is ragged
-        # CONSIDER  only if it's not nothing?
-        found = found.replace('\n', '\\n')  # CONSIDER  crack the multi-line argument bug, and take this hack out!
+        found = stick[q]
+        found = found.replace('\n', '\\n')
         self.copy = self.copy.replace('<%s>' % replitron, found)
 
-        # CONSIDER  mix replitrons and matchers!
 
-    def to_html(self):
-        return '\n<tr><td align="right" valign="top"><em>' + self.keyword + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
-
-
-class Given(Step):  # CONSIDER  distinguish these by fault signatures!
+class Given(Step):
 
     pass
 
 
-class When(Step):  # TODO  cycle these against the Scenario
+class When(Step):
 
-    def to_html(self):
-        return '\n<tr style="background-color: #cdffb8; background: url(http://www.zeroplayer.com/images/stuff/aqua_gradient.png) no-repeat; background-size: 100%;"><td align="right" valign="top"><em>' + self.keyword + '</em></td><td colspan="101">' + _clean_html(self.predicate) + '</td></tr>', ''
+    pass
 
 
 class Then(Step):
@@ -500,8 +312,6 @@ class But(And):
 
     pass
 
-#  CONSIDER  how to validate that every row you think you wrote actually ran?
-
 
 class Row(Morelia):
 
@@ -515,35 +325,16 @@ class Row(Morelia):
     def prefix(self):
         return ' ' * 8
 
-    def reconstruction(self):  # TODO  strip the reconstruction at error time
+    def reconstruction(self):
         recon = self.prefix() + '| ' + self.predicate
-        if recon[-1] != '\n':
-            recon += '\n'
+        recon += '\n' if recon[-1] != '\n' else ''
         return recon
-
-    def to_html(self):
-        html = '\n<tr><td></td>'
-        idx = self.parent.steps.index(self)
-        em = 'span'
-        if idx == 0:
-            color = 'silver'
-            em = 'em'
-        elif ((2 + idx) / 3) % 2 == 0:
-            color = '#eeffff'
-        else:
-            color = '#ffffee'
-
-        for col in self.harvest():
-            html += '<td style="background-color: %s;"><%s>' % (color, em) + _clean_html(col) + '</%s></td>' % em
-
-        html += '<td>&#160;</td></tr>'  # CONSIDER  the table needn't stretch out so!
-        return html, ''
 
     def count_dimension(self):
         if self is self.parent.steps[0]:
             # header row
             return 0
-        return 1  # TODO  raise an error (if the table has one row!)
+        return 1
 
     def harvest(self):
         row = re.split(r' \|', re.sub(r'\|$', '', self.predicate))
@@ -558,9 +349,6 @@ class Examples(Morelia):
 
     def my_parent_type(self):
         return Scenario
-
-#  TODO  sample data with "post-it haiku"
-#  CONSIDER  trailing comments
 
 
 class Comment(Morelia):
@@ -577,15 +365,11 @@ class Comment(Morelia):
 
     def reconstruction(self):
         recon = '    # ' + self.predicate
-        if recon[-1] != '\n':
-            recon += '\n'
+        recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
-    def to_html(self):
-        return '\n# <em>' + _clean_html(self.predicate) + '</em><br/>', ''
 
-
-def _special_range(n):  # CONSIDER  better name
+def _special_range(n):
     return moves.range(n) if n else [0]
 
 
@@ -601,7 +385,3 @@ def _imap(*iterables):
     while True:
         args = [next(i) for i in iterables]
         yield _special_range(*args)
-
-
-def _clean_html(string):
-    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')

@@ -310,7 +310,7 @@ class IStepMatcher(object):
     def add_matcher(self, matcher):
         """ Add new matcher at end of CoR
 
-        :param matcher: matcher to add
+        :param IStepMatcher matcher: matcher to add
         :returns: self
         """
         if self._next is None:
@@ -341,7 +341,6 @@ class IStepMatcher(object):
         """
         pass  # pragma: nocover
 
-    @abstractmethod
     def suggest(self, predicate):
         """ Suggest method definition.
 
@@ -351,7 +350,15 @@ class IStepMatcher(object):
         :returns: (suggested method definition, suggested method name, suggested docstring)
         :rtype: (str, str, str)
         """
-        pass  # pragma: nocover
+        docstring, extra_arguments = self._suggest_doc_string(predicate)
+        method_name = self.slugify(predicate)
+        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
+            'method_name': method_name,
+            'args': extra_arguments,
+            'docstring': docstring,
+            'predicate': predicate.replace("'", "\\'"),
+        }
+        return suggest, method_name, docstring
 
     def _suggest_doc_string(self, predicate):
         predicate = predicate.replace("'", r"\'").replace('\n', r'\n')
@@ -468,7 +475,7 @@ class RegexpStepMatcher(IStepMatcher):
             if not doc:
                 continue
             doc = to_unicode(doc)
-            doc = re.compile('^' + doc + '$')  # CONSIDER deal with users who put in the ^$
+            doc = re.compile('^' + doc + '$')
             m = doc.match(augmented_predicate)
 
             if m:
@@ -479,19 +486,6 @@ class RegexpStepMatcher(IStepMatcher):
                     args = ()
                 return method, args, kwargs
         return None, (), {}
-
-    def suggest(self, predicate):
-        ''' See :py:meth:`IStepMatcher.suggest` '''
-
-        docstring, extra_arguments = self._suggest_doc_string(predicate)
-        method_name = self.slugify(predicate)
-        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
-            'method_name': method_name,
-            'args': extra_arguments,
-            'docstring': docstring,
-            'predicate': predicate.replace("'", "\\'"),
-        }
-        return suggest, method_name, docstring
 
 
 class ParseStepMatcher(IStepMatcher):
@@ -512,19 +506,6 @@ class ParseStepMatcher(IStepMatcher):
                 kwargs = match.named
                 return method, tuple(args), kwargs
         return None, (), {}
-
-    def suggest(self, predicate):
-        ''' See :py:meth:`IStepMatcher.suggest` '''
-
-        docstring, extra_arguments = self._suggest_doc_string(predicate)
-        method_name = self.slugify(predicate)
-        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
-            'method_name': method_name,
-            'args': extra_arguments,
-            'docstring': docstring,
-            'predicate': predicate.replace("'", "\\'"),
-        }
-        return suggest, method_name, docstring
 
     def replace_placeholders(self, predicate, arguments):
         arguments = iter(arguments)

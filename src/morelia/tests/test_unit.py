@@ -60,7 +60,7 @@ class StepFindStepTestCase(TestCase):
         # Act
         matcher = Mock()
         matcher.find.return_value = (sentinel.method, [], {})
-        result, args, kwargs = obj.find_step(sentinel.suite, matcher)
+        result, args, kwargs = obj.find_step(matcher)
         # Assert
         self.assertEqual(result, sentinel.method)
 
@@ -71,7 +71,7 @@ class StepFindStepTestCase(TestCase):
         matcher = Mock()
         matcher.find.return_value = (None, [], {})
         matcher.suggest.return_value = ('suggest', 'method_name', 'docstring')
-        self.assertRaises(MissingStepError, obj.find_step, sentinel.suite, matcher)
+        self.assertRaises(MissingStepError, obj.find_step, matcher)
 
 
 @tags(['unit'])

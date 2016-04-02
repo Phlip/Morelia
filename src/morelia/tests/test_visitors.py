@@ -4,6 +4,7 @@ from mock import Mock, sentinel, ANY
 
 from morelia.decorators import tags
 from morelia.exceptions import MissingStepError
+from morelia.grammar import Step
 from morelia.visitors import StepMatcherVisitor, TestVisitor
 
 
@@ -19,7 +20,7 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Act
         obj.visit(node)
         # Assert
-        node.find_step.assert_called_once_with(sentinel.suite, sentinel.matcher)
+        node.find_step.assert_called_once_with(sentinel.matcher)
 
     def test_should_not_find_step(self):
         """ Scenario: step not found """
@@ -32,7 +33,7 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Act
         obj.visit(node)
         # Assert
-        node.find_step.assert_called_once_with(sentinel.suite, sentinel.matcher)
+        node.find_step.assert_called_once_with(sentinel.matcher)
         self.assertTrue(sentinel.docstring in obj._not_matched)
 
     def test_should_not_find_step_by_method_name_matcher(self):
@@ -46,13 +47,13 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Act
         obj.visit(node)
         # Assert
-        node.find_step.assert_called_once_with(sentinel.suite, sentinel.matcher)
+        node.find_step.assert_called_once_with(sentinel.matcher)
         self.assertTrue(sentinel.method_name in obj._not_matched)
 
 
 @tags(['unit'])
-class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
-    """ Test :py:meth:`StepMatcherVisitor.after_feature`. """
+class StepMatcherVisitorPostVisitTestCase(unittest.TestCase):
+    """ Test :py:meth:`StepMatcherVisitor.after_visit`. """
 
     def test_should_fail_with_suggest(self):
         """ Scenario: fail with suggset """
@@ -61,7 +62,7 @@ class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
         obj = StepMatcherVisitor(suite, sentinel.matcher)
         obj._not_matched = OrderedDict([('docstring', 'suggest string')])
         # Act
-        obj.after_feature(sentinel.node)
+        obj.after_visit(sentinel.node)
         # Assert
         suite.fail.assert_called_once_with(u'Cannot match steps:\n\nsuggest string')
 
@@ -72,7 +73,7 @@ class StepMatcherVisitorAfterFeatureTestCase(unittest.TestCase):
         obj = StepMatcherVisitor(suite, sentinel.matcher)
         obj._not_matched = OrderedDict()
         # Act
-        obj.after_feature(sentinel.node)
+        obj.after_visit(sentinel.node)
         # Assert
         self.assertFalse(suite.fail.called)
 
@@ -85,10 +86,10 @@ class TestVisitorVisitTestCase(unittest.TestCase):
         """ Scenario: SystemExit """
         # Arrange
         formatter = Mock()
-        node = Mock()
+        node = Mock(Step)
         suite = Mock()
         obj = TestVisitor(suite, sentinel.matcher, formatter)
-        node.test_step.side_effect = [SystemExit]
+        node.find_step.side_effect = [SystemExit]
         # Act
         # Assert
         self.assertRaises(SystemExit, obj.visit, node)

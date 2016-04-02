@@ -160,6 +160,8 @@ Formatter Classes
 from abc import ABCMeta, abstractmethod
 import sys
 
+from .grammar import Step
+
 colors = {
     'normal': u'\x1b[30m',
     'fail': u'\x1b[31m',
@@ -211,7 +213,7 @@ class PlainTextFormatter(IFormatter):
     def output(self, node, line, status, duration):
         ''' See :py:meth:`IFormatter.output` '''
 
-        if node.is_executable():
+        if isinstance(node, Step):
             status = status.lower()
             text = '%-60s # %-5s %.3fs\n' % (
                 line.strip('\n'),
@@ -231,7 +233,7 @@ class ColorTextFormatter(PlainTextFormatter):
     def output(self, node, line, status, duration):
         ''' See :py:meth:`IFormatter.output` '''
 
-        if node.is_executable():
+        if isinstance(node, Step):
             status = status.lower()
             text = '%s%-60s # %.3fs%s\n' % (
                 colors[status],

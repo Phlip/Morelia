@@ -12,14 +12,51 @@ import re
 import textwrap
 
 
-from .grammar import (AST, Feature, Background, Scenario, Given, When, Then,
+from .formatters import NullFormatter
+from .grammar import (Feature, Background, Scenario, Given, When, Then,
                       And, But, Row, Comment, Examples, Step)
+from .matchers import RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
+from .visitors import TestVisitor, StepMatcherVisitor
 from .i18n import TRANSLATIONS
-from .utils import to_unicode
+from .utils import fix_exception_encoding, to_unicode
 
 
-#  TODO  what happens with blank table items?
-#  ERGO  river is to riparian as pond is to ___?
+class AST(object):
+
+    def __init__(self, steps, test_visitor_class=TestVisitor,
+                 matcher_visitor_class=StepMatcherVisitor):
+        self.steps = steps
+        self._test_visitor_class = test_visitor_class
+        self._matcher_visitor_class = matcher_visitor_class
+
+    def evaluate(self, suite, formatter=None, matchers=None, show_all_missing=True):
+        if matchers is None:
+            matchers = [RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher]
+        matcher = self._create_matchers_chain(suite, matchers)
+        feature = self.steps[0]
+        if show_all_missing:
+            matcher_visitor = self._matcher_visitor_class(suite, matcher)
+            feature.accept(matcher_visitor)
+        if formatter is None:
+            formatter = NullFormatter()
+        test_visitor = self._test_visitor_class(suite, matcher, formatter)
+        try:
+            feature.accept(test_visitor)
+        except SyntaxError as exc:
+            raise
+        except Exception as exc:
+            fix_exception_encoding(exc)
+            raise
+
+    def _create_matchers_chain(self, suite, matcher_classes):
+        root_matcher = None
+        for matcher_class in matcher_classes:
+            matcher = matcher_class(suite)
+            try:
+                root_matcher.add_matcher(matcher)
+            except AttributeError:
+                root_matcher = matcher
+        return root_matcher
 
 
 class Parser:
@@ -51,7 +88,11 @@ class Parser:
 
     def parse_features(self, prose):
         self.parse_feature(prose)
-        return AST(self.steps)
+        ast = AST(self.steps)
+        feature = self.steps[0]
+        assert isinstance(feature, Feature), 'Exactly one Feature perf file'
+        feature.enforce(any(isinstance(step, Scenario) for step in feature.steps), 'Feature without Scenario(s)')
+        return ast
 
     def _parse_line(self, line):
         if self._language_parser.parse(line):
@@ -99,7 +140,7 @@ class Parser:
 
     def _anneal_last_broken_line(self, line):
         if self.steps == []:
-            return False  # CONSIDER  no need me
+            return False
         last_line = self.last_node.predicate
 
         if re.search(r'\\\s*$', last_line):
@@ -108,10 +149,6 @@ class Parser:
             return True
 
         return False
-
-#  TODO  permit line breakers in comments
-#    | Given a table with one row
-#        \| i \| be \| a \| lonely \| row |  table with only one row, line 1
 
     def _parse_thang(self, line):
         line = line.rstrip()

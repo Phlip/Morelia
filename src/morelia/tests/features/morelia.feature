@@ -4,12 +4,6 @@ Feature: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
-#  ----8<----  these Scenarios document good examples of Morelia abilities  ----
-#        ______products______         #      ______boxes______      #  ERGO  fix a bug in morelia
-# TODO  when we fail while unrolling a table, indicate which line failed
-# TODO  warn when steps are not called
-# ERGO mashup: Pirates & Cheerleaders
-
 Scenario: Add two numbers
   Given I have entered 50 into the calculator
     And I have entered 70 into the calculator
@@ -19,7 +13,7 @@ Scenario: Add two numbers
 Scenario: When we challenge Morelia with a Step with no matching
           entry in your test suite, supply a helpful error message
     Given a feature file with "Given your nose is on fire"
-    When Moralia evaluates the file
+    When Morelia evaluates the file
     Then it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     And the second line contains "your nose is on fire"
 
@@ -27,7 +21,7 @@ Scenario: When we challenge Morelia with a Step with a linefeed in it
           the default example replaces the linefeed with a space
     Given a feature file with "Given no line
                                           feeds"
-    When Moralia evaluates the file
+    When Morelia evaluates the file
     Then it prints a diagnostic containing "    def step_no_line_feeds"
     And the second line contains "no line\nfeeds"
 
@@ -45,7 +39,7 @@ Scenario: when did Bow Wow Wow become classic rock?
         | battery  
         | driven     |  # note the trailing pipe is cosmetic, and required for comments
 
-    When Moralia evaluates this
+    When Morelia evaluates this
     Then "culture" contains ['radio', 'g-string', 'battery', 'driven']
       And the step keyword is Given
 
@@ -86,7 +80,8 @@ Scenario: Raise useful errors with incomplete files
     |  Feature in da      \
          Step zone        | Feature without Scenario(s)
 
-    |  Scenario: Add two numbers                     \
+    |  Feature: Addition                     \
+       Scenario: Add two numbers                     \
         Given I have entered 50 into the calculator  \
           And I have entered 70 into the calculator  \
          When I press add                            \
@@ -99,13 +94,6 @@ Scenario: Raise useful errors with incomplete files
     |  Feature yo         \
          Scenario dude    | Scenario without step(s) - Step, Given, When, Then, And, or #
 
-
-#  TODO  a row may be a member of a step never a scenario or feature
-#  TODO  document that we permit matches across one line!
-
-#  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
-
-# ERGO use "cutensile" somewhere; and "blink hogs"
 
 Scenario: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string

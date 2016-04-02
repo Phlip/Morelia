@@ -16,7 +16,7 @@ class BackgroundTest(TestCase):
         filename = os.path.join(pwd, 'features/background.feature')
         ast = Parser().parse_file(filename)
         self._scenarios_num = sum(1 for s in ast.steps if isinstance(s, Scenario))
-        ast.evaluate(self, show_all_missing=True)
+        ast.evaluate(self)
 
     def step_step_ran_is_number(self, number):
         r'step_ran was "([^"]+)"'

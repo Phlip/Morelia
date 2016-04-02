@@ -31,7 +31,7 @@ class CalculatorTestCase(unittest.TestCase):
         self.calculator.on()
 
     def step_I_enter_a_number_into_the_calculator(self, number):
-        r'I enter "(\d+)" into the calculator'  # match by regexp
+        r'I enter "(.+)" into the calculator'  # match by regexp
         self.calculator.push(int(number))
 
     def step_I_press_add(self):  # matched by method name
@@ -44,7 +44,7 @@ class CalculatorTestCase(unittest.TestCase):
     def test_addition(self):
         """ Addition feature """
         filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
-        run(filename, self)
+        run(filename, self, verbose=True)
 
 
 if __name__ == '__main__':  # pragma: nobranch

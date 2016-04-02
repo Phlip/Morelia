@@ -4,12 +4,6 @@ Właściwość: Morelia Viridis puts the squeeze on your features.
          a test suite, with strings passed into each test case
          as data to evaluate
 
-#  ----8<----  these Scenarios document good examples of Morelia abilities  ----
-#        ______products______         #      ______boxes______      #  ERGO  fix a bug in morelia
-# TODO  when we fail while unrolling a table, indicate which line failed
-# TODO  warn when steps are not called
-# ERGO mashup: Pirates & Cheerleaders
-
 Scenariusz: Add two numbers
   Zakładając, że I have entered 50 into the calculator
     I I have entered 70 into the calculator
@@ -19,7 +13,7 @@ Scenariusz: Add two numbers
 Scenariusz: When we challenge Morelia with a Step with no matching
           entry in your test suite, supply a helpful error message
     Zakładając, że a feature file with "Zakładając, że your nose is on fire"
-    Gdy Moralia evaluates the file
+    Gdy Morelia evaluates the file
     Wtedy it prints a diagnostic containing "    def step_your_nose_is_on_fire"
     I the second line contains "your nose is on fire"
 
@@ -27,7 +21,7 @@ Scenariusz: When we challenge Morelia with a Step with a linefeed in it
           the default example replaces the linefeed with a space
     Zakładając, że a feature file with "Zakładając, że no line
                                           feeds"
-    Gdy Moralia evaluates the file
+    Gdy Morelia evaluates the file
     Wtedy it prints a diagnostic containing "    def step_no_line_feeds"
     I the second line contains "no line\nfeeds"
 
@@ -45,7 +39,7 @@ Scenariusz: when did Bow Wow Wow become classic rock?
         | battery  
         | driven     |  # note the trailing pipe is cosmetic, and required for comments
 
-    Gdy Moralia evaluates this
+    Gdy Morelia evaluates this
     Wtedy "culture" contains ['radio', 'g-string', 'battery', 'driven']
       I the step keyword is Zakładając, że
 
@@ -86,7 +80,8 @@ Scenariusz: Raise useful errors with incomplete files
     |  Właściwość in da      \
          Step zone        | Feature without Scenario(s)
 
-    |  Scenariusz: Add two numbers                     \
+    |  Właściwość: Add two numbers                     \
+       Scenariusz: Add two numbers                     \
         Zakładając, że I have entered 50 into the calculator  \
           I I have entered 70 into the calculator  \
          Gdy I press add                            \
@@ -99,13 +94,6 @@ Scenariusz: Raise useful errors with incomplete files
     |  Właściwość yo         \
          Scenariusz dude    | Scenario without step(s) - Step, Given, When, Then, And, or #
 
-
-#  TODO  a row may be a member of a step never a scenario or feature
-#  TODO  document that we permit matches across one line!
-
-#  ----8<----  these utilitarian Scenarios don't document anything TODO move them inside unit land  ----
-
-# ERGO use "cutensile" somewhere; and "blink hogs"
 
 Scenariusz: Match prose steps to Python steps by name
     Step: evaluate_step_by_doc_string

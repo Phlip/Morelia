@@ -294,52 +294,6 @@ Labels allows to implement custom logic depending on labels given.
 
    Look at :ref:`labels-matching` for information how to access labels in steps.
 
-When keyword special behaviour
-------------------------------
-
-.. deprecated:: 0.4.0
-   Use `Background` keyword.
-
-The other step keywords (Given, And, Then, etc.) are cosmetic,
-to permit good grammar. They are all aliases for Step.
-The committee may eventually find specific uses for them.
-
-The :ref:`When <steps>` keyword, however, is special. When a Scenario contains more than one When,
-Morelia splits it up into one Scenario for each When block,
-and runs each one separately. So the following two Feature details are equivalent...
-
-.. code-block:: cucumber
-
-    Scenario: Split When Blocks
-        Given some setup
-          And some condition
-         When a first trigger occurs
-         Then something good happens
-    
-    Scenario: Split When Blocks again
-        Given some setup
-          And some condition
-         When another trigger occurs
-         Then something else happens
-
-...and...
-
-.. code-block:: cucumber
-
-    Scenario: Split When Blocks, and again
-        Given some setup
-          And some condition
-    
-         When a first trigger occurs
-         Then something good happens
-    
-         When another trigger occurs
-         Then something else happens
-
-The second version DRYs the setup conditions.
-
-The committee does not yet know what happens if a multi-When Scenario also contains a table, so please don't rely on whatever the current behavior is!
-
 .. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
 
 .. rubric:: Footnotes

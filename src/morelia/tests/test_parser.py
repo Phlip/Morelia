@@ -53,6 +53,17 @@ class LabelParserPopLabelsTestCase(TestCase):
         self.assertEqual(result, ['label1'])
         self.assertEqual(obj._labels, [])
 
+    def test_should_not_return_labels_when_tag_inside_step(self):
+        """ Scenario: no labels when tag inside step"""
+        # Arrange
+        obj = LabelParser()
+        obj.parse('When abc@example.com')
+        # Act
+        result = obj.pop_labels()
+        # Assert
+        self.assertEqual(result, [])
+        self.assertEqual(obj._labels, [])
+
 
 @tags(['unit'])
 class LanguageParserParseTestCase(TestCase):

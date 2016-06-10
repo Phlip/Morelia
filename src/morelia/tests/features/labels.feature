@@ -19,3 +19,10 @@ Feature: Tags support
         Given step with kwargs
         When step without _labels
         Then I should get labels "1,5,6"
+
+    @label7
+    Scenario: Scenario with labels: 1, 7
+        Given step with kwargs
+        And step with "@label8"
+        When step without _labels
+        Then I should get labels "1,7"

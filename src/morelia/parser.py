@@ -59,7 +59,7 @@ class AST(object):
         return root_matcher
 
 
-class Parser:
+class Parser(object):
 
     def __init__(self, language=None):
         self.thangs = [
@@ -175,6 +175,7 @@ class LabelParser(object):
     def __init__(self, labels_pattern='@\w+'):
         self._labels = []
         self._labels_re = re.compile(labels_pattern)
+        self._labels_prefix_re = re.compile('^\s*@')
 
     def parse(self, line):
         """ Parse labels.
@@ -183,10 +184,11 @@ class LabelParser(object):
         :returns: True if line contains labels
         :side effects: sets self._labels to parsed labels
         """
-        matches = self._labels_re.findall(line)
-        if matches:
-            self._labels.extend(matches)
-            return True
+        if self._labels_prefix_re.match(line):
+            matches = self._labels_re.findall(line)
+            if matches:
+                self._labels.extend(matches)
+                return True
         return False
 
     def pop_labels(self):

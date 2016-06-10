@@ -37,3 +37,8 @@ class LabelTest(TestCase):
 
         expected = ['label{}'.format(label) for label in labels.split(',')]
         self.assertEqual(set(expected), set(_labels))
+
+    def step_step_with_label(self, label, _labels):
+        r'step with "([^"]+)"'
+
+        self.assertFalse(label in set(_labels))

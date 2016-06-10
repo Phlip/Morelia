@@ -10,6 +10,14 @@ CHANGED
   * removed ReportVisitor
   * removed branching on multiple When's
 
+Version: 0.6.2 (2016-06-10)
+-------------------------------------------------------------------------------
+
+FIXED
+^^^^^
+
+  * incorrect handling labels inside steps
+
 Version: 0.6.1 (2016-03-29)
 -------------------------------------------------------------------------------
 

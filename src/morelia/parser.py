@@ -37,6 +37,7 @@ class AST(object):
         if show_all_missing:
             matcher_visitor = self._matcher_visitor_class(suite, matcher)
             feature.accept(matcher_visitor)
+            matcher_visitor.report_missing()
         if formatter is None:
             formatter = NullFormatter()
         test_visitor = self._test_visitor_class(suite, matcher, formatter)

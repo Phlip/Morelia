@@ -52,8 +52,8 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
 
 
 @tags(['unit'])
-class StepMatcherVisitorPostVisitTestCase(unittest.TestCase):
-    """ Test :py:meth:`StepMatcherVisitor.after_visit`. """
+class StepMatcherVisitorReportMissingTestCase(unittest.TestCase):
+    """ Test :py:meth:`StepMatcherVisitor.report_missing`. """
 
     def test_should_fail_with_suggest(self):
         """ Scenario: fail with suggset """
@@ -62,7 +62,7 @@ class StepMatcherVisitorPostVisitTestCase(unittest.TestCase):
         obj = StepMatcherVisitor(suite, sentinel.matcher)
         obj._not_matched = OrderedDict([('docstring', 'suggest string')])
         # Act
-        obj.after_visit(sentinel.node)
+        obj.report_missing()
         # Assert
         suite.fail.assert_called_once_with(u'Cannot match steps:\n\nsuggest string')
 
@@ -73,7 +73,7 @@ class StepMatcherVisitorPostVisitTestCase(unittest.TestCase):
         obj = StepMatcherVisitor(suite, sentinel.matcher)
         obj._not_matched = OrderedDict()
         # Act
-        obj.after_visit(sentinel.node)
+        obj.report_missing()
         # Assert
         self.assertFalse(suite.fail.called)
 

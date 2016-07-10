@@ -4,11 +4,20 @@ Version History
 Version: 0.7.0 (Unreleased)
 -------------------------------------------------------------------------------
 
+Version: 0.6.3 (2016-07-10)
+-------------------------------------------------------------------------------
+
 CHANGED
 ^^^^^^^
 
   * removed ReportVisitor
   * removed branching on multiple When's
+
+FIXED
+^^^^^
+
+  * error while reporting missing steps
+
 
 Version: 0.6.2 (2016-06-10)
 -------------------------------------------------------------------------------

@@ -168,6 +168,9 @@ class StepMatcherVisitor(IVisitor):
                 self._not_matched[e.method_name] = e.suggest
 
     def after_visit(self, node):
+        pass
+
+    def report_missing(self):
         suggest = u''.join(self._not_matched.values())
         if suggest:
             diagnostic = u'Cannot match steps:\n\n{}'.format(suggest)

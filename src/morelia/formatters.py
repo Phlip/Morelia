@@ -160,7 +160,7 @@ Formatter Classes
 from abc import ABCMeta, abstractmethod
 import sys
 
-from .grammar import Step
+from .grammar import Step, Feature
 
 colors = {
     'normal': u'\x1b[30m',
@@ -213,6 +213,8 @@ class PlainTextFormatter(IFormatter):
     def output(self, node, line, status, duration):
         ''' See :py:meth:`IFormatter.output` '''
 
+        if isinstance(node, Feature):
+            self._stream.write('\n')
         if isinstance(node, Step):
             status = status.lower()
             text = '%-60s # %-5s %.3fs\n' % (
@@ -233,6 +235,8 @@ class ColorTextFormatter(PlainTextFormatter):
     def output(self, node, line, status, duration):
         ''' See :py:meth:`IFormatter.output` '''
 
+        if isinstance(node, Feature):
+            self._stream.write('\n')
         if isinstance(node, Step):
             status = status.lower()
             text = '%s%-60s # %.3fs%s\n' % (

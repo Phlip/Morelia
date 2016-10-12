@@ -4,7 +4,7 @@ import unittest
 from mock import sentinel, Mock
 
 from morelia.decorators import tags
-from morelia.grammar import Step, Scenario
+from morelia.grammar import Step, Scenario, Feature
 from morelia.formatters import NullFormatter, PlainTextFormatter, ColorTextFormatter
 
 
@@ -87,6 +87,21 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         expected = '%s\n' % line
         self.assertEqual(stream.getvalue(), expected)
 
+    def test_should_output_for_feature(self):
+        """ Scenariusz: format for feature """
+        # Arrange
+        stream = StringIO()
+        obj = PlainTextFormatter(stream)
+        # Act
+        line = 'Feature: some feature'
+        status = 'pass'
+        duration = 0.01
+        node = Mock(Feature)
+        obj.output(node, line, status, duration)
+        # Assert
+        expected = '\n%s\n' % line
+        self.assertEqual(stream.getvalue(), expected)
+
 
 @tags(['unit'])
 class ColorTextFormatterOutputTestCase(unittest.TestCase):
@@ -156,4 +171,19 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         obj.output(node, line, status, duration)
         # Assert
         expected = '%s\n' % line
+        self.assertEqual(stream.getvalue(), expected)
+
+    def test_should_output_for_feature(self):
+        """ Scenariusz: format for feature """
+        # Arrange
+        stream = StringIO()
+        obj = ColorTextFormatter(stream)
+        # Act
+        line = 'Feature: some feature'
+        status = 'pass'
+        duration = 0.01
+        node = Mock(Feature)
+        obj.output(node, line, status, duration)
+        # Assert
+        expected = '\n%s\n' % line
         self.assertEqual(stream.getvalue(), expected)

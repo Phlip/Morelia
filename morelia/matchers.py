@@ -287,11 +287,11 @@ import unicodedata
 
 import parse
 
-from .utils import to_unicode
+from morelia.utils import to_unicode
 
 
 class IStepMatcher(object):
-    """ Matches methods to steps.
+    """Matches methods to steps.
 
     Subclasses should implement at least `match` and `suggest` methods.
     """
@@ -308,7 +308,7 @@ class IStepMatcher(object):
         return [method_name for method_name in dir(self._suite) if match(method_name)]
 
     def add_matcher(self, matcher):
-        """ Add new matcher at end of CoR
+        """Add new matcher at end of CoR.
 
         :param IStepMatcher matcher: matcher to add
         :returns: self
@@ -331,7 +331,7 @@ class IStepMatcher(object):
 
     @abstractmethod
     def match(self, predicate, augmented_predicate, step_methods):
-        """ Match method from suite to given predicate.
+        """Match method from suite to given predicate.
 
         :param str predicate: step predicate
         :param str augmented_predicate: step augmented_predicate
@@ -342,7 +342,7 @@ class IStepMatcher(object):
         pass  # pragma: nocover
 
     def suggest(self, predicate):
-        """ Suggest method definition.
+        """Suggest method definition.
 
         Method is used to suggest methods that should be implemented.
 
@@ -430,12 +430,10 @@ class IStepMatcher(object):
 
 
 class MethodNameStepMatcher(IStepMatcher):
-
-    ''' Matcher that matches steps by method name. '''
+    """Matcher that matches steps by method name."""
 
     def match(self, predicate, augmented_predicate, step_methods):
-        ''' See :py:meth:`IStepMatcher.match` '''
-
+        """See :py:meth:`IStepMatcher.match`."""
         clean = re.sub(r'[^\w]', '_?', predicate)
         pattern = '^step_' + clean + '$'
         regexp = re.compile(pattern)
@@ -446,8 +444,7 @@ class MethodNameStepMatcher(IStepMatcher):
         return None, (), {}
 
     def suggest(self, predicate):
-        ''' See :py:meth:`IStepMatcher.suggest` '''
-
+        """See :py:meth:`IStepMatcher.suggest`."""
         method_name = self.slugify(predicate)
         suggest = u'    def step_%(method_name)s(self):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
             'method_name': method_name,
@@ -463,12 +460,10 @@ class MethodNameStepMatcher(IStepMatcher):
 
 
 class RegexpStepMatcher(IStepMatcher):
-
-    ''' Matcher that matches steps by regexp in docstring. '''
+    """Matcher that matches steps by regexp in docstring."""
 
     def match(self, predicate, augmented_predicate, step_methods):
-        ''' See :py:meth:`IStepMatcher.match` '''
-
+        """See :py:meth:`IStepMatcher.match`."""
         for method_name in step_methods:
             method = self._suite.__getattribute__(method_name)
             doc = method.__doc__
@@ -489,12 +484,10 @@ class RegexpStepMatcher(IStepMatcher):
 
 
 class ParseStepMatcher(IStepMatcher):
-
-    ''' Matcher that matches steps by format-like string in docstring. '''
+    """Matcher that matches steps by format-like string in docstring."""
 
     def match(self, predicate, augmented_predicate, step_methods):
-        ''' See :py:meth:`IStepMatcher.match` '''
-
+        """See :py:meth:`IStepMatcher.match`."""
         for method_name in step_methods:
             method = self._suite.__getattribute__(method_name)
             doc = method.__doc__

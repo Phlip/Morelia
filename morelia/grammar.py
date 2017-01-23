@@ -5,9 +5,9 @@ import re
 
 from six import moves
 
-from .exceptions import MissingStepError
-from .i18n import TRANSLATIONS
-from .utils import to_unicode
+from morelia.exceptions import MissingStepError
+from morelia.i18n import TRANSLATIONS
+from morelia.utils import to_unicode
 
 
 class INode(object):

@@ -12,13 +12,17 @@ import re
 import textwrap
 
 
-from .formatters import NullFormatter
-from .grammar import (Feature, Background, Scenario, Given, When, Then,
-                      And, But, Row, Comment, Examples, Step)
-from .matchers import RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
-from .visitors import TestVisitor, StepMatcherVisitor
-from .i18n import TRANSLATIONS
-from .utils import fix_exception_encoding, to_unicode
+from morelia.formatters import NullFormatter
+from morelia.grammar import (
+    Feature, Background, Scenario, Given, When, Then, And, But, Row, Comment,
+    Examples, Step
+)
+from morelia.matchers import (
+    RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
+)
+from morelia.visitors import TestVisitor, StepMatcherVisitor
+from morelia.i18n import TRANSLATIONS
+from morelia.utils import fix_exception_encoding, to_unicode
 
 
 class AST(object):
@@ -179,7 +183,7 @@ class LabelParser(object):
         self._labels_prefix_re = re.compile('^\s*@')
 
     def parse(self, line):
-        """ Parse labels.
+        """Parse labels.
 
         :param str line: line to parse
         :returns: True if line contains labels
@@ -193,7 +197,7 @@ class LabelParser(object):
         return False
 
     def pop_labels(self):
-        """ Return labels.
+        """Return labels.
 
         :returns: labels
         :side effects: clears current labels
@@ -212,7 +216,7 @@ class LanguageParser(object):
         self._lang_re = re.compile(lang_pattern)
 
     def parse(self, line):
-        """ Parse language directive.
+        """Parse language directive.
 
         :param str line: line to parse
         :returns: True if line contains language directive
@@ -237,7 +241,7 @@ class DocStringParser(object):
         self._payload = []
 
     def parse(self, line):
-        """ Parse docstring payload.
+        """Parse docstring payload.
 
         :param str line: first line to parse
         :returns: True if docstring parsed
@@ -266,7 +270,7 @@ class LineSource(object):
         self._line_number = 0
 
     def get_line(self):
-        """ Return next line.
+        """Return next line.
 
         :returns: next line of text
         """

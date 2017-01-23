@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" BDD-like acceptance test.
+"""BDD-like acceptance test.
 
 This file is made available under the Creative Commons
 CC0 1.0 Universal Public Domain Dedication.
@@ -21,7 +21,7 @@ from calculator import Calculator
 
 
 class CalculatorTestCase(unittest.TestCase):
-    """ Calculator acceptance test case. """
+    """Calculator acceptance test case."""
 
     def setUp(self):
         self.calculator = Calculator()
@@ -42,7 +42,7 @@ class CalculatorTestCase(unittest.TestCase):
         self.assertEqual(int(number), self.calculator.get_result())
 
     def test_addition(self):
-        """ Addition feature """
+        """Addition feature."""
         filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
         run(filename, self, verbose=True)
 

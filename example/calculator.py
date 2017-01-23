@@ -1,4 +1,4 @@
-""" Toy calculator.
+"""Toy calculator.
 
 This file is made available under the Creative Commons
 CC0 1.0 Universal Public Domain Dedication.
@@ -12,15 +12,13 @@ commercial purposes, all without asking permission.
 
 
 class CalculatorNotPoweredError(Exception):
-
-    """ Exception raised when calculator is powered off."""
+    """Exception raised when calculator is powered off."""
 
     pass
 
 
 class Calculator(object):
-
-    """ Calculator. """
+    """Calculator."""
 
     def __init__(self):
         """Initialize calculator in powered off state."""

@@ -4,7 +4,7 @@ import six
 
 
 def to_unicode(text):
-    ''' Try convert to unicode independently on python version. '''
+    """Try convert to unicode independently on python version."""
     try:
         text = text.decode('utf-8')
     except (UnicodeDecodeError, UnicodeEncodeError, AttributeError):
@@ -17,7 +17,7 @@ if six.PY2:
     def fix_exception_encoding(exc):
         if len(exc.args):
             message = exc.args[0]
-            if isinstance(message, unicode):
+            if isinstance(message, unicode):  # noqa
                 exc.args = (message.encode(sys.stderr.encoding or "ascii", "xmlcharrefreplace"),) + exc.args[1:]
 
     def to_docstring(text):

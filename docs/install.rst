@@ -5,9 +5,9 @@ In order to install Morelia, make sure Python is installed. Morelia was tested
 with:
 
     * Python 2.7
-    * Python 3.3
     * Python 3.4
     * Python 3.5
+    * Python 3.6
 
 Using pip
 ---------

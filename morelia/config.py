@@ -21,8 +21,7 @@ def expand_all(path):
 
 
 class Config(object):
-
-    """ Configuration object.
+    """Configuration object.
 
     Configuration is read from ini-style files and environment variables
     prefixed with `MORELIA_`.
@@ -52,13 +51,11 @@ class Config(object):
 
     def load(self):
         """Load configuration."""
-
         self._update_from_file()
         self._update_from_environ()
 
     def _update_from_file(self):
         """Update config on settings from *.ini file."""
-
         config_parser = self._config_parser_class()
         config_parser.read(self._config_files)
         for key in self._items.keys():
@@ -71,7 +68,6 @@ class Config(object):
 
     def _update_from_environ(self):
         """Update config on environment variables."""
-
         for key in self._items.keys():
             try:
                 value = os.environ[self._env_prefix + key.upper()]
@@ -82,14 +78,12 @@ class Config(object):
 
     def get_tags_pattern(self):
         """Return tags pattern."""
-
         tags = self._items.get('tags', '')
         return tags if tags is not None else ''
 
 
 def get_config(_memo={}):
     """Return config object."""
-
     try:
         return _memo['config']
     except KeyError:

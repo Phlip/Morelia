@@ -6,9 +6,9 @@ from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 import time
 
-from .grammar import Feature, Scenario, Step
-from .exceptions import MissingStepError
-from .utils import to_docstring, fix_exception_encoding, to_unicode
+from morelia.grammar import Feature, Scenario, Step
+from morelia.exceptions import MissingStepError
+from morelia.utils import to_docstring, fix_exception_encoding, to_unicode
 
 
 class IVisitor(object):
@@ -32,7 +32,7 @@ def noop():
 
 
 class TestVisitor(IVisitor):
-    """ Visits all steps and run step methods. """
+    """Visits all steps and run step methods."""
 
     def __init__(self, suite, matcher, formatter):
         self._setUp = suite.setUp
@@ -151,7 +151,7 @@ class TestVisitor(IVisitor):
 
 
 class StepMatcherVisitor(IVisitor):
-    """ Visits all steps in order to find missing step methods. """
+    """Visits all steps in order to find missing step methods."""
 
     def __init__(self, suite, matcher):
         self._suite = suite

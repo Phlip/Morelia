@@ -93,7 +93,7 @@ def should_skip(tags_list, pattern):
 
 
 def tags(tags_list, config=None):
-    """ Skip decorated test methods or classes if tags matches.
+    """Skip decorated test methods or classes if tags matches.
 
     Tags are matched to patterns provided by config object.
 

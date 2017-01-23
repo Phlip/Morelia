@@ -1,4 +1,4 @@
-""" TDD-like unit test.
+"""TDD-like unit test.
 
 This file is made available under the Creative Commons
 CC0 1.0 Universal Public Domain Dedication.
@@ -15,13 +15,13 @@ from calculator import Calculator, CalculatorNotPoweredError
 
 
 class CalculatorPushTestCase(unittest.TestCase):
-    """ Test :py:meth:`Calculator.push`. """
+    """Test :py:meth:`Calculator.push`."""
 
     def setUp(self):
         self.calculator = Calculator()
 
     def test_should_add_number_to_stack_if_powered(self):
-        """ Scenario: add number to stack """
+        """Scenario: add number to stack."""
         # Arrange
         self.calculator.on()
         number = 50
@@ -31,12 +31,12 @@ class CalculatorPushTestCase(unittest.TestCase):
         self.assertEqual(self.calculator._stack, [number])
 
     def test_should_raise_exception_if_not_powered(self):
-        """ Scenario: not powered """
+        """Scenario: not powered."""
         # Act & Assert
         self.assertRaises(CalculatorNotPoweredError, self.calculator.push, 50)
 
     def test_should_add_two_numbers_to_stack(self):
-        """ Scenario: add two numbers to stack """
+        """Scenario: add two numbers to stack."""
         # Arrange
         self.calculator.on()
         number1 = 50
@@ -49,13 +49,13 @@ class CalculatorPushTestCase(unittest.TestCase):
 
 
 class CalculatorAddTestCase(unittest.TestCase):
-    """ Test :py:meth:`Calculator.add`. """
+    """Test :py:meth:`Calculator.add`."""
 
     def setUp(self):
         self.calculator = Calculator()
 
     def test_should_add_all_numbers_in_stack_if_powered(self):
-        """ Scenario: add all numbers """
+        """Scenario: add all numbers."""
         # Arrange
         self.calculator.on()
         self.calculator.push(50)
@@ -66,12 +66,12 @@ class CalculatorAddTestCase(unittest.TestCase):
         self.assertEqual(self.calculator.get_result(), 120)
 
     def test_should_raise_exception_if_not_powered(self):
-        """ Scenario: not powered """
+        """Scenario: not powered."""
         # Act & Assert
         self.assertRaises(CalculatorNotPoweredError, self.calculator.add)
 
     def test_should_return_0_if_empty_stack(self):
-        """ Scenario: empty stack """
+        """Scenario: empty stack."""
         # Arrange
         self.calculator.on()
         # Act
@@ -81,13 +81,13 @@ class CalculatorAddTestCase(unittest.TestCase):
 
 
 class CalculatorGetResultTestCase(unittest.TestCase):
-    """ Test :py:meth:`Calculator.get_result`. """
+    """Test :py:meth:`Calculator.get_result`."""
 
     def setUp(self):
         self.calculator = Calculator()
 
     def test_should_return_result(self):
-        """ Scenario: addition result present """
+        """Scenario: addition result present."""
         # Arrange
         self.calculator.on()
         self.calculator.push(50)
@@ -99,7 +99,7 @@ class CalculatorGetResultTestCase(unittest.TestCase):
         self.assertEqual(result, 120)
 
     def test_should_return_last_entered_value_if_no_operation_run(self):
-        """ Scenario: last result """
+        """Scenario: last result."""
         # Arrange
         self.calculator.on()
         self.calculator.push(50)
@@ -110,19 +110,19 @@ class CalculatorGetResultTestCase(unittest.TestCase):
         self.assertEqual(result, 70)
 
     def test_should_raise_exception_if_not_powered(self):
-        """ Scenario: not powered """
+        """Scenario: not powered."""
         # Act & Assert
         self.assertRaises(CalculatorNotPoweredError, self.calculator.get_result)
 
 
 class CalculatorOffTestCase(unittest.TestCase):
-    """ Test :py:meth:`Calculator.off`. """
+    """Test :py:meth:`Calculator.off`."""
 
     def setUp(self):
         self.calculator = Calculator()
 
     def test_should_raise_exception_if_number_entered_after_power_off(self):
-        """ Scenario: power off """
+        """Scenario: power off."""
         # Arrange
         self.calculator.on()
         self.calculator.push(50)
@@ -131,7 +131,7 @@ class CalculatorOffTestCase(unittest.TestCase):
         self.assertRaises(CalculatorNotPoweredError, self.calculator.push, 70)
 
     def test_should_have_empty_stack_after_on_push_off_on_cycle(self):
-        """ Scenario: on - push - off - on """
+        """Scenario: on - push - off - on."""
         # Act
         self.calculator.on()
         self.calculator.push(50)

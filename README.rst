@@ -30,9 +30,9 @@ Morelia
     :target: http://morelia.readthedocs.org
     :alt: Documetation
 
-.. image:: https://img.shields.io/gemnasium/kidosoft/Morelia.svg
-    :target: https://gemnasium.com/kidosoft/Morelia/
-    :alt: Dependencies
+.. image:: https://pyup.io/repos/github/kidosoft/morelia/shield.svg
+    :target: https://pyup.io/repos/github/kidosoft/morelia/
+    :alt: Updates
 
 Morelia is a Python Behavior Driven Development (BDD) library.
 

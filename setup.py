@@ -1,28 +1,39 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from setuptools import setup, find_packages
 
-with open('README.rst') as file:
-    long_description = file.read()
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+requirements = [
+    # TODO: put package requirements here
+    'mock',
+    'parse',
+    'six',
+]
 
 setup(
     name='Morelia',
     version='0.6.5',
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
-    long_description=long_description,
-    url='http://morelia.readthedocs.org/',
-    author='Phlip, Jakub STOLARSKI (Dryobates)',
-    author_email='phlip2005@gmail.com, jakub.stolarski@kidosoft.pl',
-    license='MIT',
+    long_description=readme,
+    author='Morelia developers',
+    author_email='jakub.stolarski@gmail.com',
+    url='https://github.com/kidosoft/morelia',
+    packages=find_packages(exclude=['tests']),
+    package_dir={'morelia':
+                 'morelia'},
+    include_package_data=True,
+    install_requires=requirements,
+    license='MIT license',
+    zip_safe=False,
     keywords='test bdd behavior',
-    packages=find_packages('src'),  # , exclude=['example*', '*.tests', 'tests.*', '*.tests.*', 'tests']),
-    package_dir={'': 'src'},
-    install_requires=[
-        'six',
-        'parse',
-    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Testing',
         'Programming Language :: Python',
@@ -32,6 +43,11 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
-    test_suite="morelia.tests",
+    extras_require={
+        # eg:
+        #   'rst': ['docutils>=0.11'],
+        ':python_version=="2.7"': ['mock'],
+    },
 )

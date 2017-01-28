@@ -44,11 +44,14 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   install
+   installation
    usage
    gherkin
    writers
    modules
+   contributing
+   authors
+   history
 
 Indices and tables
 ==================

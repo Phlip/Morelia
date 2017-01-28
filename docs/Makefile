@@ -85,17 +85,17 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/Morelia.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/morelia.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/Morelia.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/morelia.qhc"
 
 devhelp:
 	$(SPHINXBUILD) -b devhelp $(ALLSPHINXOPTS) $(BUILDDIR)/devhelp
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/Morelia"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/Morelia"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/morelia"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/morelia"
 	@echo "# devhelp"
 
 epub:

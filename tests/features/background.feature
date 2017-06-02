@@ -1,4 +1,5 @@
 Feature: Background support
+
     Background:
         Given step_ran was "1"
         And alt_step_ran was "0"

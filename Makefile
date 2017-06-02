@@ -52,12 +52,16 @@ install: ## install the package to the active Python's site-packages
 	pip install -U dist/*.whl
 
 test: ## run tests quickly with the default Python
-	cd tests && python -m coverage run -p --source=morelia --branch -m unittest discover .
+	cd tests && python -m coverage run -p --source=morelia,. --branch -m unittest discover .
 
 coverage:  ## prepare coverage report
 	python -m coverage combine tests
 	python -m coverage report -m --skip-covered
 	python -m coverage xml
+
+htmlcov:  ## prepare coverage report
+	python -m coverage combine tests
+	python -m coverage html
 
 lint: ## run static analysis with flake8
 	flake8 morelia tests

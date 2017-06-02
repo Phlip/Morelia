@@ -4,8 +4,8 @@
 import os
 from unittest import TestCase
 
+from morelia import run
 from morelia.decorators import tags
-from morelia.parser import Parser
 
 pwd = os.path.dirname(os.path.realpath(__file__))
 
@@ -30,14 +30,12 @@ class SetUpTearDownTest(TestCase):
     def test_setup_teardown(self):
         """Check for multiple setUp/tearDown calls."""
         filename = os.path.join(pwd, 'features/setupteardown.feature')
-        ast = Parser().parse_file(filename)
-        ast.evaluate(self, show_all_missing=True)
+        run(filename, self)
 
     def test_many_test_methods(self):
         """Check setUp/tearDown when many tests in one TestCase."""
         filename = os.path.join(pwd, 'features/setupteardown.feature')
-        ast = Parser().parse_file(filename)
-        ast.evaluate(self, show_all_missing=True)
+        run(filename, self)
 
     def test_not_morelia_test(self):
         """Check if influcence on non morelia tests."""
@@ -68,8 +66,7 @@ class EncodingErrorInTraceback(TestCase):
 
     def test_should_report_on_all_failing_scenarios(self):
         filename = os.path.join(pwd, 'features/encoding_error_in_regression.feature')
-        ast = Parser().parse_file(filename)
-        self.assertRaisesRegexp(AssertionError, 'Given Zażółć gęślą jaźń', ast.evaluate, self)
+        self.assertRaisesRegexp(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
 
     def step_failing(self):
         r'Zażółć gęślą jaźń'

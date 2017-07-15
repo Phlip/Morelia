@@ -148,18 +148,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(step.keyword, self.scenario_keyword)
         self.assertEqual(step.predicate, 'starz upon tharz bucks')
 
-    # def test_feature_with_lone_comment(self):
-    #     input = '''Feature: The Sacred White Llama of the Inca\r
-    #                #  I are a comment'''
-    #     steps = Parser().parse_feature(input)
-    #     assert steps[0].__class__ == Feature
-
-    #     step = steps[1]
-    #     assert step.__class__ == Comment
-    #     self.assertEqual(step.keyword, 'Comment')
-    #     self.assertEqual(step.predicate, 'I are a comment')
-
-    def test_feature_with_lone_comment(self):
+    def test_file_without_feature_defined(self):
         input = 'i be a newbie feature'
         language = self._get_language()
         p = Parser(language=language)

@@ -1,28 +1,17 @@
-@label1
-Feature: Tags support
+@feature_label
+Feature: Labels support
 
-    @label2
-    Scenario: Scenario with labels: 1, 2
-        Given step with _labels
-        When step without _labels
-        Then I should get labels "1,2"
+    @scenario_label
+    Scenario: Scenario with labels
+        When step which accepts _labels variable is executed
+        Then it will get labels "feature_label,scenario_label"
 
-    @label3 @label4
-    Scenario: Scenario with labels: 1, 3, 4
-        Given step with kwargs
-        When step without _labels
-        Then I should get labels "1,3,4"
+    @label1 @label2
+    Scenario: Scenario with multiply labels
+        When step which accepts _labels variable is executed
+        Then it will get labels "feature_label,label1,label2"
 
-    @label5
-    @label6
-    Scenario: Scenario with labels: 1, 5, 6
-        Given step with kwargs
-        When step without _labels
-        Then I should get labels "1,5,6"
-
-    @label7
-    Scenario: Scenario with labels: 1, 7
-        Given step with kwargs
-        And step with "@label8"
-        When step without _labels
-        Then I should get labels "1,7"
+    @scenario_label
+    Scenario: Scenario with steps that do not accept _labels
+        When step which does not accepts _labels variable is executed
+        Then it will not get any labels

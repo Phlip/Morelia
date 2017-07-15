@@ -18,10 +18,10 @@ class CommentsTest(TestCase):
     def step_scenario_will_pass(self):
         assert True
 
-    def step_I_have_some_comment_after_step_on_separate_line(self):
+    def step_I_put_some_comment_after_step_on_separate_line(self):
         pass
 
-    def step_I_have_table_with_comment_between_rows(self):
+    def step_I_put_comment_between_rows_of_table(self):
         pass
 
     def step_I_won_t_have_comment_in_interpolated_data_from_table(self, data):

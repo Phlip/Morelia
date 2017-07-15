@@ -6,12 +6,12 @@ Feature: Comments support
      # is considered as a comment
 
     Scenario: Comment can be put on separate line after any step
-        Given I have some comment after step on separate line
+        When I put some comment after step on separate line
         # like this one
         Then scenario will pass
 
     Scenario: Comment can be put between table rows
-        Given I have table with comment between rows
+        When I put comment between rows of table
             | data      |
             # this is a comment between table rows
             | some data |

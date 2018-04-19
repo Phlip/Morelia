@@ -26,12 +26,12 @@ Morelia
     :target: https://coveralls.io/r/kidosoft/Morelia
     :alt: Coverage
 
-.. image:: http://readthedocs.org/projects/morelia/badge/?format=svg
-    :target: http://morelia.readthedocs.org
-    :alt: Documetation
+.. image:: https://readthedocs.org/projects/morelia/badge/?format=svg
+    :target: https://morelia.readthedocs.io
+    :alt: Documentation
 
-.. image:: https://pyup.io/repos/github/kidosoft/morelia/shield.svg
-    :target: https://pyup.io/repos/github/kidosoft/morelia/
+.. image:: https://pyup.io/repos/github/kidosoft/Morelia/shield.svg
+    :target: https://pyup.io/repos/github/kidosoft/Morelia/
     :alt: Updates
 
 Morelia is a Python Behavior Driven Development (BDD) library.
@@ -60,7 +60,7 @@ Installation
 
 .. code-block:: console
 
-    pip install Morelia
+    pip install morelia
 
 Quick usage guide
 =================
@@ -229,3 +229,11 @@ Full documentation is available at http://morelia.readthedocs.org/en/latest/inde
 .. image:: http://zeroplayer.com/images/stuff/sneakySnake.jpg
 .. _the cheeseshop: http://pypi.python.org/pypi/Morelia/
 .. _GitHub: http://github.com/kidosoft/Morelia/
+
+Credits
+---------
+
+This package was created with Cookiecutter_ and the `kidosoft/cookiecutter-pypackage`_ project template.
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`kidosoft/cookiecutter-pypackage`: https://github.com/kidosoft/cookiecutter-pypackage

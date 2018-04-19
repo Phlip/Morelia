@@ -78,7 +78,7 @@ Format-like strings
 ^^^^^^^^^^^^^^^^^^^
 
 Method ``step_the_result_should_be_on_the_screen`` from example is matched
-by :py:class:`format-like strings <string.Formatter>` as it's docstring
+by :ref:`format-like strings <python:formatspec>` as it's docstring
 
 .. code-block:: python
 

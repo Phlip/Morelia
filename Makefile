@@ -59,6 +59,10 @@ coverage:  ## prepare coverage report
 	python -m coverage report -m --skip-covered
 	python -m coverage xml
 
+htmlcov:  ## prepare coverage report
+	python -m coverage combine tests
+	python -m coverage html
+
 lint: ## run static analysis with flake8
 	flake8 morelia tests
 

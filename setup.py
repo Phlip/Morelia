@@ -18,7 +18,7 @@ setup(
     version='0.6.5',
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
     long_description=readme,
-    author='Morelia developers',
+    author='Morelia authors',
     author_email='jakub.stolarski@gmail.com',
     url='https://github.com/kidosoft/morelia',
     packages=find_packages(exclude=['tests']),

@@ -2,8 +2,8 @@
 import os
 from unittest import TestCase
 
+from morelia import run
 from morelia.decorators import tags
-from morelia.parser import Parser
 
 pwd = os.path.dirname(os.path.realpath(__file__))
 
@@ -13,21 +13,17 @@ class CommentsTest(TestCase):
 
     def test_comments(self):
         filename = os.path.join(pwd, 'features/comments.feature')
-        ast = Parser().parse_file(filename)
-        ast.evaluate(self, show_all_missing=True)
-
-    def step_I_have_some_comment_after_step_without_table(self):
-        r'I have some comment after step without table'
-
-        pass
-
-    def step_I_have_interpolated_data_from_table(self, data):
-        r'I have interpolated (.+) from table'
-
-        pass
-
-    def step_I_execute_this_scenario(self):
-        pass
+        run(filename, self)
 
     def step_scenario_will_pass(self):
         assert True
+
+    def step_I_put_some_comment_after_step_on_separate_line(self):
+        pass
+
+    def step_I_put_comment_between_rows_of_table(self):
+        pass
+
+    def step_I_won_t_have_comment_in_interpolated_data_from_table(self, data):
+        r'I won\'t have comment in interpolated (.+) from table'
+        self.assertNotIn('#', data)

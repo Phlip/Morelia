@@ -8,7 +8,7 @@ Morelia
 
 .. image:: https://img.shields.io/pypi/pyversions/Morelia.svg
     :target: https://pypi.python.org/pypi/Morelia/
-    :alt: Python Versions
+    :alt: Python versions
 
 .. image:: https://img.shields.io/pypi/v/Morelia.svg
     :target: https://pypi.python.org/pypi/Morelia/
@@ -18,11 +18,11 @@ Morelia
     :target: https://pypi.python.org/pypi/Morelia/
     :alt: License
 
-.. image:: https://img.shields.io/travis/kidosoft/Morelia.svg
+.. image:: https://travis-ci.org/kidosoft/Morelia.svg?branch=master
     :target: https://travis-ci.org/kidosoft/Morelia
     :alt: Build status
 
-.. image:: https://coveralls.io/repos/github/kidosoft/Morelia/badge.svg
+.. image:: https://coveralls.io/repos/kidosoft/Morelia/badge.svg
     :target: https://coveralls.io/r/kidosoft/Morelia
     :alt: Coverage
 
@@ -30,8 +30,8 @@ Morelia
     :target: https://morelia.readthedocs.io
     :alt: Documentation
 
-.. image:: https://pyup.io/repos/github/kidosoft/morelia/shield.svg
-    :target: https://pyup.io/repos/github/kidosoft/morelia/
+.. image:: https://pyup.io/repos/github/kidosoft/Morelia/shield.svg
+    :target: https://pyup.io/repos/github/kidosoft/Morelia/
     :alt: Updates
 
 Morelia is a Python Behavior Driven Development (BDD) library.

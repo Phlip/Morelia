@@ -30,11 +30,14 @@ def has_color_support():
     return sys.platform != 'win32'  # pragma: nocover
 
 
-def run(filename, suite, as_str=None, verbose=False, show_all_missing=True,  **kwargs):
+def run(filename, suite, as_str=None, scenario=r'.*',
+        verbose=False, show_all_missing=True,  **kwargs): # NOQA
     """Parse file and run tests on given suite.
 
     :param str filename: file name
     :param unittest.TestCase suite: TestCase instance
+    :param string as_str: None to use file or a string containing the feature to parse
+    :param string scenario: a regex pattern to match the scenario to run
     :param boolean verbose: be verbose
     :param boolean show_all_missing: show all missing steps
     """
@@ -47,8 +50,8 @@ def run(filename, suite, as_str=None, verbose=False, show_all_missing=True,  **k
         kwargs['formatter'] = formatter
     kwargs['show_all_missing'] = show_all_missing
     parser = Parser()
-    ast = parser.parse_file(filename) if as_str is None \
-        else parser.parse_as_str(filename, as_str)
+    ast = parser.parse_file(filename, scenario=scenario) if as_str is None \
+        else parser.parse_as_str(filename, as_str, scenario=scenario)
     return ast.evaluate(suite, **kwargs)
 
 

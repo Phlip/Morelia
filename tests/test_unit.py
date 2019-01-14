@@ -85,7 +85,7 @@ class RunTestCase(TestCase):
         """ Scenario: run and evaluate """
         has_color_support.return_value = False
         run(sentinel.filename, sentinel.suite)
-        parse_file.assert_called_once_with(sentinel.filename)
+        parse_file.assert_called_once_with(sentinel.filename, scenario='.*')
         parse_file.return_value.evaluate.assert_called_once_with(
             sentinel.suite, show_all_missing=True)
 
@@ -96,7 +96,7 @@ class RunTestCase(TestCase):
         """ Scenario: run and evaluate feature passed as string """
         has_color_support.return_value = False
         run(sentinel.filename, sentinel.suite, as_str=sentinel.some_string)
-        parse_as_str.assert_called_once_with(sentinel.filename, sentinel.some_string)
+        parse_as_str.assert_called_once_with(sentinel.filename, sentinel.some_string, scenario='.*')
         parse_as_str.return_value.evaluate.assert_called_once_with(
             sentinel.suite, show_all_missing=True)
 
@@ -107,7 +107,7 @@ class RunTestCase(TestCase):
         """ Scenario: run verbose on windows """
         has_color_support.return_value = False
         run(sentinel.filename, sentinel.suite, verbose=True)
-        parse_file.assert_called_once_with(sentinel.filename)
+        parse_file.assert_called_once_with(sentinel.filename, scenario='.*')
         parse_file.return_value.evaluate.assert_called_once_with(
             sentinel.suite, formatter=PlainTextFormatter.return_value,
             show_all_missing=True)
@@ -119,7 +119,7 @@ class RunTestCase(TestCase):
         """ Scenario: run verbose on systems with color support """
         has_color_support.return_value = True
         run(sentinel.filename, sentinel.suite, verbose=True)
-        parse_file.assert_called_once_with(sentinel.filename)
+        parse_file.assert_called_once_with(sentinel.filename, scenario='.*')
         parse_file.return_value.evaluate.assert_called_once_with(
             sentinel.suite, formatter=ColorTextFormatter.return_value,
             show_all_missing=True)
@@ -128,7 +128,7 @@ class RunTestCase(TestCase):
     def test_should_use_provided_formatter(self, parse_file):
         """ Scenario: run verbose on systems with color support """
         run(sentinel.filename, sentinel.suite, verbose=True, formatter=sentinel.formatter)
-        parse_file.assert_called_once_with(sentinel.filename)
+        parse_file.assert_called_once_with(sentinel.filename, scenario='.*')
         parse_file.return_value.evaluate.assert_called_once_with(
             sentinel.suite, formatter=sentinel.formatter,
             show_all_missing=True)

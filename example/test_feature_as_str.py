@@ -43,7 +43,7 @@ class CalculatorDocstringTestCase(unittest.TestCase):
     """Calculator acceptance test case."""
     def test_addition(self):
         """Addition feature."""
-        morelia.run(__file__, self, as_str=__doc__, verbose=True)
+        run(__file__, self, as_str=__doc__, scenario='Subsequent additions', verbose=True)
 
     def setUp(self):
         self.calculator = Calculator()

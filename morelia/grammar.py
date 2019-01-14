@@ -379,6 +379,7 @@ def _permute_indices(arr):
     return result
     #  tx to Chris Rebert, et al, on the Python newsgroup for curing my brainlock here!!
 
+
 def _imap(*iterables):
     iterables = [iter(i) for i in iterables]
     while True:

@@ -59,6 +59,17 @@ class SampleTestCaseMixIn(object):
 
 
 @tags(['acceptance'])
+class RegexSpecifiedScenariosTest(SampleTestCaseMixIn, TestCase):
+    def test_should_only_run_matching_scenarios(self):
+        filename = os.path.join(pwd, 'features/scenario_matching.feature')
+        self._matching_pattern = r'Scenario Matches [12]'
+        self._ast = Parser().parse_file(filename, scenario=self._matching_pattern)
+        scenario_matcher_re = re.compile(self._matching_pattern)
+        for included_scenario in self._ast.steps[0].steps:
+            self.assertIsNotNone(scenario_matcher_re.match(included_scenario.predicate))
+
+
+@tags(['acceptance'])
 class InfoOnAllFailingScenariosTest(TestCase):
 
     def test_should_report_on_all_failing_scenarios(self):

@@ -76,6 +76,7 @@ class RegexSpecifiedScenariosTest(SampleTestCaseMixIn, TestCase):
         with self.assertRaises(SyntaxError):
             self._ast = Parser().parse_file(filename, scenario=self._matching_pattern)
 
+
 @tags(['acceptance'])
 class InfoOnAllFailingScenariosTest(TestCase):
 
@@ -202,6 +203,7 @@ class InfoOnAllFailingScenariosTest(TestCase):
                 self.assertRegexpMatches(message, pattern)
             else:
                 self.assertRegex(message, pattern)
+
     def step_I_won_t_get_assertion_error(self):
         r'I won\'t get assertion error'
 

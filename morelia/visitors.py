@@ -139,10 +139,11 @@ class TestVisitor(IVisitor):
 
     def run_step(self, node):
         method, args, kwargs = node.find_step(self._matcher)
-        spec = inspect.getargspec(method)
-        if '_labels' in spec.args or spec.keywords:
+        # spec = inspect.getargspec(method)
+        spec = inspect.getfullargspec(method)
+        if '_labels' in spec.args + spec.kwonlyargs:
             kwargs['_labels'] = node.get_labels()
-        if '_text' in spec.args or spec.keywords:
+        if '_text' in spec.args + spec.kwonlyargs:
             kwargs['_text'] = node.payload
         method(*args, **kwargs)
 

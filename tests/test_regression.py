@@ -66,7 +66,7 @@ class EncodingErrorInTraceback(TestCase):
 
     def test_should_report_on_all_failing_scenarios(self):
         filename = os.path.join(pwd, 'features/encoding_error_in_regression.feature')
-        self.assertRaisesRegexp(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
+        self.assertRaisesRegex(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
 
     def step_failing(self):
         r'Zażółć gęślą jaźń'

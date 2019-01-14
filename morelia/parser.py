@@ -84,18 +84,21 @@ class Parser(object):
             pattern = thang.get_pattern(language)
             self._patterns.append((re.compile(pattern), thang))
 
+    def parse_as_str(self, filename, prose):
+        ast = self.parse_features(prose)
+        self.steps[0].filename = filename
+        return ast
+
     def parse_file(self, filename):
         with open(filename, 'rb') as input_file:
-            prose = input_file.read().decode('utf-8')
-            ast = self.parse_features(prose)
-            self.steps[0].filename = filename
-            return ast
+            return self.parse_as_str(filename=filename,
+                                     prose=input_file.read().decode('utf-8'))
 
     def parse_features(self, prose):
         self.parse_feature(prose)
         ast = AST(self.steps)
         feature = self.steps[0]
-        assert isinstance(feature, Feature), 'Exactly one Feature perf file'
+        assert isinstance(feature, Feature), 'Exactly one Feature per file'
         feature.enforce(any(isinstance(step, Scenario) for step in feature.steps), 'Feature without Scenario(s)')
         return ast
 

@@ -91,6 +91,17 @@ class RunTestCase(TestCase):
 
     @patch('morelia.has_color_support')
     @patch('morelia.PlainTextFormatter')
+    @patch.object(Parser, 'parse_as_str')
+    def test_should_parse_as_string_and_evaluate_tests(self, parse_as_str, PlainTextFormatter, has_color_support):
+        """ Scenario: run and evaluate feature passed as string """
+        has_color_support.return_value = False
+        run(sentinel.filename, sentinel.suite, as_str=sentinel.some_string)
+        parse_as_str.assert_called_once_with(sentinel.filename, sentinel.some_string)
+        parse_as_str.return_value.evaluate.assert_called_once_with(
+            sentinel.suite, show_all_missing=True)
+
+    @patch('morelia.has_color_support')
+    @patch('morelia.PlainTextFormatter')
     @patch.object(Parser, 'parse_file')
     def test_should_run_verbose_with_plain_text_formatter(self, parse_file, PlainTextFormatter, has_color_support):
         """ Scenario: run verbose on windows """

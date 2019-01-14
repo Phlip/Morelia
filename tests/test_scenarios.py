@@ -180,7 +180,7 @@ class InfoOnAllFailingScenariosTest(TestCase):
         patterns = self._failing_patterns
         message = self._catch_exception.args[0]
         for pattern in patterns:
-            self.assertRegexpMatches(message, pattern)
+            self.assertRegex(message, pattern)
 
     def step_I_won_t_get_assertion_error(self):
         r'I won\'t get assertion error'

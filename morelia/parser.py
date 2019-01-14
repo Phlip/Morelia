@@ -101,8 +101,9 @@ class Parser(object):
         # Filter steps to only include requested scenarios
         try:
             scenario_re = re.compile(scenario)
-        except Exception:
-            scenario_re = re.compile(r'.*')
+        except Exception as e:
+            raise SyntaxError("Invalid scenario matching regex \"{}\": {}".format(scenario, e))
+
         matched_feature_steps = []
         matched_steps = []
         matching = True

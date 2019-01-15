@@ -367,7 +367,7 @@ class IStepMatcher(object):
         arguments = self._name_arguments(arguments)
 
         predicate = self.replace_placeholders(predicate, arguments)
-        predicate = re.sub(r' \s+', r'\s+', predicate)
+        predicate = re.sub(r' \s+', r'\\s+', predicate)
 
         arguments = self._format_arguments(arguments)
         return "r'%s'" % predicate, arguments

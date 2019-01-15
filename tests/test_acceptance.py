@@ -499,7 +499,7 @@ class MoreliaSuite(TestCase):
 
     def test_evaluate_file(self):
         language = self._get_language()
-        thang = Parser(language=language).parse_file(pwd + '/features/morelia%s.feature' % (language or ''))
+        thang = Parser(language=language).parse_file('{}/features/morelia{}.feature'.format(pwd, language or ''))
         thang.evaluate(self)
 
     def setUp(self):

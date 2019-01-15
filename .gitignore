@@ -63,3 +63,8 @@ target/
 
 # editors and ide
 .ropeproject
+
+# IntelliJ
+.idea/
+*.iml
+

@@ -383,5 +383,8 @@ def _permute_indices(arr):
 def _imap(*iterables):
     iterables = [iter(i) for i in iterables]
     while True:
-        args = [next(i) for i in iterables]
-        yield _special_range(*args)
+        try:
+            args = [next(i) for i in iterables]
+            yield _special_range(*args)
+        except StopIteration:
+            return

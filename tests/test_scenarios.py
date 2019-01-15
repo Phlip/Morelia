@@ -1,5 +1,6 @@
 import os.path
 import re
+import six
 from unittest import TestCase
 
 from morelia import run
@@ -56,6 +57,24 @@ class SampleTestCaseMixIn(object):
         num1 = self.stack.pop()
         num2 = self.stack.pop()
         self.stack.append(num2 / num1)
+
+
+@tags(['acceptance'])
+class RegexSpecifiedScenariosTest(SampleTestCaseMixIn, TestCase):
+    def test_should_only_run_matching_scenarios(self):
+        filename = os.path.join(pwd, 'features/scenario_matching.feature')
+        self._matching_pattern = r'Scenario Matches [12]'
+        self._ast = Parser().parse_file(filename, scenario=self._matching_pattern)
+        scenario_matcher_re = re.compile(self._matching_pattern)
+        for included_scenario in self._ast.steps[0].steps:
+            self.assertIsNotNone(scenario_matcher_re.match(included_scenario.predicate))
+
+    def test_fail_informatively_on_bad_scenario_regex(self):
+        filename = os.path.join(pwd, 'features/scenario_matching.feature')
+        self._matching_pattern = '\\'
+
+        with self.assertRaises(SyntaxError):
+            self._ast = Parser().parse_file(filename, scenario=self._matching_pattern)
 
 
 @tags(['acceptance'])
@@ -180,7 +199,10 @@ class InfoOnAllFailingScenariosTest(TestCase):
         patterns = self._failing_patterns
         message = self._catch_exception.args[0]
         for pattern in patterns:
-            self.assertRegexpMatches(message, pattern)
+            if six.PY2:
+                self.assertRegexpMatches(message, pattern)
+            else:
+                self.assertRegex(message, pattern)
 
     def step_I_won_t_get_assertion_error(self):
         r'I won\'t get assertion error'

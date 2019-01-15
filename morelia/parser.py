@@ -84,18 +84,45 @@ class Parser(object):
             pattern = thang.get_pattern(language)
             self._patterns.append((re.compile(pattern), thang))
 
-    def parse_file(self, filename):
-        with open(filename, 'rb') as input_file:
-            prose = input_file.read().decode('utf-8')
-            ast = self.parse_features(prose)
-            self.steps[0].filename = filename
-            return ast
+    def parse_as_str(self, filename, prose, scenario=None):
+        ast = self.parse_features(prose, scenario=scenario)
+        self.steps[0].filename = filename
+        return ast
 
-    def parse_features(self, prose):
+    def parse_file(self, filename, scenario=r'.*'):
+        with open(filename, 'rb') as input_file:
+            return self.parse_as_str(filename=filename,
+                                     prose=input_file.read().decode('utf-8'),
+                                     scenario=scenario)
+
+    def parse_features(self, prose, scenario=r'.*'):
         self.parse_feature(prose)
+
+        # Filter steps to only include requested scenarios
+        try:
+            scenario_re = re.compile(scenario)
+        except Exception as e:
+            raise SyntaxError("Invalid scenario matching regex \"{}\": {}".format(scenario, e))
+
+        matched_feature_steps = []
+        matched_steps = []
+        matching = True
+        for s in self.steps:
+            if isinstance(s, Background):
+                matched_feature_steps.append(s)
+                matching = True
+            elif isinstance(s, Scenario):
+                matching = scenario_re.match(s.predicate) is not None
+                if matching is True:
+                    matched_feature_steps.append(s)
+            if matching is True:
+                matched_steps.append(s)
+        self.steps = matched_steps
+        self.steps[0].steps = matched_feature_steps
+
         ast = AST(self.steps)
         feature = self.steps[0]
-        assert isinstance(feature, Feature), 'Exactly one Feature perf file'
+        assert isinstance(feature, Feature), 'Exactly one Feature per file'
         feature.enforce(any(isinstance(step, Scenario) for step in feature.steps), 'Feature without Scenario(s)')
         return ast
 

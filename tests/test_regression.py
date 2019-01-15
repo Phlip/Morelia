@@ -2,6 +2,7 @@
 
 """Regression tests."""
 import os
+import six
 from unittest import TestCase
 
 from morelia import run
@@ -66,7 +67,10 @@ class EncodingErrorInTraceback(TestCase):
 
     def test_should_report_on_all_failing_scenarios(self):
         filename = os.path.join(pwd, 'features/encoding_error_in_regression.feature')
-        self.assertRaisesRegexp(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
+        if six.PY2:
+            self.assertRaisesRegexp(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
+        else:
+            self.assertRaisesRegex(AssertionError, 'Given Zażółć gęślą jaźń', run, filename, self)
 
     def step_failing(self):
         r'Zażółć gęślą jaźń'

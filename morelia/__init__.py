@@ -26,7 +26,7 @@ from morelia.parser import Parser  # noqa
 if sys.version_info < (3, 4):
     warnings.warn("Python < 3.4 won't be supported in future versions. Please upgrade.", DeprecationWarning)
 
-__version__ = '0.6.5'
+__version__ = '0.7.0'
 
 
 def has_color_support():

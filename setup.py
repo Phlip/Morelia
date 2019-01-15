@@ -15,7 +15,7 @@ requirements = [
 
 setup(
     name='Morelia',
-    version='0.6.5',
+    version='0.7.0',
     description='for "Behavior Driven Development" (BDD) -- a client-facing scripting language to put the squeeze on all your features',
     long_description=readme,
     author='Morelia authors',

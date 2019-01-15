@@ -10,6 +10,11 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`_.
 Version: Unreleased
 ===============================================================================
 
+ADDED
+-----
+
+  * support for running single scenarios (#16)
+
 REMOVED
 -------
 

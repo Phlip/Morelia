@@ -7,9 +7,13 @@ python:
     - "3.4"
     - "3.5"
     - "3.6"
-    # - "3.7-dev"
     - "pypy"
     - "pypy3.5"
+matrix:
+    include:
+        - python: 3.7
+          dist: xenial
+          sudo: true
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:

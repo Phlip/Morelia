@@ -10,9 +10,10 @@ First Author
 Development Lead
 ----------------
 
-* Jakub STOLARSKI <jakub.stolarski@gmail.com>
+* Jakub STOLARSKI (dryobates) <jakub.stolarski@gmail.com>
 
 Contributors
 ------------
 
 * Iza STOLARSKA (izabeera)
+* Michael SOUZA (midnighteuler)

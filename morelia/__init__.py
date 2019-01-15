@@ -18,9 +18,13 @@ Then running is as simple as:
 """
 
 import sys
+import warnings
 
 from morelia.formatters import PlainTextFormatter, ColorTextFormatter
 from morelia.parser import Parser  # noqa
+
+if sys.version_info < (3, 4):
+    warnings.warn("Python < 3.4 won't be supported in future versions. Please upgrade.", DeprecationWarning)
 
 __version__ = '0.6.5'
 

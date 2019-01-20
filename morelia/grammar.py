@@ -35,7 +35,6 @@ class INode:
 
 
 class LabeledNode:
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._labels = []
@@ -51,13 +50,12 @@ class LabeledNode:
 
 
 class Morelia(LabeledNode, INode):
-
     def __init__(self, keyword, predicate, steps=[]):
         super().__init__()
         self.parent = None
         self.additional_data = {}
         self.keyword = keyword
-        self.predicate = predicate if predicate is not None else ''
+        self.predicate = predicate if predicate is not None else ""
         self.steps = steps
 
     def connect_to_parent(self, steps=[], line_number=0):
@@ -72,13 +70,13 @@ class Morelia(LabeledNode, INode):
                     self.parent = step
                     break
         except TypeError:
-            self.enforce(False, 'Only one Feature per file')
+            self.enforce(False, "Only one Feature per file")
 
         steps.append(self)
         return self
 
     def prefix(self):
-        return ''
+        return ""
 
     def my_parent_type(self):
         return None
@@ -88,10 +86,10 @@ class Morelia(LabeledNode, INode):
         class_name = cls.__name__
         name = class_name.lower()
         name = TRANSLATIONS[language].get(name, class_name)
-        return r'\s*(?P<keyword>' + name + r'):?(?:\s+(?P<predicate>.*))?$'
+        return r"\s*(?P<keyword>" + name + r"):?(?:\s+(?P<predicate>.*))?$"
 
     def count_dimensions(self):
-        ''' Get number of rows. '''
+        """ Get number of rows. """
         return sum([step.count_dimension() for step in self.steps])
 
     def count_dimension(self):
@@ -102,30 +100,38 @@ class Morelia(LabeledNode, INode):
 
     def enforce(self, condition, diagnostic):
         if not condition:
-            text = ''
+            text = ""
             offset = 1
             if self.parent:
                 text = self.parent.reconstruction()
                 offset = 5
             text += self.reconstruction()
-            text = text.replace('\n\n', '\n').replace('\n', '\n\t')
-            raise SyntaxError(diagnostic, (self.get_filename(), self.line_number, offset, text))
+            text = text.replace("\n\n", "\n").replace("\n", "\n\t")
+            raise SyntaxError(
+                diagnostic, (self.get_filename(), self.line_number, offset, text)
+            )
 
     def format_fault(self, diagnostic):
-        parent_reconstruction = ''
+        parent_reconstruction = ""
         if self.parent:
-            parent_reconstruction = self.parent.reconstruction().strip('\n')
+            parent_reconstruction = self.parent.reconstruction().strip("\n")
         reconstruction = self.reconstruction()
-        args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
+        args = (
+            self.get_filename(),
+            self.line_number,
+            parent_reconstruction,
+            reconstruction,
+            diagnostic,
+        )
         return '\n  File "%s", line %s, in %s\n %s\n%s' % args
 
     def reconstruction(self):
-        recon = '{}{}: {}'.format(self.prefix(), self.keyword, self.predicate)
-        recon += '\n' if recon[-1] != '\n' else ''
+        recon = "{}{}: {}".format(self.prefix(), self.keyword, self.predicate)
+        recon += "\n" if recon[-1] != "\n" else ""
         return recon
 
     def get_real_reconstruction(self):
-        return self.reconstruction() + '\n'
+        return self.reconstruction() + "\n"
 
     def get_filename(self):
         node = self
@@ -142,7 +148,6 @@ class Morelia(LabeledNode, INode):
 
 
 class Feature(Morelia):
-
     def prepend_steps(self, scenario):
         background = self.steps[0]
         try:
@@ -151,20 +156,22 @@ class Feature(Morelia):
             pass
 
     def reconstruction(self):
-        predicate = self.predicate.replace('\n', '\n    ')
-        recon = '{}{}: {}'.format(self.prefix(), self.keyword, predicate)
-        recon += '\n' if recon[-1] != '\n' else ''
+        predicate = self.predicate.replace("\n", "\n    ")
+        recon = "{}{}: {}".format(self.prefix(), self.keyword, predicate)
+        recon += "\n" if recon[-1] != "\n" else ""
         return recon
 
 
 class Scenario(Morelia):
-
     def my_parent_type(self):
         return Feature
 
     def accept(self, visitor):
         self.parent.prepend_steps(self)
-        self.enforce(0 < len(self.steps), 'Scenario without step(s) - Step, Given, When, Then, And, or #')
+        self.enforce(
+            0 < len(self.steps),
+            "Scenario without step(s) - Step, Given, When, Then, And, or #",
+        )
         schedule = visitor.permute_schedule(self)
 
         for indices in schedule:
@@ -179,11 +186,10 @@ class Scenario(Morelia):
         return [step.count_dimensions() for step in self.steps]
 
     def reconstruction(self):
-        return '\n' + self.keyword + ': ' + self.predicate
+        return "\n" + self.keyword + ": " + self.predicate
 
 
 class Background(Morelia):
-
     def my_parent_type(self):
         return Feature
 
@@ -208,13 +214,12 @@ class Background(Morelia):
 
 
 class Step(Morelia):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.payload = ''
+        self.payload = ""
 
     def prefix(self):
-        return '  '
+        return "  "
 
     def my_parent_type(self):
         return (Scenario, Background)
@@ -238,8 +243,8 @@ class Step(Morelia):
 
     def get_real_reconstruction(self):
         predicate = self._augment_predicate()
-        recon = '    {} {}'.format(self.keyword, predicate)
-        recon += '\n' if recon[-1] != '\n' else ''
+        recon = "    {} {}".format(self.keyword, predicate)
+        recon += "\n" if recon[-1] != "\n" else ""
         return recon
 
     def _augment_predicate(self):
@@ -248,7 +253,7 @@ class Step(Morelia):
         dims = self.parent.count_Row_dimensions()
         if set(dims) == {0}:
             return self.predicate
-        rep = re.compile(r'\<(\w+)\>')
+        rep = re.compile(r"\<(\w+)\>")
         replitrons = rep.findall(self.predicate)
         if replitrons == []:
             return self.predicate
@@ -265,7 +270,9 @@ class Step(Morelia):
                     pass
                 else:
                     for q, title in enumerate(row.harvest()):
-                        self.replace_replitron(x, q, row_indices, table, title, replitron)
+                        self.replace_replitron(
+                            x, q, row_indices, table, title, replitron
+                        )
 
         return self.copy
 
@@ -274,12 +281,12 @@ class Step(Morelia):
             return
         at = row_indices[x] + 1
 
-        assert at < len(table), 'this should never happen'
+        assert at < len(table), "this should never happen"
 
         stick = table[at].harvest()
         found = stick[q]
-        found = found.replace('\n', '\\n')
-        self.copy = self.copy.replace('<%s>' % replitron, found)
+        found = found.replace("\n", "\\n")
+        self.copy = self.copy.replace("<%s>" % replitron, found)
 
 
 class Given(Step):
@@ -308,20 +315,19 @@ class But(And):
 
 
 class Row(Morelia):
-
     @classmethod
     def get_pattern(cls, language):
-        return r'\s*(?P<keyword>\|):?\s+(?P<predicate>.*)'
+        return r"\s*(?P<keyword>\|):?\s+(?P<predicate>.*)"
 
     def my_parent_type(self):
         return (Step, Examples)
 
     def prefix(self):
-        return ' ' * 8
+        return " " * 8
 
     def reconstruction(self):
-        recon = self.prefix() + '| ' + self.predicate
-        recon += '\n' if recon[-1] != '\n' else ''
+        recon = self.prefix() + "| " + self.predicate
+        recon += "\n" if recon[-1] != "\n" else ""
         return recon
 
     def count_dimension(self):
@@ -331,35 +337,33 @@ class Row(Morelia):
         return 1
 
     def harvest(self):
-        row = re.split(r' \|', re.sub(r'\|$', '', self.predicate))
+        row = re.split(r" \|", re.sub(r"\|$", "", self.predicate))
         row = [s.strip() for s in row]
         return row
 
 
 class Examples(Morelia):
-
     def prefix(self):
-        return ' ' * 4
+        return " " * 4
 
     def my_parent_type(self):
         return Scenario
 
 
 class Comment(Morelia):
-
     def my_parent_type(self):
         return Morelia  # aka "any"
 
     @classmethod
     def get_pattern(cls, language):
-        return r'\s*(?P<keyword>\#)(?P<predicate>.*)'
+        return r"\s*(?P<keyword>\#)(?P<predicate>.*)"
 
     def validate_predicate(self):
-        self.enforce(self.predicate.count('\n') == 0, 'linefeed in comment')
+        self.enforce(self.predicate.count("\n") == 0, "linefeed in comment")
 
     def reconstruction(self):
-        recon = '    # ' + self.predicate
-        recon += '\n' if recon[-1] != '\n' else ''
+        recon = "    # " + self.predicate
+        recon += "\n" if recon[-1] != "\n" else ""
         return recon
 
 

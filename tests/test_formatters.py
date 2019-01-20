@@ -7,7 +7,7 @@ from morelia.grammar import Step, Scenario, Feature
 from morelia.formatters import NullFormatter, PlainTextFormatter, ColorTextFormatter
 
 
-@tags(['unit'])
+@tags(["unit"])
 class NullFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`NullFormatter.output`. """
 
@@ -16,13 +16,13 @@ class NullFormatterOutputTestCase(unittest.TestCase):
         # Arrange
         obj = NullFormatter()
         # Act
-        line = 'Given some number'
-        status = 'pass'
+        line = "Given some number"
+        status = "pass"
         duration = 0.01
         obj.output(sentinel.node, line, status, duration)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class PlainTextFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`PlainTextFormatter.output`. """
 
@@ -32,13 +32,13 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = PlainTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'pass'
+        line = "Given some number"
+        status = "pass"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-60s # pass  0.010s\n' % line
+        expected = "%-60s # pass  0.010s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_fail(self):
@@ -47,13 +47,13 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = PlainTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'fail'
+        line = "Given some number"
+        status = "fail"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-60s # fail  0.010s\n' % line
+        expected = "%-60s # fail  0.010s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_error(self):
@@ -62,13 +62,13 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = PlainTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'error'
+        line = "Given some number"
+        status = "error"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%-60s # error 0.010s\n' % line
+        expected = "%-60s # error 0.010s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_not_step(self):
@@ -77,13 +77,13 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = PlainTextFormatter(stream)
         # Act
-        line = 'Scenario: some number'
-        status = 'pass'
+        line = "Scenario: some number"
+        status = "pass"
         duration = 0.01
         node = Mock(Scenario)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%s\n' % line
+        expected = "%s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_feature(self):
@@ -92,17 +92,17 @@ class PlainTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = PlainTextFormatter(stream)
         # Act
-        line = 'Feature: some feature'
-        status = 'pass'
+        line = "Feature: some feature"
+        status = "pass"
         duration = 0.01
         node = Mock(Feature)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '\n%s\n' % line
+        expected = "\n%s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class ColorTextFormatterOutputTestCase(unittest.TestCase):
     """ Test :py:meth:`ColorTextFormatter.output`. """
 
@@ -112,15 +112,15 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = ColorTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'pass'
+        line = "Given some number"
+        status = "pass"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        green = '\x1b[32m'
-        reset = '\x1b[0m'
-        expected = '{}{:<60} # 0.010s{}\n'.format(green, line, reset)
+        green = "\x1b[32m"
+        reset = "\x1b[0m"
+        expected = "{}{:<60} # 0.010s{}\n".format(green, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_fail(self):
@@ -129,15 +129,15 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = ColorTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'fail'
+        line = "Given some number"
+        status = "fail"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        red = '\x1b[31m'
-        reset = '\x1b[0m'
-        expected = '{}{:<60} # 0.010s{}\n'.format(red, line, reset)
+        red = "\x1b[31m"
+        reset = "\x1b[0m"
+        expected = "{}{:<60} # 0.010s{}\n".format(red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_error(self):
@@ -146,15 +146,15 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = ColorTextFormatter(stream)
         # Act
-        line = 'Given some number'
-        status = 'error'
+        line = "Given some number"
+        status = "error"
         duration = 0.01
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        red = '\x1b[31m'
-        reset = '\x1b[0m'
-        expected = '{}{:<60} # 0.010s{}\n'.format(red, line, reset)
+        red = "\x1b[31m"
+        reset = "\x1b[0m"
+        expected = "{}{:<60} # 0.010s{}\n".format(red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_not_step(self):
@@ -163,13 +163,13 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = ColorTextFormatter(stream)
         # Act
-        line = 'Scenario: some number'
-        status = 'pass'
+        line = "Scenario: some number"
+        status = "pass"
         duration = 0.01
         node = Mock(Scenario)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '%s\n' % line
+        expected = "%s\n" % line
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_feature(self):
@@ -178,11 +178,11 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         stream = StringIO()
         obj = ColorTextFormatter(stream)
         # Act
-        line = 'Feature: some feature'
-        status = 'pass'
+        line = "Feature: some feature"
+        status = "pass"
         duration = 0.01
         node = Mock(Feature)
         obj.output(node, line, status, duration)
         # Assert
-        expected = '\n%s\n' % line
+        expected = "\n%s\n" % line
         self.assertEqual(stream.getvalue(), expected)

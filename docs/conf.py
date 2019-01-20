@@ -18,7 +18,7 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- General configuration ------------------------------------------------
 
@@ -28,35 +28,32 @@ sys.path.insert(0, os.path.abspath('..'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx"]
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3.6', None)}
+intersphinx_mapping = {"python": ("https://docs.python.org/3.6", None)}
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'Morelia'
-copyright = '2009-2017, Morelia authors'
+project = "Morelia"
+copyright = "2009-2017, Morelia authors"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.7.1'
+version = "0.7.1"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -69,11 +66,11 @@ release = version
 # today = ''
 # Else, today_fmt is used as the format for a strftime call.
 # today_fmt = '%B %d, %Y'
-today_fmt = '%Y-%m-%d'
+today_fmt = "%Y-%m-%d"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -91,7 +88,7 @@ exclude_patterns = ['_build']
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -107,9 +104,10 @@ pygments_style = 'sphinx'
 # a list of builtin themes.
 # html_theme = 'default'
 
-if not os.environ.get('READTHEDOCS', None):
+if not os.environ.get("READTHEDOCS", None):
     import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
+
+    html_theme = "sphinx_rtd_theme"
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -139,7 +137,7 @@ if not os.environ.get('READTHEDOCS', None):
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -188,7 +186,7 @@ html_static_path = ['_static']
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'moreliadoc'
+htmlhelp_basename = "moreliadoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -196,10 +194,8 @@ htmlhelp_basename = 'moreliadoc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 }
@@ -208,7 +204,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'Morelia.tex', 'Morelia Documentation', 'Morelia authors', 'manual'),
+    ("index", "Morelia.tex", "Morelia Documentation", "Morelia authors", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -236,10 +232,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'morelia', 'Morelia Documentation',
-     ['Morelia authors'], 1)
-]
+man_pages = [("index", "morelia", "Morelia Documentation", ["Morelia authors"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -250,9 +243,16 @@ man_pages = [
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [(
-    'index', 'Morelia', 'Morelia Documentation', 'Morelia authors',
-    'Morelia', '', 'Miscellaneous'),
+texinfo_documents = [
+    (
+        "index",
+        "Morelia",
+        "Morelia Documentation",
+        "Morelia authors",
+        "Morelia",
+        "",
+        "Miscellaneous",
+    )
 ]
 
 # Documents to append as an appendix to all manuals.

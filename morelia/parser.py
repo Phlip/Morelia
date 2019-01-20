@@ -14,20 +14,31 @@ import textwrap
 
 from morelia.formatters import NullFormatter
 from morelia.grammar import (
-    Feature, Background, Scenario, Given, When, Then, And, But, Row, Comment,
-    Examples, Step
+    Feature,
+    Background,
+    Scenario,
+    Given,
+    When,
+    Then,
+    And,
+    But,
+    Row,
+    Comment,
+    Examples,
+    Step,
 )
-from morelia.matchers import (
-    RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
-)
+from morelia.matchers import RegexpStepMatcher, ParseStepMatcher, MethodNameStepMatcher
 from morelia.visitors import TestVisitor, StepMatcherVisitor
 from morelia.i18n import TRANSLATIONS
 
 
 class AST:
-
-    def __init__(self, steps, test_visitor_class=TestVisitor,
-                 matcher_visitor_class=StepMatcherVisitor):
+    def __init__(
+        self,
+        steps,
+        test_visitor_class=TestVisitor,
+        matcher_visitor_class=StepMatcherVisitor,
+    ):
         self.steps = steps
         self._test_visitor_class = test_visitor_class
         self._matcher_visitor_class = matcher_visitor_class
@@ -58,16 +69,24 @@ class AST:
 
 
 class Parser:
-
     def __init__(self, language=None):
         self.thangs = [
-            Feature, Background, Scenario,
-            Given, When, Then, And, But,
-            Row, Comment, Examples, Step
+            Feature,
+            Background,
+            Scenario,
+            Given,
+            When,
+            Then,
+            And,
+            But,
+            Row,
+            Comment,
+            Examples,
+            Step,
         ]
         self.steps = []
         if language is None:
-            language = 'en'
+            language = "en"
         self._language = language
         self._prepare_patterns(language)
 
@@ -82,20 +101,24 @@ class Parser:
         self.steps[0].filename = filename
         return ast
 
-    def parse_file(self, filename, scenario=r'.*'):
-        with open(filename, 'rb') as input_file:
-            return self.parse_as_str(filename=filename,
-                                     prose=input_file.read().decode('utf-8'),
-                                     scenario=scenario)
+    def parse_file(self, filename, scenario=r".*"):
+        with open(filename, "rb") as input_file:
+            return self.parse_as_str(
+                filename=filename,
+                prose=input_file.read().decode("utf-8"),
+                scenario=scenario,
+            )
 
-    def parse_features(self, prose, scenario=r'.*'):
+    def parse_features(self, prose, scenario=r".*"):
         self.parse_feature(prose)
 
         # Filter steps to only include requested scenarios
         try:
             scenario_re = re.compile(scenario)
         except Exception as e:
-            raise SyntaxError("Invalid scenario matching regex \"{}\": {}".format(scenario, e))
+            raise SyntaxError(
+                'Invalid scenario matching regex "{}": {}'.format(scenario, e)
+            )
 
         matched_feature_steps = []
         matched_steps = []
@@ -115,8 +138,11 @@ class Parser:
 
         ast = AST(self.steps)
         feature = self.steps[0]
-        assert isinstance(feature, Feature), 'Exactly one Feature per file'
-        feature.enforce(any(isinstance(step, Scenario) for step in feature.steps), 'Feature without Scenario(s)')
+        assert isinstance(feature, Feature), "Exactly one Feature per file"
+        feature.enforce(
+            any(isinstance(step, Scenario) for step in feature.steps),
+            "Feature without Scenario(s)",
+        )
         return ast
 
     def _parse_line(self, line):
@@ -141,11 +167,13 @@ class Parser:
         if 0 < len(self.steps):
             self._append_to_previous_node(line)
         else:
-            s = Step('???', line)
+            s = Step("???", line)
             s.line_number = self._line_producer.line_number
-            feature_name = TRANSLATIONS[self._language_parser.language].get('feature', 'Feature')
-            feature_name = feature_name.replace('|', ' or ')
-            s.enforce(False, 'feature files must start with a %s' % feature_name)
+            feature_name = TRANSLATIONS[self._language_parser.language].get(
+                "feature", "Feature"
+            )
+            feature_name = feature_name.replace("|", " or ")
+            s.enforce(False, "feature files must start with a %s" % feature_name)
 
     def parse_feature(self, lines):
         self._line_producer = LineSource(lines)
@@ -166,9 +194,9 @@ class Parser:
             return False
         last_line = self.last_node.predicate
 
-        if re.search(r'\\\s*$', last_line):
+        if re.search(r"\\\s*$", last_line):
             last = self.last_node
-            last.predicate += '\n' + line
+            last.predicate += "\n" + line
             return True
 
         return False
@@ -188,17 +216,16 @@ class Parser:
 
     def _append_to_previous_node(self, line):
         previous = self.steps[-1]
-        previous.predicate += '\n' + line.strip()
+        previous.predicate += "\n" + line.strip()
         previous.predicate = previous.predicate.strip()
         previous.validate_predicate()
 
 
 class LabelParser:
-
-    def __init__(self, labels_pattern=r'@\w+'):
+    def __init__(self, labels_pattern=r"@\w+"):
         self._labels = []
         self._labels_re = re.compile(labels_pattern)
-        self._labels_prefix_re = re.compile(r'^\s*@')
+        self._labels_prefix_re = re.compile(r"^\s*@")
 
     def parse(self, line):
         """Parse labels.
@@ -220,16 +247,15 @@ class LabelParser:
         :returns: labels
         :side effects: clears current labels
         """
-        labels = [label.strip('@') for label in self._labels]
+        labels = [label.strip("@") for label in self._labels]
         self._labels = []
         return labels
 
 
 class LanguageParser:
-
-    def __init__(self, lang_pattern=r'^# language: (\w+)', default_language=None):
+    def __init__(self, lang_pattern=r"^# language: (\w+)", default_language=None):
         if default_language is None:
-            default_language = 'en'
+            default_language = "en"
         self._language = default_language
         self._lang_re = re.compile(lang_pattern)
 
@@ -252,7 +278,6 @@ class LanguageParser:
 
 
 class DocStringParser:
-
     def __init__(self, source, pattern=r'\s*"""\s*'):
         self._source = source
         self._docstring_re = re.compile(pattern)
@@ -278,13 +303,12 @@ class DocStringParser:
 
     @property
     def payload(self):
-        return textwrap.dedent('\n'.join(self._payload))
+        return textwrap.dedent("\n".join(self._payload))
 
 
 class LineSource:
-
     def __init__(self, text):
-        self._lines = iter([line for line in text.split('\n') if line])
+        self._lines = iter([line for line in text.split("\n") if line])
         self._line_number = 0
 
     def get_line(self):

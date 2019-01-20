@@ -27,7 +27,7 @@ class CalculatorTestCase(unittest.TestCase):
         self.calculator = Calculator()
 
     def step_I_have_powered_calculator_on(self):
-        r'I have powered calculator on'
+        r"I have powered calculator on"
         self.calculator.on()
 
     def step_I_enter_a_number_into_the_calculator(self, number):
@@ -43,9 +43,9 @@ class CalculatorTestCase(unittest.TestCase):
 
     def test_addition(self):
         """Addition feature."""
-        filename = os.path.join(os.path.dirname(__file__), 'calculator.feature')
+        filename = os.path.join(os.path.dirname(__file__), "calculator.feature")
         run(filename, self, verbose=True)
 
 
-if __name__ == '__main__':  # pragma: nobranch
+if __name__ == "__main__":  # pragma: nobranch
     unittest.main()

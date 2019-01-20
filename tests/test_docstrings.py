@@ -8,11 +8,10 @@ from morelia.decorators import tags
 pwd = os.path.dirname(os.path.realpath(__file__))
 
 
-@tags(['acceptance'])
+@tags(["acceptance"])
 class DocStringTest(TestCase):
-
     def test_docstrings(self):
-        filename = os.path.join(pwd, 'features/docstrings.feature')
+        filename = os.path.join(pwd, "features/docstrings.feature")
         run(filename, self)
 
     def step_I_put_docstring_after_step_definition(self, _text=None):
@@ -20,5 +19,5 @@ class DocStringTest(TestCase):
         self._text = _text
 
     def step_I_will_get_docstring_passed_in__text_variable(self):
-        r'I will get docstring passed in _text variable'
-        self.assertEqual(self._text, 'Docstring line1\nline2')
+        r"I will get docstring passed in _text variable"
+        self.assertEqual(self._text, "Docstring line1\nline2")

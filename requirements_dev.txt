@@ -1,5 +1,5 @@
 bumpversion==0.5.3
-coverage==4.5.1
+coverage==4.5.2
 flake8==3.5.0
 sphinx==1.7.2
 sphinx-rtd-theme==0.3.0

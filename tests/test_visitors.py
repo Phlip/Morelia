@@ -1,6 +1,6 @@
 import unittest
 from collections import OrderedDict
-from mock import Mock, sentinel, ANY
+from unittest.mock import Mock, sentinel, ANY
 
 from morelia.decorators import tags
 from morelia.exceptions import MissingStepError

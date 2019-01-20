@@ -31,7 +31,6 @@ Scenario: Add two numbers - table
         | 4    | 5    | 9      |
 '''
 
-import os
 import unittest
 
 from morelia import run

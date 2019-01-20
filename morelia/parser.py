@@ -22,7 +22,6 @@ from morelia.matchers import (
 )
 from morelia.visitors import TestVisitor, StepMatcherVisitor
 from morelia.i18n import TRANSLATIONS
-from morelia.utils import fix_exception_encoding, to_unicode
 
 
 class AST:
@@ -45,13 +44,7 @@ class AST:
         if formatter is None:
             formatter = NullFormatter()
         test_visitor = self._test_visitor_class(suite, matcher, formatter)
-        try:
-            feature.accept(test_visitor)
-        except SyntaxError as exc:
-            raise
-        except Exception as exc:
-            fix_exception_encoding(exc)
-            raise
+        feature.accept(test_visitor)
 
     def _create_matchers_chain(self, suite, matcher_classes):
         root_matcher = None
@@ -155,8 +148,6 @@ class Parser:
             s.enforce(False, 'feature files must start with a %s' % feature_name)
 
     def parse_feature(self, lines):
-        lines = to_unicode(lines)
-
         self._line_producer = LineSource(lines)
         self._docstring_parser = DocStringParser(self._line_producer)
         self._language_parser = LanguageParser(default_language=self._language)

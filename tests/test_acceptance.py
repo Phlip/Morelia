@@ -14,7 +14,6 @@ from morelia.formatters import NullFormatter
 from morelia.i18n import TRANSLATIONS
 from morelia.matchers import RegexpStepMatcher, MethodNameStepMatcher
 from morelia.visitors import TestVisitor
-from morelia.utils import to_unicode
 
 
 pwd = os.path.dirname(os.path.realpath(__file__))
@@ -597,8 +596,6 @@ class MoreliaSuite(TestCase):
 
     def assert_regex_contains(self, pattern, string, flags=None):
         flags = flags or 0
-        pattern = to_unicode(pattern)
-        string = to_unicode(string)
         diagnostic = '"{}" not found in "{}"'.format(pattern, string)
         self.assertTrue(re.search(pattern, string, flags) is not None, diagnostic)
 

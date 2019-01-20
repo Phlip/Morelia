@@ -3,7 +3,7 @@
 
 from unittest import TestCase
 
-from mock import sentinel, Mock, patch
+from unittest.mock import sentinel, Mock, patch
 
 from morelia import run
 from morelia.decorators import tags

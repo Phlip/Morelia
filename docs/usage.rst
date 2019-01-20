@@ -70,7 +70,7 @@ And you'll see which steps are missing:
       File "(..)/morelia/grammar.py", line 85, in _method_hook
         method(self)
       File "(..)/morelia/visitors.py", line 125, in after_feature
-        self._suite.fail(to_docstring(diagnostic))
+        self._suite.fail(diagnostic)
     AssertionError: Cannot match steps:
 
         def step_I_have_powered_calculator_on(self):

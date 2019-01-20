@@ -1,6 +1,6 @@
 import unittest
 
-from mock import patch, Mock
+from unittest.mock import patch, Mock
 from morelia.decorators import should_skip, tags
 
 

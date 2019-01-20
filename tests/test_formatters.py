@@ -1,7 +1,6 @@
 from io import StringIO
 import unittest
-
-from mock import sentinel, Mock
+from unittest.mock import sentinel, Mock
 
 from morelia.decorators import tags
 from morelia.grammar import Step, Scenario, Feature

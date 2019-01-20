@@ -287,8 +287,6 @@ import unicodedata
 
 import parse
 
-from morelia.utils import to_unicode
-
 
 class IStepMatcher:
     """Matches methods to steps.
@@ -414,7 +412,6 @@ class IStepMatcher:
         return result
 
     def slugify(self, predicate):
-        predicate = to_unicode(predicate)
         result = []
         for part in re.split(r'[^\w]+', predicate):
             part = unicodedata.normalize('NFD', part).encode('ascii', 'replace').decode('utf-8')
@@ -453,7 +450,6 @@ class MethodNameStepMatcher(IStepMatcher):
         return suggest, method_name, ''
 
     def slugify(self, predicate):
-        predicate = to_unicode(predicate)
         predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
         predicate = predicate.replace('??', '_').replace('?', '')
         return re.sub(r'[^\w]+', '_', predicate, re.U).strip('_')
@@ -469,7 +465,6 @@ class RegexpStepMatcher(IStepMatcher):
             doc = method.__doc__
             if not doc:
                 continue
-            doc = to_unicode(doc)
             doc = re.compile('^' + doc + '$')
             m = doc.match(augmented_predicate)
 

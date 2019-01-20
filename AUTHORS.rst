@@ -17,3 +17,4 @@ Contributors
 
 * Iza STOLARSKA (izabeera)
 * Michael SOUZA (midnighteuler)
+* Hugo (hugovk)

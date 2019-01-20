@@ -5,7 +5,6 @@ import re
 
 from morelia.exceptions import MissingStepError
 from morelia.i18n import TRANSLATIONS
-from morelia.utils import to_unicode
 
 
 class INode:
@@ -118,12 +117,10 @@ class Morelia(LabeledNode, INode):
             parent_reconstruction = self.parent.reconstruction().strip('\n')
         reconstruction = self.reconstruction()
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
-        args = tuple([to_unicode(i) for i in args])
         return '\n  File "%s", line %s, in %s\n %s\n%s' % args
 
     def reconstruction(self):
-        predicate = to_unicode(self.predicate)
-        recon = '{}{}: {}'.format(self.prefix(), self.keyword, predicate)
+        recon = '{}{}: {}'.format(self.prefix(), self.keyword, self.predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
@@ -154,8 +151,7 @@ class Feature(Morelia):
             pass
 
     def reconstruction(self):
-        predicate = to_unicode(self.predicate)
-        predicate = predicate.replace('\n', '\n    ')
+        predicate = self.predicate.replace('\n', '\n    ')
         recon = '{}{}: {}'.format(self.prefix(), self.keyword, predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
@@ -241,7 +237,7 @@ class Step(Morelia):
         raise MissingStepError(predicate, suggest, method_name, docstring)
 
     def get_real_reconstruction(self):
-        predicate = to_unicode(self._augment_predicate())
+        predicate = self._augment_predicate()
         recon = '    {} {}'.format(self.keyword, predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon

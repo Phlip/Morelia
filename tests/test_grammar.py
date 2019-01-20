@@ -1,6 +1,5 @@
 from unittest import TestCase
-
-from mock import sentinel, Mock, ANY
+from unittest.mock import sentinel, Mock, ANY
 
 from morelia.decorators import tags
 from morelia.formatters import IFormatter

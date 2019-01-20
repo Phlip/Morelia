@@ -8,7 +8,6 @@ import time
 
 from morelia.grammar import Feature, Scenario, Step
 from morelia.exceptions import MissingStepError
-from morelia.utils import to_docstring, fix_exception_encoding, to_unicode
 
 
 class IVisitor:
@@ -117,11 +116,10 @@ class TestVisitor(IVisitor):
             status = 'fail'
             etype, evalue, etraceback = sys.exc_info()
             tb = traceback.extract_tb(etraceback)[:-2]
-            fix_exception_encoding(evalue)
             self._scenario_exception = (
                 node.parent.get_real_reconstruction() + reconstruction,
-                ''.join(to_unicode(line) for line in traceback.format_list(tb)),
-                ''.join(to_unicode(line) for line in traceback.format_exception_only(etype, evalue))
+                ''.join(traceback.format_list(tb)),
+                ''.join(traceback.format_exception_only(etype, evalue))
             )
         except (SystemExit, Exception) as exc:
             status = 'error'
@@ -178,4 +176,4 @@ class StepMatcherVisitor(IVisitor):
         suggest = ''.join(self._not_matched.values())
         if suggest:
             diagnostic = 'Cannot match steps:\n\n{}'.format(suggest)
-            self._suite.fail(to_docstring(diagnostic))
+            self._suite.fail(diagnostic)

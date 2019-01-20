@@ -3,7 +3,7 @@ import unittest
 from mock import Mock, patch
 from morelia.config import Config, get_config
 from morelia.decorators import tags
-from six.moves.configparser import NoSectionError, NoOptionError, SafeConfigParser
+from configparser import NoSectionError, NoOptionError, SafeConfigParser
 
 
 @tags(['unit'])

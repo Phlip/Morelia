@@ -6,10 +6,9 @@ Installation
 In order to install Morelia, make sure Python is installed. Morelia was tested
 with:
 
-    * Python 2.7
-    * Python 3.4
     * Python 3.5
     * Python 3.6
+    * Python 3.7
 
 Stable release
 --------------
@@ -32,7 +31,7 @@ you through the process.
 From sources
 ------------
 
-The sources for Morelia can be downloaded from the `Github repo`_.
+The sources for Morelia can be downloaded from the `GitHub repo`_.
 
 You can either clone the public repository:
 
@@ -53,5 +52,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/kidosoft/Morelia
+.. _GitHub repo: https://github.com/kidosoft/Morelia
 .. _tarball: https://github.com/kidosoft/Morelia/tarball/master

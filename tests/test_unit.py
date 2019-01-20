@@ -19,11 +19,11 @@ class MoreliaReconstructionTestCase(TestCase):
     def test_should_reconstruct_unicode(self):
         """ Scenario: unicode input """
         # Arrange
-        obj = Morelia('???', u'zażółć gęślą jaźń')
+        obj = Morelia('???', 'zażółć gęślą jaźń')
         # Act
         result = obj.reconstruction()
         # Assert
-        self.assertEqual(result, u'???: zażółć gęślą jaźń\n')
+        self.assertEqual(result, '???: zażółć gęślą jaźń\n')
 
     def test_should_reconstruct_utf8(self):
         """ Scenario: utf8 input """
@@ -32,7 +32,7 @@ class MoreliaReconstructionTestCase(TestCase):
         # Act
         result = obj.reconstruction()
         # Assert
-        self.assertEqual(result, u'???: zażółć gęślą jaźń\n')
+        self.assertEqual(result, '???: zażółć gęślą jaźń\n')
 
 
 @tags(['unit'])
@@ -67,7 +67,7 @@ class StepFindStepTestCase(TestCase):
     def test_should_not_find_method(self):
         """ Scenario: not found """
         # Arrange
-        obj = Step('???', u'some_method')
+        obj = Step('???', 'some_method')
         matcher = Mock()
         matcher.find.return_value = (None, [], {})
         matcher.suggest.return_value = ('suggest', 'method_name', 'docstring')

@@ -48,8 +48,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Morelia'
-copyright = u'2009-2017, Morelia authors'
+project = 'Morelia'
+copyright = '2009-2017, Morelia authors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -208,7 +208,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ('index', 'Morelia.tex', u'Morelia Documentation', u'Morelia authors', 'manual'),
+    ('index', 'Morelia.tex', 'Morelia Documentation', 'Morelia authors', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -237,8 +237,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'morelia', u'Morelia Documentation',
-     [u'Morelia authors'], 1)
+    ('index', 'morelia', 'Morelia Documentation',
+     ['Morelia authors'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -251,7 +251,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [(
-    'index', 'Morelia', u'Morelia Documentation', u'Morelia authors',
+    'index', 'Morelia', 'Morelia Documentation', 'Morelia authors',
     'Morelia', '', 'Miscellaneous'),
 ]
 

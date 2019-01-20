@@ -1,6 +1,5 @@
 import inspect
 import sys
-import six
 import traceback
 from gettext import ngettext
 from abc import ABCMeta, abstractmethod
@@ -12,7 +11,7 @@ from morelia.exceptions import MissingStepError
 from morelia.utils import to_docstring, fix_exception_encoding, to_unicode
 
 
-class IVisitor(object):
+class IVisitor:
 
     __metaclass__ = ABCMeta
 
@@ -82,10 +81,10 @@ class TestVisitor(IVisitor):
     def _fail_feature(self):
         failed_msg = ngettext('{} scenario failed', '{} scenarios failed', self._scenarios_failed)
         passed_msg = ngettext('{} scenario passed', '{} scenarios passed', self._scenarios_passed)
-        msg = u'{}, {}'.format(failed_msg, passed_msg).format(self._scenarios_failed, self._scenarios_passed)
+        msg = '{}, {}'.format(failed_msg, passed_msg).format(self._scenarios_failed, self._scenarios_passed)
         prefix = '-' * 66
         for step_line, tb, exc in self._exceptions:
-            msg += u'\n{}{}\n{}{}'.format(prefix, step_line, tb, exc).replace(u'\n', u'\n    ')
+            msg += '\n{}{}\n{}{}'.format(prefix, step_line, tb, exc).replace('\n', '\n    ')
         assert self._scenarios_failed == 0, msg
 
     def _scenario_visit(self, node):
@@ -142,12 +141,8 @@ class TestVisitor(IVisitor):
         method, args, kwargs = node.find_step(self._matcher)
         spec = None
         arglist = []
-        if six.PY2:
-            spec = inspect.getargspec(method)
-            arglist = spec.args or spec.keywords
-        else:
-            spec = inspect.getfullargspec(method)
-            arglist = spec.args + spec.kwonlyargs
+        spec = inspect.getfullargspec(method)
+        arglist = spec.args + spec.kwonlyargs
 
         if '_labels' in arglist:
             kwargs['_labels'] = node.get_labels()
@@ -180,7 +175,7 @@ class StepMatcherVisitor(IVisitor):
         pass
 
     def report_missing(self):
-        suggest = u''.join(self._not_matched.values())
+        suggest = ''.join(self._not_matched.values())
         if suggest:
-            diagnostic = u'Cannot match steps:\n\n{}'.format(suggest)
+            diagnostic = 'Cannot match steps:\n\n{}'.format(suggest)
             self._suite.fail(to_docstring(diagnostic))

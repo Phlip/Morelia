@@ -60,7 +60,7 @@ def fetch_public_key(repo):
 
     Travis API docs: http://docs.travis-ci.com/api/#repository-keys
     """
-    keyurl = 'https://api.travis-ci.org/repos/{0}/key'.format(repo)
+    keyurl = 'https://api.travis-ci.org/repos/{}/key'.format(repo)
     data = json.loads(urlopen(keyurl).read().decode())
     if 'key' not in data:
         errmsg = "Could not find public key for repo: {}.\n".format(repo)

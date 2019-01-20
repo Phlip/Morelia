@@ -1,4 +1,4 @@
-from six.moves import StringIO
+from io import StringIO
 import unittest
 
 from mock import sentinel, Mock
@@ -119,9 +119,9 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        green = u'\x1b[32m'
-        reset = u'\x1b[0m'
-        expected = '%s%-60s # 0.010s%s\n' % (green, line, reset)
+        green = '\x1b[32m'
+        reset = '\x1b[0m'
+        expected = '{}{:<60} # 0.010s{}\n'.format(green, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_fail(self):
@@ -136,9 +136,9 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        red = u'\x1b[31m'
-        reset = u'\x1b[0m'
-        expected = '%s%-60s # 0.010s%s\n' % (red, line, reset)
+        red = '\x1b[31m'
+        reset = '\x1b[0m'
+        expected = '{}{:<60} # 0.010s{}\n'.format(red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_error(self):
@@ -153,9 +153,9 @@ class ColorTextFormatterOutputTestCase(unittest.TestCase):
         node = Mock(Step)
         obj.output(node, line, status, duration)
         # Assert
-        red = u'\x1b[31m'
-        reset = u'\x1b[0m'
-        expected = '%s%-60s # 0.010s%s\n' % (red, line, reset)
+        red = '\x1b[31m'
+        reset = '\x1b[0m'
+        expected = '{}{:<60} # 0.010s{}\n'.format(red, line, reset)
         self.assertEqual(stream.getvalue(), expected)
 
     def test_should_output_for_not_step(self):

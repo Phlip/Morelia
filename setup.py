@@ -8,9 +8,7 @@ with open('README.rst') as readme_file:
 
 requirements = [
     # TODO: put package requirements here
-    'mock',
     'parse',
-    'six',
 ]
 
 setup(
@@ -29,6 +27,7 @@ setup(
     license='MIT license',
     zip_safe=False,
     keywords='test bdd behavior',
+    python_requires='>=3.5',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -37,17 +36,14 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Software Development :: Testing',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3 :: Only',
     ],
     extras_require={
         # eg:
         #   'rst': ['docutils>=0.11'],
-        ':python_version=="2.7"': ['mock'],
     },
 )

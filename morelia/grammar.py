@@ -3,14 +3,12 @@ import copy
 import itertools
 import re
 
-from six import moves
-
 from morelia.exceptions import MissingStepError
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
 
 
-class INode(object):
+class INode:
 
     __metaclass__ = ABCMeta
 
@@ -37,10 +35,10 @@ class INode(object):
             visitor.after_visit(self)
 
 
-class LabeledNode(object):
+class LabeledNode:
 
     def __init__(self, *args, **kwargs):
-        super(LabeledNode, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._labels = []
 
     def add_labels(self, tags):
@@ -56,7 +54,7 @@ class LabeledNode(object):
 class Morelia(LabeledNode, INode):
 
     def __init__(self, keyword, predicate, steps=[]):
-        super(Morelia, self).__init__()
+        super().__init__()
         self.parent = None
         self.additional_data = {}
         self.keyword = keyword
@@ -91,7 +89,7 @@ class Morelia(LabeledNode, INode):
         class_name = cls.__name__
         name = class_name.lower()
         name = TRANSLATIONS[language].get(name, class_name)
-        return r'\s*(?P<keyword>' + name + '):?(?:\s+(?P<predicate>.*))?$'
+        return r'\s*(?P<keyword>' + name + r'):?(?:\s+(?P<predicate>.*))?$'
 
     def count_dimensions(self):
         ''' Get number of rows. '''
@@ -121,11 +119,11 @@ class Morelia(LabeledNode, INode):
         reconstruction = self.reconstruction()
         args = (self.get_filename(), self.line_number, parent_reconstruction, reconstruction, diagnostic)
         args = tuple([to_unicode(i) for i in args])
-        return u'\n  File "%s", line %s, in %s\n %s\n%s' % args
+        return '\n  File "%s", line %s, in %s\n %s\n%s' % args
 
     def reconstruction(self):
         predicate = to_unicode(self.predicate)
-        recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
+        recon = '{}{}: {}'.format(self.prefix(), self.keyword, predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
@@ -158,7 +156,7 @@ class Feature(Morelia):
     def reconstruction(self):
         predicate = to_unicode(self.predicate)
         predicate = predicate.replace('\n', '\n    ')
-        recon = u'%s%s: %s' % (self.prefix(), self.keyword, predicate)
+        recon = '{}{}: {}'.format(self.prefix(), self.keyword, predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
@@ -175,7 +173,7 @@ class Scenario(Morelia):
 
         for indices in schedule:
             self.row_indices = indices
-            super(Scenario, self).accept(visitor)
+            super().accept(visitor)
 
     def permute_schedule(self):
         dims = self.count_Row_dimensions()
@@ -216,7 +214,7 @@ class Background(Morelia):
 class Step(Morelia):
 
     def __init__(self, *args, **kwargs):
-        super(Step, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.payload = ''
 
     def prefix(self):
@@ -244,7 +242,7 @@ class Step(Morelia):
 
     def get_real_reconstruction(self):
         predicate = to_unicode(self._augment_predicate())
-        recon = u'    %s %s' % (self.keyword, predicate)
+        recon = '    {} {}'.format(self.keyword, predicate)
         recon += '\n' if recon[-1] != '\n' else ''
         return recon
 
@@ -252,7 +250,7 @@ class Step(Morelia):
         if self.parent is None:
             return self.predicate
         dims = self.parent.count_Row_dimensions()
-        if set(dims) == set([0]):
+        if set(dims) == {0}:
             return self.predicate
         rep = re.compile(r'\<(\w+)\>')
         replitrons = rep.findall(self.predicate)
@@ -266,7 +264,7 @@ class Step(Morelia):
                 table = self.parent.steps[x].steps
 
                 try:
-                    row = next(moves.filter(lambda step: isinstance(step, Row), table))
+                    row = next(filter(lambda step: isinstance(step, Row), table))
                 except StopIteration:
                     pass
                 else:
@@ -370,7 +368,7 @@ class Comment(Morelia):
 
 
 def _special_range(n):
-    return moves.range(n) if n else [0]
+    return range(n) if n else [0]
 
 
 def _permute_indices(arr):

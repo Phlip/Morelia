@@ -3,17 +3,13 @@
 
 language: python
 python:
-    - "2.7"
-    - "3.4"
     - "3.5"
     - "3.6"
-    - "pypy"
     - "pypy3.5"
 matrix:
     include:
         - python: 3.7
           dist: xenial
-          sudo: true
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
@@ -23,7 +19,7 @@ install:
 script: make ci
 after_success: coveralls
 
-# After you create the Github repo and add it to Travis, run the
+# After you create the GitHub repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
 deploy:
   provider: pypi

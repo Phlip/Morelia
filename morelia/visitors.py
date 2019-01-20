@@ -1,6 +1,5 @@
 import inspect
 import sys
-import six
 import traceback
 from gettext import ngettext
 from abc import ABCMeta, abstractmethod
@@ -142,12 +141,8 @@ class TestVisitor(IVisitor):
         method, args, kwargs = node.find_step(self._matcher)
         spec = None
         arglist = []
-        if six.PY2:
-            spec = inspect.getargspec(method)
-            arglist = spec.args or spec.keywords
-        else:
-            spec = inspect.getfullargspec(method)
-            arglist = spec.args + spec.kwonlyargs
+        spec = inspect.getfullargspec(method)
+        arglist = spec.args + spec.kwonlyargs
 
         if '_labels' in arglist:
             kwargs['_labels'] = node.get_labels()

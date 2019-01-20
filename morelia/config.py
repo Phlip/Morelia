@@ -5,7 +5,7 @@ Configuration
 
 import os
 
-from six.moves.configparser import (
+from configparser import (
     SafeConfigParser,
     NoSectionError,
     NoOptionError

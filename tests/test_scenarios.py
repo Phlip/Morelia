@@ -1,6 +1,5 @@
 import os.path
 import re
-import six
 from unittest import TestCase
 
 from morelia import run
@@ -199,10 +198,7 @@ class InfoOnAllFailingScenariosTest(TestCase):
         patterns = self._failing_patterns
         message = self._catch_exception.args[0]
         for pattern in patterns:
-            if six.PY2:
-                self.assertRegexpMatches(message, pattern)
-            else:
-                self.assertRegex(message, pattern)
+            self.assertRegex(message, pattern)
 
     def step_I_won_t_get_assertion_error(self):
         r'I won\'t get assertion error'

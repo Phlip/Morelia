@@ -1,8 +1,3 @@
-import sys
-
-import six
-
-
 def to_unicode(text):
     """Try convert to unicode independently on python version."""
     try:
@@ -12,21 +7,9 @@ def to_unicode(text):
     return text
 
 
-if six.PY2:
+def fix_exception_encoding(exc):
+    pass
 
-    def fix_exception_encoding(exc):
-        if len(exc.args):
-            message = exc.args[0]
-            if isinstance(message, unicode):  # noqa
-                exc.args = (message.encode(sys.stderr.encoding or "ascii", "xmlcharrefreplace"),) + exc.args[1:]
 
-    def to_docstring(text):
-        return text.encode('utf-8')
-
-else:
-
-    def fix_exception_encoding(exc):
-        pass
-
-    def to_docstring(text):
-        return text
+def to_docstring(text):
+    return text

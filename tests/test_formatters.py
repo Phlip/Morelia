@@ -1,4 +1,4 @@
-from six.moves import StringIO
+from io import StringIO
 import unittest
 
 from mock import sentinel, Mock

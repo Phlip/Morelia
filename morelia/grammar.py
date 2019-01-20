@@ -3,8 +3,6 @@ import copy
 import itertools
 import re
 
-from six import moves
-
 from morelia.exceptions import MissingStepError
 from morelia.i18n import TRANSLATIONS
 from morelia.utils import to_unicode
@@ -266,7 +264,7 @@ class Step(Morelia):
                 table = self.parent.steps[x].steps
 
                 try:
-                    row = next(moves.filter(lambda step: isinstance(step, Row), table))
+                    row = next(filter(lambda step: isinstance(step, Row), table))
                 except StopIteration:
                     pass
                 else:
@@ -370,7 +368,7 @@ class Comment(Morelia):
 
 
 def _special_range(n):
-    return moves.range(n) if n else [0]
+    return range(n) if n else [0]
 
 
 def _permute_indices(arr):

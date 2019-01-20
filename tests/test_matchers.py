@@ -215,7 +215,7 @@ class MethodNameStepMatcherSuggestTestCase(unittest.TestCase):
         """ Scenariusz: suggest """
         # Arrange
         obj = MethodNameStepMatcher(sentinel.suite)
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
+        pattern = '    def step_%(method_name)s(self%(args)s):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
             ('tastes great', 'tastes_great', ''),
             ('less filling', 'less_filling', ''),
@@ -366,8 +366,8 @@ class DocStringStepMatcherMatchTestCase(unittest.TestCase):
     def test_should_match_with_utf8_string(self):
         """ Scenario: match with utf8 string """
         # Arrange
-        predicate = u'zażółć gęślą jaźń'
-        augmented_predicate = u'zażółć gęślą jaźń'
+        predicate = 'zażółć gęślą jaźń'
+        augmented_predicate = 'zażółć gęślą jaźń'
         method_name = 'step_utf8_match'
         docstring = r'zażółć gęślą jaźń'
         method = Mock(__doc__=docstring)
@@ -391,7 +391,7 @@ class DocStringStepMatcherSuggestTestCase(unittest.TestCase):
         # Arrange
         obj = RegexpStepMatcher(sentinel.suite)
         # Act
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
+        pattern = '    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
             ('tastes great', 'tastes_great', r"r'tastes great'", ''),
             ('less filling', 'less_filling', r"r'less filling'", ''),
@@ -551,7 +551,7 @@ class ParseStepMatcherSuggestTestCase(unittest.TestCase):
         # Arrange
         obj = ParseStepMatcher(sentinel.suite)
         # Act
-        pattern = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
+        pattern = '    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n'
         test_data = [
             ('tastes great', 'tastes_great', r"r'tastes great'", ''),
             ('less filling', 'less_filling', r"r'less filling'", ''),

@@ -20,7 +20,7 @@ def expand_all(path):
     return os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
 
 
-class Config(object):
+class Config:
     """Configuration object.
 
     Configuration is read from ini-style files and environment variables

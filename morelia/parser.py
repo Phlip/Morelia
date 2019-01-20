@@ -25,7 +25,7 @@ from morelia.i18n import TRANSLATIONS
 from morelia.utils import fix_exception_encoding, to_unicode
 
 
-class AST(object):
+class AST:
 
     def __init__(self, steps, test_visitor_class=TestVisitor,
                  matcher_visitor_class=StepMatcherVisitor):
@@ -64,7 +64,7 @@ class AST(object):
         return root_matcher
 
 
-class Parser(object):
+class Parser:
 
     def __init__(self, language=None):
         self.thangs = [
@@ -150,9 +150,9 @@ class Parser(object):
         else:
             s = Step('???', line)
             s.line_number = self._line_producer.line_number
-            feature_name = TRANSLATIONS[self._language_parser.language].get('feature', u'Feature')
+            feature_name = TRANSLATIONS[self._language_parser.language].get('feature', 'Feature')
             feature_name = feature_name.replace('|', ' or ')
-            s.enforce(False, u'feature files must start with a %s' % feature_name)
+            s.enforce(False, 'feature files must start with a %s' % feature_name)
 
     def parse_feature(self, lines):
         lines = to_unicode(lines)
@@ -202,12 +202,12 @@ class Parser(object):
         previous.validate_predicate()
 
 
-class LabelParser(object):
+class LabelParser:
 
-    def __init__(self, labels_pattern='@\w+'):
+    def __init__(self, labels_pattern=r'@\w+'):
         self._labels = []
         self._labels_re = re.compile(labels_pattern)
-        self._labels_prefix_re = re.compile('^\s*@')
+        self._labels_prefix_re = re.compile(r'^\s*@')
 
     def parse(self, line):
         """Parse labels.
@@ -234,9 +234,9 @@ class LabelParser(object):
         return labels
 
 
-class LanguageParser(object):
+class LanguageParser:
 
-    def __init__(self, lang_pattern='^# language: (\w+)', default_language=None):
+    def __init__(self, lang_pattern=r'^# language: (\w+)', default_language=None):
         if default_language is None:
             default_language = 'en'
         self._language = default_language
@@ -260,9 +260,9 @@ class LanguageParser(object):
         return self._language
 
 
-class DocStringParser(object):
+class DocStringParser:
 
-    def __init__(self, source, pattern='\s*"""\s*'):
+    def __init__(self, source, pattern=r'\s*"""\s*'):
         self._source = source
         self._docstring_re = re.compile(pattern)
         self._payload = []
@@ -290,7 +290,7 @@ class DocStringParser(object):
         return textwrap.dedent('\n'.join(self._payload))
 
 
-class LineSource(object):
+class LineSource:
 
     def __init__(self, text):
         self._lines = iter([line for line in text.split('\n') if line])

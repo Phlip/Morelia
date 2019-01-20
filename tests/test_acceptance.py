@@ -41,7 +41,7 @@ class MoreliaSuite(TestCase):
         self.result = sum(self.stack)
 
     def step_the_result_should_be_on_the_screen(self, number):
-        "the result should be (\d+) on the screen"
+        r"the result should be (\d+) on the screen"
 
         self.assertEqual(int(number), self.result)
 
@@ -323,7 +323,7 @@ class MoreliaSuite(TestCase):
         self.assertEqual(['beach', 'beach', 'beach', 'hotel', 'hotel', 'hotel'], zones)
 
     def test_harvest(self):
-        r = Row('\|', '')
+        r = Row(r'\|', '')
 
         def harvest(predicate):
             r.predicate = predicate
@@ -331,7 +331,7 @@ class MoreliaSuite(TestCase):
 
         self.assertEqual(['crock', 'of'], harvest('crock | of'))
         self.assertEqual(['crock', 'of'], harvest('crock | of |'))
-        self.assertEqual(['crane \| wife', 'three'], harvest('crane \| wife | three'))
+        self.assertEqual([r'crane \| wife', 'three'], harvest(r'crane \| wife | three'))
 
     def step_party_zone(self, zone):
         r'party (\w+)'
@@ -537,7 +537,7 @@ class MoreliaSuite(TestCase):
             language = self._get_language()
             p = Parser(language=language)
             self.file_contents.replace('\\#', '#')  # note - this is how to unescape characters - DIY
-            prefix = u'{}: Sample\n{}: Sample\n'.format(self.feature_keyword, self.scenario_keyword)
+            prefix = '{}: Sample\n{}: Sample\n'.format(self.feature_keyword, self.scenario_keyword)
             p.parse_features(prefix + self.file_contents).evaluate(self)
         except (MissingStepError, AssertionError) as e:
             self.diagnostic = str(e)
@@ -599,7 +599,7 @@ class MoreliaSuite(TestCase):
         flags = flags or 0
         pattern = to_unicode(pattern)
         string = to_unicode(string)
-        diagnostic = u'"%s" not found in "%s"' % (pattern, string)
+        diagnostic = '"{}" not found in "{}"'.format(pattern, string)
         self.assertTrue(re.search(pattern, string, flags) is not None, diagnostic)
 
     def _get_default_machers(self):
@@ -614,12 +614,12 @@ class PLMoreliaSuite(MoreliaSuite):
 
     def setUp(self):
         self.culture = []
-        self.feature_keyword = u'Właściwość'
-        self.scenario_keyword = u'Scenariusz'
-        self.given_keyword = u'Zakładając, że'
-        self.then_keyword = u'Wtedy'
-        self.when_keyword = u'Gdy'
-        self.and_keyword = u'I'
+        self.feature_keyword = 'Właściwość'
+        self.scenario_keyword = 'Scenariusz'
+        self.given_keyword = 'Zakładając, że'
+        self.then_keyword = 'Wtedy'
+        self.when_keyword = 'Gdy'
+        self.and_keyword = 'I'
 
     def _get_language(self):
         return 'pl'

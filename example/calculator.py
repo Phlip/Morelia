@@ -17,7 +17,7 @@ class CalculatorNotPoweredError(Exception):
     pass
 
 
-class Calculator(object):
+class Calculator:
     """Calculator."""
 
     def __init__(self):

@@ -64,7 +64,7 @@ class StepMatcherVisitorReportMissingTestCase(unittest.TestCase):
         # Act
         obj.report_missing()
         # Assert
-        suite.fail.assert_called_once_with(u'Cannot match steps:\n\nsuggest string')
+        suite.fail.assert_called_once_with('Cannot match steps:\n\nsuggest string')
 
     def test_should_not_fail(self):
         """ Scenario: no steps missing """

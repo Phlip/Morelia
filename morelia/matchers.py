@@ -1,4 +1,4 @@
-"""
+r"""
 Steps
 =====
 
@@ -290,7 +290,7 @@ import parse
 from morelia.utils import to_unicode
 
 
-class IStepMatcher(object):
+class IStepMatcher:
     """Matches methods to steps.
 
     Subclasses should implement at least `match` and `suggest` methods.
@@ -352,12 +352,12 @@ class IStepMatcher(object):
         """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
-        suggest = u'    def step_%(method_name)s(self%(args)s):\n        %(docstring)s\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
-            'method_name': method_name,
-            'args': extra_arguments,
-            'docstring': docstring,
-            'predicate': predicate.replace("'", "\\'"),
-        }
+        suggest = '    def step_{method_name}(self{args}):\n        {docstring}\n\n        raise NotImplementedError(\'{predicate}\')\n\n'.format(
+            method_name=method_name,
+            args=extra_arguments,
+            docstring=docstring,
+            predicate=predicate.replace("'", "\\'"),
+        )
         return suggest, method_name, docstring
 
     def _suggest_doc_string(self, predicate):
@@ -416,9 +416,9 @@ class IStepMatcher(object):
     def slugify(self, predicate):
         predicate = to_unicode(predicate)
         result = []
-        for part in re.split('[^\w]+', predicate):
+        for part in re.split(r'[^\w]+', predicate):
             part = unicodedata.normalize('NFD', part).encode('ascii', 'replace').decode('utf-8')
-            part = part.replace(u'??', u'_').replace(u'?', u'')
+            part = part.replace('??', '_').replace('?', '')
             try:
                 float(part)
             except ValueError:
@@ -446,17 +446,17 @@ class MethodNameStepMatcher(IStepMatcher):
     def suggest(self, predicate):
         """See :py:meth:`IStepMatcher.suggest`."""
         method_name = self.slugify(predicate)
-        suggest = u'    def step_%(method_name)s(self):\n\n        raise NotImplementedError(\'%(predicate)s\')\n\n' % {
-            'method_name': method_name,
-            'predicate': predicate.replace("'", "\\'"),
-        }
+        suggest = '    def step_{method_name}(self):\n\n        raise NotImplementedError(\'{predicate}\')\n\n'.format(
+            method_name=method_name,
+            predicate=predicate.replace("'", "\\'"),
+        )
         return suggest, method_name, ''
 
     def slugify(self, predicate):
         predicate = to_unicode(predicate)
         predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
-        predicate = predicate.replace(u'??', u'_').replace(u'?', u'')
-        return re.sub(u'[^\w]+', u'_', predicate, re.U).strip('_')
+        predicate = predicate.replace('??', '_').replace('?', '')
+        return re.sub(r'[^\w]+', '_', predicate, re.U).strip('_')
 
 
 class RegexpStepMatcher(IStepMatcher):

@@ -163,15 +163,15 @@ import sys
 from morelia.grammar import Step, Feature
 
 colors = {
-    'normal': u'\x1b[30m',
-    'fail': u'\x1b[31m',
-    'error': u'\x1b[31m',
-    'pass': u'\x1b[32m',
-    'reset': u'\x1b[0m',
+    'normal': '\x1b[30m',
+    'fail': '\x1b[31m',
+    'error': '\x1b[31m',
+    'pass': '\x1b[32m',
+    'reset': '\x1b[0m',
 }
 
 
-class IFormatter(object):
+class IFormatter:
     """Abstract Base Class for all formatters."""
 
     __metaclass__ = ABCMeta
@@ -212,7 +212,7 @@ class PlainTextFormatter(IFormatter):
             self._stream.write('\n')
         if isinstance(node, Step):
             status = status.lower()
-            text = '%-60s # %-5s %.3fs\n' % (
+            text = '{:<60} # {:<5} {:.3f}s\n'.format(
                 line.strip('\n'),
                 status,
                 duration,
@@ -232,7 +232,7 @@ class ColorTextFormatter(PlainTextFormatter):
             self._stream.write('\n')
         if isinstance(node, Step):
             status = status.lower()
-            text = '%s%-60s # %.3fs%s\n' % (
+            text = '{}{:<60} # {:.3f}s{}\n'.format(
                 colors[status],
                 line.strip('\n'),
                 duration,

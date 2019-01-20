@@ -10,7 +10,7 @@ from morelia.parser import Parser
 pwd = os.path.dirname(os.path.realpath(__file__))
 
 
-class SampleTestCaseMixIn(object):
+class SampleTestCaseMixIn:
 
     def runTest(self):
         pass  # pragma: no cover
@@ -81,10 +81,10 @@ class RegexSpecifiedScenariosTest(SampleTestCaseMixIn, TestCase):
 class InfoOnAllFailingScenariosTest(TestCase):
 
     def test_should_report_on_all_failing_scenarios(self):
-        self._add_failure_pattern = re.compile('Scenario: Add two numbers\n\s*Then the result should be "120" on the screen\n\s*.*AssertionError:\s*70 != 120', re.DOTALL)
-        self._substract_failure_pattern = re.compile('Scenario: Subtract two numbers\n\s*Then the result should be "80" on the screen\n\s*.*AssertionError:\s*70 != 80', re.DOTALL)
-        self._multiply_failure_pattern = re.compile('Scenario: Multiply two numbers\n\s*Then the result should be "12" on the screen\n\s*.*AssertionError:\s*3 != 12', re.DOTALL)
-        self._division_failure_pattern = re.compile('Scenario: Divide two numbers\n\s*Then the result should be "4" on the screen\n\s*.*AssertionError:\s*2 != 4', re.DOTALL)
+        self._add_failure_pattern = re.compile('Scenario: Add two numbers\n\\s*Then the result should be "120" on the screen\n\\s*.*AssertionError:\\s*70 != 120', re.DOTALL)
+        self._substract_failure_pattern = re.compile('Scenario: Subtract two numbers\n\\s*Then the result should be "80" on the screen\n\\s*.*AssertionError:\\s*70 != 80', re.DOTALL)
+        self._multiply_failure_pattern = re.compile('Scenario: Multiply two numbers\n\\s*Then the result should be "12" on the screen\n\\s*.*AssertionError:\\s*3 != 12', re.DOTALL)
+        self._division_failure_pattern = re.compile('Scenario: Divide two numbers\n\\s*Then the result should be "4" on the screen\n\\s*.*AssertionError:\\s*2 != 4', re.DOTALL)
         filename = os.path.join(pwd, 'features/info_on_all_failing_scenarios.feature')
         run(filename, self)
 

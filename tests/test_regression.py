@@ -75,4 +75,4 @@ class EncodingErrorInTraceback(TestCase):
     def step_failing(self):
         r'Zażółć gęślą jaźń'
 
-        assert False, u'Zażółć gęślą jaźń Эх, чужак! Общий съём цен шляп (юфть) — вдрызг!'
+        assert False, 'Zażółć gęślą jaźń Эх, чужак! Общий съём цен шляп (юфть) — вдрызг!'

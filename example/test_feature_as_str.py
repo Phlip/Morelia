@@ -1,4 +1,4 @@
-'''
+"""
 Feature: Addition
     In order to avoid silly mistakes
     As a math idiot
@@ -29,7 +29,7 @@ Scenario: Add two numbers - table
         | num1 | num2 | result |
         | 2    | 3    | 5      |
         | 4    | 5    | 9      |
-'''
+"""
 
 import unittest
 
@@ -40,15 +40,22 @@ from calculator import Calculator
 
 class CalculatorDocstringTestCase(unittest.TestCase):
     """Calculator acceptance test case."""
+
     def test_addition(self):
         """Addition feature."""
-        run(__file__, self, as_str=__doc__, scenario='Subsequent additions', verbose=True)
+        run(
+            __file__,
+            self,
+            as_str=__doc__,
+            scenario="Subsequent additions",
+            verbose=True,
+        )
 
     def setUp(self):
         self.calculator = Calculator()
 
     def step_I_have_powered_calculator_on(self):
-        r'I have powered calculator on'
+        r"I have powered calculator on"
         self.calculator.on()
 
     def step_I_enter_a_number_into_the_calculator(self, number):
@@ -63,5 +70,5 @@ class CalculatorDocstringTestCase(unittest.TestCase):
         self.assertEqual(int(number), self.calculator.get_result())
 
 
-if __name__ == '__main__':  # pragma: nobranch
+if __name__ == "__main__":  # pragma: nobranch
     unittest.main()

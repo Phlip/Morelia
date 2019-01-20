@@ -141,5 +141,5 @@ class CalculatorOffTestCase(unittest.TestCase):
         self.assertEqual(self.calculator._stack, [])
 
 
-if __name__ == '__main__':  # pragma: nobranch
+if __name__ == "__main__":  # pragma: nobranch
     unittest.main()

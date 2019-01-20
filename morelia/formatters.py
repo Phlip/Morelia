@@ -163,11 +163,11 @@ import sys
 from morelia.grammar import Step, Feature
 
 colors = {
-    'normal': '\x1b[30m',
-    'fail': '\x1b[31m',
-    'error': '\x1b[31m',
-    'pass': '\x1b[32m',
-    'reset': '\x1b[0m',
+    "normal": "\x1b[30m",
+    "fail": "\x1b[31m",
+    "error": "\x1b[31m",
+    "pass": "\x1b[32m",
+    "reset": "\x1b[0m",
 }
 
 
@@ -209,16 +209,12 @@ class PlainTextFormatter(IFormatter):
     def output(self, node, line, status, duration):
         """See :py:meth:`IFormatter.output`."""
         if isinstance(node, Feature):
-            self._stream.write('\n')
+            self._stream.write("\n")
         if isinstance(node, Step):
             status = status.lower()
-            text = '{:<60} # {:<5} {:.3f}s\n'.format(
-                line.strip('\n'),
-                status,
-                duration,
-            )
+            text = "{:<60} # {:<5} {:.3f}s\n".format(line.strip("\n"), status, duration)
         else:
-            text = '%s\n' % line.strip('\n')
+            text = "%s\n" % line.strip("\n")
         self._stream.write(text)
         self._stream.flush()
 
@@ -229,16 +225,13 @@ class ColorTextFormatter(PlainTextFormatter):
     def output(self, node, line, status, duration):
         """See :py:meth:`IFormatter.output`."""
         if isinstance(node, Feature):
-            self._stream.write('\n')
+            self._stream.write("\n")
         if isinstance(node, Step):
             status = status.lower()
-            text = '{}{:<60} # {:.3f}s{}\n'.format(
-                colors[status],
-                line.strip('\n'),
-                duration,
-                colors['reset']
+            text = "{}{:<60} # {:.3f}s{}\n".format(
+                colors[status], line.strip("\n"), duration, colors["reset"]
             )
         else:
-            text = '%s\n' % line.strip('\n')
+            text = "%s\n" % line.strip("\n")
         self._stream.write(text)
         self._stream.flush()

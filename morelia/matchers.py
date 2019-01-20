@@ -296,7 +296,7 @@ class IStepMatcher:
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, suite, step_pattern='^step_'):
+    def __init__(self, suite, step_pattern="^step_"):
         self._suite = suite
         self._matcher = re.compile(step_pattern)
         self._next = None
@@ -350,7 +350,7 @@ class IStepMatcher:
         """
         docstring, extra_arguments = self._suggest_doc_string(predicate)
         method_name = self.slugify(predicate)
-        suggest = '    def step_{method_name}(self{args}):\n        {docstring}\n\n        raise NotImplementedError(\'{predicate}\')\n\n'.format(
+        suggest = "    def step_{method_name}(self{args}):\n        {docstring}\n\n        raise NotImplementedError('{predicate}')\n\n".format(
             method_name=method_name,
             args=extra_arguments,
             docstring=docstring,
@@ -359,43 +359,44 @@ class IStepMatcher:
         return suggest, method_name, docstring
 
     def _suggest_doc_string(self, predicate):
-        predicate = predicate.replace("'", r"\'").replace('\n', r'\n')
+        predicate = predicate.replace("'", r"\'").replace("\n", r"\n")
 
         arguments = self._add_extra_args(r'["\<](.+?)["\>]', predicate)
         arguments = self._name_arguments(arguments)
 
         predicate = self.replace_placeholders(predicate, arguments)
-        predicate = re.sub(r' \s+', r'\\s+', predicate)
+        predicate = re.sub(r" \s+", r"\\s+", predicate)
 
         arguments = self._format_arguments(arguments)
         return "r'%s'" % predicate, arguments
 
     def _name_arguments(self, extra_arguments):
         if not extra_arguments:
-            return ''
+            return ""
         arguments = []
-        number_arguments_count = sum(1 for arg_type, arg in extra_arguments
-                                     if arg_type == 'number')
+        number_arguments_count = sum(
+            1 for arg_type, arg in extra_arguments if arg_type == "number"
+        )
         if number_arguments_count < 2:
-            num_suffixes = iter([''])
+            num_suffixes = iter([""])
         else:
             num_suffixes = iter(range(1, number_arguments_count + 1))
 
         for arg_type, arg in extra_arguments:
-            if arg_type == 'number':
-                arguments.append('number%s' % next(num_suffixes))
+            if arg_type == "number":
+                arguments.append("number%s" % next(num_suffixes))
             else:
                 arguments.append(arg)
         return arguments
 
     def _format_arguments(self, arguments):
         if not arguments:
-            return ''
-        return ', ' + ', '.join(arguments)
+            return ""
+        return ", " + ", ".join(arguments)
 
     def replace_placeholders(self, predicate, arguments):
         predicate = re.sub(r'".+?"', '"([^"]+)"', predicate)
-        predicate = re.sub(r'\<.+?\>', '(.+)', predicate)
+        predicate = re.sub(r"\<.+?\>", "(.+)", predicate)
         return predicate
 
     def _add_extra_args(self, matcher, predicate):
@@ -405,25 +406,29 @@ class IStepMatcher:
             try:
                 float(arg)
             except ValueError:
-                arg = ('id', self.slugify(arg))
+                arg = ("id", self.slugify(arg))
             else:
-                arg = ('number', arg)
+                arg = ("number", arg)
             result.append(arg)
         return result
 
     def slugify(self, predicate):
         result = []
-        for part in re.split(r'[^\w]+', predicate):
-            part = unicodedata.normalize('NFD', part).encode('ascii', 'replace').decode('utf-8')
-            part = part.replace('??', '_').replace('?', '')
+        for part in re.split(r"[^\w]+", predicate):
+            part = (
+                unicodedata.normalize("NFD", part)
+                .encode("ascii", "replace")
+                .decode("utf-8")
+            )
+            part = part.replace("??", "_").replace("?", "")
             try:
                 float(part)
             except ValueError:
                 pass
             else:
-                part = 'number'
+                part = "number"
             result.append(part)
-        return '_'.join(result).strip('_')
+        return "_".join(result).strip("_")
 
 
 class MethodNameStepMatcher(IStepMatcher):
@@ -431,8 +436,8 @@ class MethodNameStepMatcher(IStepMatcher):
 
     def match(self, predicate, augmented_predicate, step_methods):
         """See :py:meth:`IStepMatcher.match`."""
-        clean = re.sub(r'[^\w]', '_?', predicate)
-        pattern = '^step_' + clean + '$'
+        clean = re.sub(r"[^\w]", "_?", predicate)
+        pattern = "^step_" + clean + "$"
         regexp = re.compile(pattern)
         step_methods = [method for method in step_methods if regexp.match(method)]
         for method_name in step_methods:
@@ -443,16 +448,19 @@ class MethodNameStepMatcher(IStepMatcher):
     def suggest(self, predicate):
         """See :py:meth:`IStepMatcher.suggest`."""
         method_name = self.slugify(predicate)
-        suggest = '    def step_{method_name}(self):\n\n        raise NotImplementedError(\'{predicate}\')\n\n'.format(
-            method_name=method_name,
-            predicate=predicate.replace("'", "\\'"),
+        suggest = "    def step_{method_name}(self):\n\n        raise NotImplementedError('{predicate}')\n\n".format(
+            method_name=method_name, predicate=predicate.replace("'", "\\'")
         )
-        return suggest, method_name, ''
+        return suggest, method_name, ""
 
     def slugify(self, predicate):
-        predicate = unicodedata.normalize('NFD', predicate).encode('ascii', 'replace').decode('utf-8')
-        predicate = predicate.replace('??', '_').replace('?', '')
-        return re.sub(r'[^\w]+', '_', predicate, re.U).strip('_')
+        predicate = (
+            unicodedata.normalize("NFD", predicate)
+            .encode("ascii", "replace")
+            .decode("utf-8")
+        )
+        predicate = predicate.replace("??", "_").replace("?", "")
+        return re.sub(r"[^\w]+", "_", predicate, re.U).strip("_")
 
 
 class RegexpStepMatcher(IStepMatcher):
@@ -465,7 +473,7 @@ class RegexpStepMatcher(IStepMatcher):
             doc = method.__doc__
             if not doc:
                 continue
-            doc = re.compile('^' + doc + '$')
+            doc = re.compile("^" + doc + "$")
             m = doc.match(augmented_predicate)
 
             if m:
@@ -501,7 +509,7 @@ class ParseStepMatcher(IStepMatcher):
         def repl(match):
             if match.group(0).startswith('"'):
                 return '"{%s}"' % next(arguments)
-            return '{%s}' % next(arguments)
+            return "{%s}" % next(arguments)
 
         predicate = re.sub(r'".+?"|\<.+?\>', repl, predicate)
         return predicate

@@ -6,21 +6,22 @@ from morelia.decorators import tags
 from configparser import NoSectionError, NoOptionError, SafeConfigParser
 
 
-@tags(['unit'])
+@tags(["unit"])
 class ConfigGetTagsPatternTestCase(unittest.TestCase):
     """ Test :py:meth:`Config.get_tags_pattern`. """
 
-    @patch('morelia.config.os')
+    @patch("morelia.config.os")
     def test_should_return_tags_pattern_from_file(self, os):
         """ Scenario: tags pattern from file """
         # Arrange
         os.environ.__getitem__.side_effect = KeyError
 
         def config_read(section, key):
-            assert section == 'morelia'
-            if key == 'tags':
-                return 'tag1,tag2'
-            return ''
+            assert section == "morelia"
+            if key == "tags":
+                return "tag1,tag2"
+            return ""
+
         config_parser_class = Mock()
         config_parser_class.return_value.get.side_effect = config_read
         obj = Config(config_parser_class=config_parser_class)
@@ -28,19 +29,20 @@ class ConfigGetTagsPatternTestCase(unittest.TestCase):
         # Act
         pattern = obj.get_tags_pattern()
         # Assert
-        self.assertEqual(pattern, 'tag1,tag2')
+        self.assertEqual(pattern, "tag1,tag2")
 
-    @patch('morelia.config.os')
+    @patch("morelia.config.os")
     def test_should_not_tags_pattern_from_file_if_no_option(self, os):
         """ Scenario: tags pattern from file """
         # Arrange
         os.environ.__getitem__.side_effect = KeyError
 
         def config_read(section, key):
-            assert section == 'morelia'
-            if key == 'tags':
+            assert section == "morelia"
+            if key == "tags":
                 raise NoOptionError(None, None)
-            return ''
+            return ""
+
         config_parser_class = Mock()
         config_parser_class.return_value.get.side_effect = config_read
         obj = Config(config_parser_class=config_parser_class)
@@ -48,19 +50,20 @@ class ConfigGetTagsPatternTestCase(unittest.TestCase):
         # Act
         pattern = obj.get_tags_pattern()
         # Assert
-        self.assertEqual(pattern, '')
+        self.assertEqual(pattern, "")
 
-    @patch('morelia.config.os')
+    @patch("morelia.config.os")
     def test_should_not_tags_pattern_from_file_if_no_section(self, os):
         """ Scenario: tags pattern from file """
         # Arrange
         os.environ.__getitem__.side_effect = KeyError
 
         def config_read(section, key):
-            assert section == 'morelia'
-            if key == 'tags':
+            assert section == "morelia"
+            if key == "tags":
                 raise NoSectionError(None)
-            return ''
+            return ""
+
         config_parser_class = Mock()
         config_parser_class.return_value.get.side_effect = config_read
         obj = Config(config_parser_class=config_parser_class)
@@ -68,29 +71,30 @@ class ConfigGetTagsPatternTestCase(unittest.TestCase):
         # Act
         pattern = obj.get_tags_pattern()
         # Assert
-        self.assertEqual(pattern, '')
+        self.assertEqual(pattern, "")
 
-    @patch('morelia.config.os')
+    @patch("morelia.config.os")
     def test_should_return_tags_pattern_from_environment(self, os):
         """ Scenario: tags pattern from environment """
         # Arrange
 
         def environ_get(key):
-            if key == 'MORELIA_TAGS':
-                return 'tag1,tag2'
-            return ''
+            if key == "MORELIA_TAGS":
+                return "tag1,tag2"
+            return ""
+
         os.environ.__getitem__.side_effect = environ_get
         config_parser_class = Mock()
-        config_parser_class.return_value.get.return_value = ''
+        config_parser_class.return_value.get.return_value = ""
         obj = Config(config_parser_class=config_parser_class)
         obj.load()
         # Act
         pattern = obj.get_tags_pattern()
         # Assert
-        self.assertEqual(pattern, 'tag1,tag2')
+        self.assertEqual(pattern, "tag1,tag2")
 
 
-@tags(['unit'])
+@tags(["unit"])
 class ConfigInitTestCase(unittest.TestCase):
     """ Test :py:meth:`Config.__init__`. """
 
@@ -98,7 +102,7 @@ class ConfigInitTestCase(unittest.TestCase):
         """ Scenario: create with config files"""
         # Arrange
         # Act
-        obj = Config(config_files=['sample.cfg'])
+        obj = Config(config_files=["sample.cfg"])
         # Assert
         self.assertEqual(len(obj._config_files), 1)
 
@@ -111,11 +115,11 @@ class ConfigInitTestCase(unittest.TestCase):
         self.assertTrue(issubclass(SafeConfigParser, obj._config_parser_class))
 
 
-@tags(['unit'])
+@tags(["unit"])
 class GetConfigTestCase(unittest.TestCase):
     """ Test :py:meth:`get_config`. """
 
-    @patch('morelia.config.Config')
+    @patch("morelia.config.Config")
     def test_should_return_config_object(self, Config):
         """ Scenario: return config object """
         # Arrange
@@ -124,7 +128,7 @@ class GetConfigTestCase(unittest.TestCase):
         # Assert
         self.assertIsNotNone(config)
 
-    @patch('morelia.config.Config')
+    @patch("morelia.config.Config")
     def test_should_return_memoized_config_object(self, Config):
         """ Scenario: return memoized config object """
         # Arrange

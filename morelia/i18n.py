@@ -14,7 +14,7 @@ TRANSLATIONS = {
         "when": "When",
         "then": "Then",
         "and": "And",
-        "but": "But"
+        "but": "But",
     },
     "af": {
         "name": "Afrikaans",
@@ -27,7 +27,7 @@ TRANSLATIONS = {
         "when": "Wanneer",
         "then": "Dan",
         "and": "En",
-        "but": "Maar"
+        "but": "Maar",
     },
     "ar": {
         "name": "Arabic",
@@ -40,7 +40,7 @@ TRANSLATIONS = {
         "when": "متى|عندما",
         "then": "اذاً|ثم",
         "and": "و",
-        "but": "لكن"
+        "but": "لكن",
     },
     "bm": {
         "name": "Malay",
@@ -53,7 +53,7 @@ TRANSLATIONS = {
         "when": "Apabila",
         "then": "Maka|Kemudian",
         "and": "Dan",
-        "but": "Tetapi|Tapi"
+        "but": "Tetapi|Tapi",
     },
     "bg": {
         "name": "Bulgarian",
@@ -66,7 +66,7 @@ TRANSLATIONS = {
         "when": "Когато",
         "then": "То",
         "and": "И",
-        "but": "Но"
+        "but": "Но",
     },
     "ca": {
         "name": "Catalan",
@@ -79,7 +79,7 @@ TRANSLATIONS = {
         "when": "Quan",
         "then": "Aleshores|Cal",
         "and": "I",
-        "but": "Però"
+        "but": "Però",
     },
     "cy-GB": {
         "name": "Welsh",
@@ -92,7 +92,7 @@ TRANSLATIONS = {
         "when": "Pryd",
         "then": "Yna",
         "and": "A",
-        "but": "Ond"
+        "but": "Ond",
     },
     "cs": {
         "name": "Czech",
@@ -105,7 +105,7 @@ TRANSLATIONS = {
         "when": "Když",
         "then": "Pak",
         "and": "A také|A",
-        "but": "Ale"
+        "but": "Ale",
     },
     "da": {
         "name": "Danish",
@@ -118,7 +118,7 @@ TRANSLATIONS = {
         "when": "Når",
         "then": "Så",
         "and": "Og",
-        "but": "Men"
+        "but": "Men",
     },
     "de": {
         "name": "German",
@@ -131,7 +131,7 @@ TRANSLATIONS = {
         "when": "Wenn",
         "then": "Dann",
         "and": "Und",
-        "but": "Aber"
+        "but": "Aber",
     },
     "el": {
         "name": "Greek",
@@ -144,7 +144,7 @@ TRANSLATIONS = {
         "when": "Όταν",
         "then": "Τότε",
         "and": "Και",
-        "but": "Αλλά"
+        "but": "Αλλά",
     },
     "en-au": {
         "name": "Australian",
@@ -157,7 +157,7 @@ TRANSLATIONS = {
         "when": "It's just unbelievable",
         "then": "But at the end of the day I reckon",
         "and": "Too right",
-        "but": "Yeah nah"
+        "but": "Yeah nah",
     },
     "en-Scouse": {
         "name": "Scouse",
@@ -170,7 +170,7 @@ TRANSLATIONS = {
         "when": "Wun|Youse know like when",
         "then": "Dun|Den youse gotta",
         "and": "An",
-        "but": "Buh"
+        "but": "Buh",
     },
     "en-tx": {
         "name": "Texan",
@@ -183,7 +183,7 @@ TRANSLATIONS = {
         "when": "When y'all",
         "then": "Then y'all",
         "and": "And y'all",
-        "but": "But y'all"
+        "but": "But y'all",
     },
     "eo": {
         "name": "Esperanto",
@@ -196,7 +196,7 @@ TRANSLATIONS = {
         "when": "Se",
         "then": "Do",
         "and": "Kaj",
-        "but": "Sed"
+        "but": "Sed",
     },
     "es": {
         "name": "Spanish",
@@ -209,7 +209,7 @@ TRANSLATIONS = {
         "when": "Cuando",
         "then": "Entonces",
         "and": "Y",
-        "but": "Pero"
+        "but": "Pero",
     },
     "et": {
         "name": "Estonian",
@@ -222,7 +222,7 @@ TRANSLATIONS = {
         "when": "Kui",
         "then": "Siis",
         "and": "Ja",
-        "but": "Kuid"
+        "but": "Kuid",
     },
     "fa": {
         "name": "Persian",
@@ -235,7 +235,7 @@ TRANSLATIONS = {
         "when": "هنگامی",
         "then": "آنگاه",
         "and": "و",
-        "but": "اما"
+        "but": "اما",
     },
     "fi": {
         "name": "Finnish",
@@ -248,7 +248,7 @@ TRANSLATIONS = {
         "when": "Kun",
         "then": "Niin",
         "and": "Ja",
-        "but": "Mutta"
+        "but": "Mutta",
     },
     "fr": {
         "name": "French",
@@ -261,7 +261,7 @@ TRANSLATIONS = {
         "when": "Quand|Lorsque|Lorsqu'<",
         "then": "Alors",
         "and": "Et",
-        "but": "Mais"
+        "but": "Mais",
     },
     "gl": {
         "name": "Galician",
@@ -274,7 +274,7 @@ TRANSLATIONS = {
         "when": "Cando",
         "then": "Entón|Logo",
         "and": "E",
-        "but": "Mais|Pero"
+        "but": "Mais|Pero",
     },
     "he": {
         "name": "Hebrew",
@@ -287,7 +287,7 @@ TRANSLATIONS = {
         "when": "כאשר",
         "then": "אז|אזי",
         "and": "וגם",
-        "but": "אבל"
+        "but": "אבל",
     },
     "hi": {
         "name": "Hindi",
@@ -300,7 +300,7 @@ TRANSLATIONS = {
         "when": "जब|कदा",
         "then": "तब|तदा",
         "and": "और|तथा",
-        "but": "पर|परन्तु|किन्तु"
+        "but": "पर|परन्तु|किन्तु",
     },
     "hr": {
         "name": "Croatian",
@@ -313,7 +313,7 @@ TRANSLATIONS = {
         "when": "Kada|Kad",
         "then": "Onda",
         "and": "I",
-        "but": "Ali"
+        "but": "Ali",
     },
     "ht": {
         "name": "Creole",
@@ -326,7 +326,7 @@ TRANSLATIONS = {
         "when": "Lè|Le",
         "then": "Lè sa a|Le sa a",
         "and": "Ak|Epi|E",
-        "but": "Men"
+        "but": "Men",
     },
     "hu": {
         "name": "Hungarian",
@@ -339,7 +339,7 @@ TRANSLATIONS = {
         "when": "Majd|Ha|Amikor",
         "then": "Akkor",
         "and": "És",
-        "but": "De"
+        "but": "De",
     },
     "id": {
         "name": "Indonesian",
@@ -352,7 +352,7 @@ TRANSLATIONS = {
         "when": "Ketika",
         "then": "Maka",
         "and": "Dan",
-        "but": "Tapi"
+        "but": "Tapi",
     },
     "is": {
         "name": "Icelandic",
@@ -365,7 +365,7 @@ TRANSLATIONS = {
         "when": "Þegar",
         "then": "Þá",
         "and": "Og",
-        "but": "En"
+        "but": "En",
     },
     "it": {
         "name": "Italian",
@@ -378,7 +378,7 @@ TRANSLATIONS = {
         "when": "Quando",
         "then": "Allora",
         "and": "E",
-        "but": "Ma"
+        "but": "Ma",
     },
     "ja": {
         "name": "Japanese",
@@ -391,7 +391,7 @@ TRANSLATIONS = {
         "when": "もし<",
         "then": "ならば<",
         "and": "かつ<",
-        "but": "しかし<|但し<|ただし<"
+        "but": "しかし<|但し<|ただし<",
     },
     "jv": {
         "name": "Javanese",
@@ -404,7 +404,7 @@ TRANSLATIONS = {
         "when": "Manawa|Menawa",
         "then": "Njuk|Banjur",
         "and": "Lan",
-        "but": "Tapi|Nanging|Ananging"
+        "but": "Tapi|Nanging|Ananging",
     },
     "kn": {
         "name": "Kannada",
@@ -417,7 +417,7 @@ TRANSLATIONS = {
         "when": "ಸ್ಥಿತಿಯನ್ನು",
         "then": "ನಂತರ",
         "and": "ಮತ್ತು",
-        "but": "ಆದರೆ"
+        "but": "ಆದರೆ",
     },
     "ko": {
         "name": "Korean",
@@ -430,7 +430,7 @@ TRANSLATIONS = {
         "when": "만일<|만약<",
         "then": "그러면<",
         "and": "그리고<",
-        "but": "하지만<|단<"
+        "but": "하지만<|단<",
     },
     "lt": {
         "name": "Lithuanian",
@@ -443,7 +443,7 @@ TRANSLATIONS = {
         "when": "Kai",
         "then": "Tada",
         "and": "Ir",
-        "but": "Bet"
+        "but": "Bet",
     },
     "lu": {
         "name": "Luxemburgish",
@@ -456,7 +456,7 @@ TRANSLATIONS = {
         "when": "wann",
         "then": "dann",
         "and": "an|a",
-        "but": "awer|mä"
+        "but": "awer|mä",
     },
     "lv": {
         "name": "Latvian",
@@ -469,7 +469,7 @@ TRANSLATIONS = {
         "when": "Ja",
         "then": "Tad",
         "and": "Un",
-        "but": "Bet"
+        "but": "Bet",
     },
     "nl": {
         "name": "Dutch",
@@ -482,7 +482,7 @@ TRANSLATIONS = {
         "when": "Als",
         "then": "Dan",
         "and": "En",
-        "but": "Maar"
+        "but": "Maar",
     },
     "no": {
         "name": "Norwegian",
@@ -495,7 +495,7 @@ TRANSLATIONS = {
         "when": "Når",
         "then": "Så",
         "and": "Og",
-        "but": "Men"
+        "but": "Men",
     },
     "pa": {
         "name": "Panjabi",
@@ -508,7 +508,7 @@ TRANSLATIONS = {
         "when": "ਜਦੋਂ",
         "then": "ਤਦ",
         "and": "ਅਤੇ",
-        "but": "ਪਰ"
+        "but": "ਪਰ",
     },
     "pl": {
         "name": "Polish",
@@ -521,7 +521,7 @@ TRANSLATIONS = {
         "when": "Jeżeli|Jeśli|Gdy|Kiedy",
         "then": "Wtedy",
         "and": "Oraz|I",
-        "but": "Ale"
+        "but": "Ale",
     },
     "pt": {
         "name": "Portuguese",
@@ -534,7 +534,7 @@ TRANSLATIONS = {
         "when": "Quando",
         "then": "Então|Entao",
         "and": "E",
-        "but": "Mas"
+        "but": "Mas",
     },
     "ro": {
         "name": "Romanian",
@@ -547,7 +547,7 @@ TRANSLATIONS = {
         "when": "Cand|Când",
         "then": "Atunci",
         "and": "Si|Și|Şi",
-        "but": "Dar"
+        "but": "Dar",
     },
     "ru": {
         "name": "Russian",
@@ -560,7 +560,7 @@ TRANSLATIONS = {
         "when": "Если|Когда",
         "then": "То|Тогда",
         "and": "И|К тому же|Также",
-        "but": "Но|А"
+        "but": "Но|А",
     },
     "sv": {
         "name": "Swedish",
@@ -573,7 +573,7 @@ TRANSLATIONS = {
         "when": "När",
         "then": "Så",
         "and": "Och",
-        "but": "Men"
+        "but": "Men",
     },
     "sk": {
         "name": "Slovak",
@@ -586,7 +586,7 @@ TRANSLATIONS = {
         "when": "Keď|Ak",
         "then": "Tak|Potom",
         "and": "A|A tiež|A taktiež|A zároveň",
-        "but": "Ale"
+        "but": "Ale",
     },
     "sl": {
         "name": "Slovenian",
@@ -599,7 +599,7 @@ TRANSLATIONS = {
         "when": "Ko|Ce|Če|Kadar",
         "then": "Nato|Potem|Takrat",
         "and": "In|Ter",
-        "but": "Toda|Ampak|Vendar"
+        "but": "Toda|Ampak|Vendar",
     },
     "sr-Latn": {
         "name": "Serbian (Latin)",
@@ -612,7 +612,7 @@ TRANSLATIONS = {
         "when": "Kada|Kad",
         "then": "Onda",
         "and": "I",
-        "but": "Ali"
+        "but": "Ali",
     },
     "sr-Cyrl": {
         "name": "Serbian",
@@ -625,7 +625,7 @@ TRANSLATIONS = {
         "when": "Када|Кад",
         "then": "Онда",
         "and": "И",
-        "but": "Али"
+        "but": "Али",
     },
     "tl": {
         "name": "Telugu",
@@ -638,7 +638,7 @@ TRANSLATIONS = {
         "when": "ఈ పరిస్థితిలో",
         "then": "అప్పుడు",
         "and": "మరియు",
-        "but": "కాని"
+        "but": "కాని",
     },
     "th": {
         "name": "Thai",
@@ -651,7 +651,7 @@ TRANSLATIONS = {
         "when": "เมื่อ",
         "then": "ดังนั้น",
         "and": "และ",
-        "but": "แต่"
+        "but": "แต่",
     },
     "tlh": {
         "name": "Klingon",
@@ -664,7 +664,7 @@ TRANSLATIONS = {
         "when": "qaSDI'",
         "then": "vaj",
         "and": "'ej|latlh",
-        "but": "'ach|'a"
+        "but": "'ach|'a",
     },
     "tr": {
         "name": "Turkish",
@@ -677,7 +677,7 @@ TRANSLATIONS = {
         "when": "Eğer ki",
         "then": "O zaman",
         "and": "Ve",
-        "but": "Fakat|Ama"
+        "but": "Fakat|Ama",
     },
     "tt": {
         "name": "Tatar",
@@ -690,7 +690,7 @@ TRANSLATIONS = {
         "when": "Әгәр",
         "then": "Нәтиҗәдә",
         "and": "Һәм|Вә",
-        "but": "Ләкин|Әмма"
+        "but": "Ләкин|Әмма",
     },
     "uk": {
         "name": "Ukrainian",
@@ -703,7 +703,7 @@ TRANSLATIONS = {
         "when": "Якщо|Коли",
         "then": "То|Тоді",
         "and": "І|А також|Та",
-        "but": "Але"
+        "but": "Але",
     },
     "uz": {
         "name": "Uzbek",
@@ -716,7 +716,7 @@ TRANSLATIONS = {
         "when": "Агар",
         "then": "Унда",
         "and": "Ва",
-        "but": "Лекин|Бирок|Аммо"
+        "but": "Лекин|Бирок|Аммо",
     },
     "vi": {
         "name": "Vietnamese",
@@ -729,7 +729,7 @@ TRANSLATIONS = {
         "when": "Khi",
         "then": "Thì",
         "and": "Và",
-        "but": "Nhưng"
+        "but": "Nhưng",
     },
     "zh-CN": {
         "name": "Chinese simplified",
@@ -742,7 +742,7 @@ TRANSLATIONS = {
         "when": "当<",
         "then": "那么<",
         "and": "而且<|并且<|同时<",
-        "but": "但是<"
+        "but": "但是<",
     },
     "zh-TW": {
         "name": "Chinese traditional",
@@ -755,7 +755,7 @@ TRANSLATIONS = {
         "when": "當<",
         "then": "那麼<",
         "and": "而且<|並且<|同時<",
-        "but": "但是<"
+        "but": "但是<",
     },
     "ur": {
         "name": "Urdu",
@@ -768,6 +768,6 @@ TRANSLATIONS = {
         "when": "جب",
         "then": "پھر|تب",
         "and": "اور",
-        "but": "لیکن"
-    }
+        "but": "لیکن",
+    },
 }

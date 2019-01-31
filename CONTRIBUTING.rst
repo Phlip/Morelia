@@ -64,11 +64,10 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 
     $ git clone git@github.com:your_name_here/morelia.git
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+3. Assuming you have poetry installed (https://poetry.eustace.io/), this is how you set up your fork for local development::
 
-    $ mkvirtualenv morelia
-    (morelia) $ cd morelia/
-    (morelia) $ make devel
+    $ cd morelia/
+    $ poetry install
 
 4. Create a branch for local development::
 
@@ -78,9 +77,10 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 
 5. When you're done making changes, check that your changes pass static analysis and the tests, including testing other Python versions with tox::
 
-    (morelia) $ make lint
-    (morelia) $ make test
-    (morelia) $ make tox-ci
+    $ poetry shell                 # spawns shell within virtualenv
+    $ export PS1="(morelia) $PS1"  # adds marks so we know we are in virtualenv
+    $ pytest                       # runs tests for given environment
+    $ make tox-ci                  # runs tests for every supported environment
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -102,10 +102,3 @@ Before you submit a pull request, check that it meets these guidelines:
 3. The pull request should work for Python 3.5+ and for PyPy3. Check
    https://travis-ci.org/kidosoft/morelia/pull_requests
    and make sure that the tests pass for all supported Python versions.
-
-Tips
-----
-
-To run a subset of tests::
-
-$ python -m unittest tests.test_morelia

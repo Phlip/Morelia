@@ -10,17 +10,28 @@ and this project adheres to `Semantic Versioning <http://semver.org/>`_.
 Version: Unreleased
 ===============================================================================
 
+REMOVED
+-------
+
+  * dropped support for python 2.7 and 3.4
+
+
+Version: 0.7.1 (2019-01-15)
+===============================================================================
+
 ADDED
 -----
 
   * support for running single scenarios (#16)
+  * support for passing string to morelia.run instead of external feature file
 
 REMOVED
 -------
 
   * dropped support for python 3.3
 
-Version: 0.6.4 (2016-10-12)
+
+Version: 0.6.5 (2016-10-12)
 ===============================================================================
 
 CHANGED

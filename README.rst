@@ -34,6 +34,9 @@ Morelia
     :target: https://pyup.io/repos/github/kidosoft/Morelia/
     :alt: Updates
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/ambv/black
+
 Morelia is a Python Behavior Driven Development (BDD) library.
 
 BDD is an agile software development process that encourages

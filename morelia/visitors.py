@@ -57,7 +57,7 @@ class TestVisitor(IVisitor):
             self._step_visit(node)
         else:
             line = node.get_real_reconstruction()
-            self._formatter.output(node, line, '', 0)
+            self._formatter.output(node, line, "", 0)
 
     def after_visit(self, node):
         if isinstance(node, Feature):
@@ -71,19 +71,27 @@ class TestVisitor(IVisitor):
         self._scenarios_passed = 0
         self._scenarios_num = 0
         line = node.get_real_reconstruction()
-        self._formatter.output(node, line, '', 0)
+        self._formatter.output(node, line, "", 0)
 
     def _feature_after_visit(self, node):
         if self._scenarios_failed:
             self._fail_feature()
 
     def _fail_feature(self):
-        failed_msg = ngettext('{} scenario failed', '{} scenarios failed', self._scenarios_failed)
-        passed_msg = ngettext('{} scenario passed', '{} scenarios passed', self._scenarios_passed)
-        msg = '{}, {}'.format(failed_msg, passed_msg).format(self._scenarios_failed, self._scenarios_passed)
-        prefix = '-' * 66
+        failed_msg = ngettext(
+            "{} scenario failed", "{} scenarios failed", self._scenarios_failed
+        )
+        passed_msg = ngettext(
+            "{} scenario passed", "{} scenarios passed", self._scenarios_passed
+        )
+        msg = "{}, {}".format(failed_msg, passed_msg).format(
+            self._scenarios_failed, self._scenarios_passed
+        )
+        prefix = "-" * 66
         for step_line, tb, exc in self._exceptions:
-            msg += '\n{}{}\n{}{}'.format(prefix, step_line, tb, exc).replace('\n', '\n    ')
+            msg += "\n{}{}\n{}{}".format(prefix, step_line, tb, exc).replace(
+                "\n", "\n    "
+            )
         assert self._scenarios_failed == 0, msg
 
     def _scenario_visit(self, node):
@@ -92,7 +100,7 @@ class TestVisitor(IVisitor):
             self._setUp()
         self._scenarios_num += 1
         line = node.get_real_reconstruction()
-        self._formatter.output(node, line, '', 0)
+        self._formatter.output(node, line, "", 0)
 
     def _scenario_after_visit(self, node):
         if self._scenario_exception:
@@ -109,20 +117,20 @@ class TestVisitor(IVisitor):
         self._steps_num += 1
         reconstruction = node.get_real_reconstruction()
         start_time = time.time()
-        status = 'pass'
+        status = "pass"
         try:
             self.run_step(node)
         except (MissingStepError, AssertionError):
-            status = 'fail'
+            status = "fail"
             etype, evalue, etraceback = sys.exc_info()
             tb = traceback.extract_tb(etraceback)[:-2]
             self._scenario_exception = (
                 node.parent.get_real_reconstruction() + reconstruction,
-                ''.join(traceback.format_list(tb)),
-                ''.join(traceback.format_exception_only(etype, evalue))
+                "".join(traceback.format_list(tb)),
+                "".join(traceback.format_exception_only(etype, evalue)),
             )
         except (SystemExit, Exception) as exc:
-            status = 'error'
+            status = "error"
             self._format_exception(node, exc)
             raise
         finally:
@@ -142,10 +150,10 @@ class TestVisitor(IVisitor):
         spec = inspect.getfullargspec(method)
         arglist = spec.args + spec.kwonlyargs
 
-        if '_labels' in arglist:
-            kwargs['_labels'] = node.get_labels()
-        if '_text' in arglist:
-            kwargs['_text'] = node.payload
+        if "_labels" in arglist:
+            kwargs["_labels"] = node.get_labels()
+        if "_text" in arglist:
+            kwargs["_text"] = node.payload
         method(*args, **kwargs)
 
     def permute_schedule(self, node):
@@ -173,7 +181,7 @@ class StepMatcherVisitor(IVisitor):
         pass
 
     def report_missing(self):
-        suggest = ''.join(self._not_matched.values())
+        suggest = "".join(self._not_matched.values())
         if suggest:
-            diagnostic = 'Cannot match steps:\n\n{}'.format(suggest)
+            diagnostic = "Cannot match steps:\n\n{}".format(suggest)
             self._suite.fail(diagnostic)

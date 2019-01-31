@@ -8,7 +8,7 @@ from morelia.grammar import Step
 from morelia.visitors import StepMatcherVisitor, TestVisitor
 
 
-@tags(['unit'])
+@tags(["unit"])
 class StepMatcherVisitorVisitTestCase(unittest.TestCase):
     """ Test :py:meth:`StepMatcherVisitor.visit`. """
 
@@ -27,8 +27,9 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Arrange
         obj = StepMatcherVisitor(sentinel.suite, sentinel.matcher)
         node = Mock()
-        exc = MissingStepError('predicate', sentinel.suggest,
-                               sentinel.method_name, sentinel.docstring)
+        exc = MissingStepError(
+            "predicate", sentinel.suggest, sentinel.method_name, sentinel.docstring
+        )
         node.find_step.side_effect = [exc]
         # Act
         obj.visit(node)
@@ -41,8 +42,7 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         # Arrange
         obj = StepMatcherVisitor(sentinel.suite, sentinel.matcher)
         node = Mock()
-        exc = MissingStepError('predicate', sentinel.suggest,
-                               sentinel.method_name, '')
+        exc = MissingStepError("predicate", sentinel.suggest, sentinel.method_name, "")
         node.find_step.side_effect = [exc]
         # Act
         obj.visit(node)
@@ -51,7 +51,7 @@ class StepMatcherVisitorVisitTestCase(unittest.TestCase):
         self.assertTrue(sentinel.method_name in obj._not_matched)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class StepMatcherVisitorReportMissingTestCase(unittest.TestCase):
     """ Test :py:meth:`StepMatcherVisitor.report_missing`. """
 
@@ -60,11 +60,11 @@ class StepMatcherVisitorReportMissingTestCase(unittest.TestCase):
         # Arrange
         suite = Mock()
         obj = StepMatcherVisitor(suite, sentinel.matcher)
-        obj._not_matched = OrderedDict([('docstring', 'suggest string')])
+        obj._not_matched = OrderedDict([("docstring", "suggest string")])
         # Act
         obj.report_missing()
         # Assert
-        suite.fail.assert_called_once_with('Cannot match steps:\n\nsuggest string')
+        suite.fail.assert_called_once_with("Cannot match steps:\n\nsuggest string")
 
     def test_should_not_fail(self):
         """ Scenario: no steps missing """
@@ -78,7 +78,7 @@ class StepMatcherVisitorReportMissingTestCase(unittest.TestCase):
         self.assertFalse(suite.fail.called)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class TestVisitorVisitTestCase(unittest.TestCase):
     """ Test :py:meth:`TestVisitor.visit`. """
 
@@ -93,4 +93,4 @@ class TestVisitorVisitTestCase(unittest.TestCase):
         # Act
         # Assert
         self.assertRaises(SystemExit, obj.visit, node)
-        formatter.output.assert_called_once_with(node, ANY, 'error', ANY)
+        formatter.output.assert_called_once_with(node, ANY, "error", ANY)

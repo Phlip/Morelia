@@ -22,16 +22,23 @@ import sys
 from morelia.formatters import PlainTextFormatter, ColorTextFormatter
 from morelia.parser import Parser  # noqa
 
-__version__ = '0.7.1'
+__version__ = "0.7.1"
 
 
 def has_color_support():
     """Check if color in terminal is supported."""
-    return sys.platform != 'win32'  # pragma: nocover
+    return sys.platform != "win32"  # pragma: nocover
 
 
-def run(filename, suite, as_str=None, scenario=r'.*',
-        verbose=False, show_all_missing=True,  **kwargs): # NOQA
+def run(
+    filename,
+    suite,
+    as_str=None,
+    scenario=r".*",
+    verbose=False,
+    show_all_missing=True,
+    **kwargs
+):  # NOQA
     """Parse file and run tests on given suite.
 
     :param str filename: file name
@@ -41,18 +48,21 @@ def run(filename, suite, as_str=None, scenario=r'.*',
     :param boolean verbose: be verbose
     :param boolean show_all_missing: show all missing steps
     """
-    formatter = kwargs.get('formatter', None)
+    formatter = kwargs.get("formatter", None)
     if verbose and not formatter:
         if has_color_support():
             formatter = ColorTextFormatter()
         else:
             formatter = PlainTextFormatter()
-        kwargs['formatter'] = formatter
-    kwargs['show_all_missing'] = show_all_missing
+        kwargs["formatter"] = formatter
+    kwargs["show_all_missing"] = show_all_missing
     parser = Parser()
-    ast = parser.parse_file(filename, scenario=scenario) if as_str is None \
+    ast = (
+        parser.parse_file(filename, scenario=scenario)
+        if as_str is None
         else parser.parse_as_str(filename, as_str, scenario=scenario)
+    )
     return ast.evaluate(suite, **kwargs)
 
 
-__all__ = ('Parser', 'run')
+__all__ = ("Parser", "run")

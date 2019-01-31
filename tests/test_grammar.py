@@ -9,7 +9,7 @@ from morelia.parser import AST
 from morelia.visitors import IVisitor
 
 
-@tags(['unit'])
+@tags(["unit"])
 class ASTEvaluateTestCase(TestCase):
     """ Test :py:meth:`AST.evaluate`. """
 
@@ -24,7 +24,9 @@ class ASTEvaluateTestCase(TestCase):
         # Act
         obj.evaluate(sentinel.suite, matchers=[matcher_class])
         # Assert
-        test_visitor_class.assert_called_once_with(sentinel.suite, matcher_class.return_value, ANY)
+        test_visitor_class.assert_called_once_with(
+            sentinel.suite, matcher_class.return_value, ANY
+        )
 
     def test_should_use_provided_formatter(self):
         """ Scenariusz: formatter given as parameter """
@@ -53,13 +55,12 @@ class ASTEvaluateTestCase(TestCase):
         matcher_visitor.assert_called_once_with(suite, ANY)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class LabeledNodeGetLabelsTestCase(TestCase):
-
     def test_should_return_node_labels(self):
         """ Scenario: node labels """
         # Arrange
-        expected = ['label1', 'label2']
+        expected = ["label1", "label2"]
         obj = Feature(None, None)
         obj.add_labels(expected)
         # Act
@@ -70,11 +71,11 @@ class LabeledNodeGetLabelsTestCase(TestCase):
     def test_should_return_node_and_parent_labels(self):
         """ Scenario: node and parent labels """
         # Arrange
-        expected = ['label1', 'label2']
+        expected = ["label1", "label2"]
         obj = Feature(None, None)
-        obj.add_labels(['label1'])
+        obj.add_labels(["label1"])
         parent = Feature(None, None)
-        parent.add_labels(['label2'])
+        parent.add_labels(["label2"])
         obj.parent = parent
         # Act
         result = obj.get_labels()
@@ -82,14 +83,14 @@ class LabeledNodeGetLabelsTestCase(TestCase):
         self.assertEqual(result, expected)
 
 
-@tags(['unit'])
+@tags(["unit"])
 class INodeEvaluateStepsTest(TestCase):
 
     node_class = Morelia
 
     def test_should_call_visitor(self):
         # Arrange
-        node = self.node_class('Feature', 'Some feature')
+        node = self.node_class("Feature", "Some feature")
         visitor = Mock(IVisitor)
         # Act
         node.accept(visitor)
@@ -99,7 +100,7 @@ class INodeEvaluateStepsTest(TestCase):
     def test_should_evaluate_child_steps(self):
         # Arrange
         steps = [Mock(Step), Mock(Step)]
-        node = self.node_class('Feature', 'Some feature', steps=steps)
+        node = self.node_class("Feature", "Some feature", steps=steps)
         visitor = Mock(IVisitor)
         # Act
         node.accept(visitor)

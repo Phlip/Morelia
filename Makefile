@@ -61,3 +61,7 @@ docs: ## generate Sphinx HTML documentation
 
 release: ## package and upload a release
 	poetry publish
+
+update-req:
+	# for pyup.io until it has native support for poetry
+	poetry show --no-dev | awk '{print $$1"=="$$2}' > requirements.txt

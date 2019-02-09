@@ -1,0 +1,9 @@
+schedule: "every week on friday"
+
+search: False
+
+requirements:
+  - poetry.lock:
+      update: all
+  - requirements.txt:
+      update: all

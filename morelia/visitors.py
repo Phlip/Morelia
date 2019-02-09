@@ -120,7 +120,7 @@ class TestVisitor(IVisitor):
         status = "pass"
         try:
             self.run_step(node)
-        except (MissingStepError, AssertionError) as exc:
+        except (MissingStepError, AssertionError):
             status = "fail"
             etype, evalue, etraceback = sys.exc_info()
             tb = traceback.extract_tb(etraceback)[:-2]

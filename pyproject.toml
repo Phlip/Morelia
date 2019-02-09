@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "Morelia"
+name = "morelia"
 version = "0.8.0"
 description="for \"Behavior Driven Development\" (BDD) -- a client-facing scripting language to put the squeeze on all your features"
 license="MIT"

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Morelia"
-version = "0.7.1"
+version = "0.8.0"
 description="for \"Behavior Driven Development\" (BDD) -- a client-facing scripting language to put the squeeze on all your features"
 license="MIT"
 authors = ["dryobates <jakub.stolarski@gmail.com>"]

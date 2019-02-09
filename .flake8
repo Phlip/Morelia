@@ -1,0 +1,6 @@
+[flake8]
+ignore=E501,E901,W503
+statistics=0
+count=0
+exclude=.tox,.svn,CVS,.bzr,.hg,.git,__pycache__,migrations,pyglib,local_settings.py,manage.py,.ropeproject
+max-complexity=10

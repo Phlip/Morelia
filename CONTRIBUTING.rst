@@ -64,10 +64,10 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 
     $ git clone git@github.com:your_name_here/morelia.git
 
-3. Assuming you have poetry installed (https://poetry.eustace.io/), this is how you set up your fork for local development::
+3. Assuming you have poetry installed (https://poetry.eustace.io/), this is how you set up your fork for local development with poetry::
 
     $ cd morelia/
-    $ poetry install
+    $ make develop      # creates virtualenv and installs dependencies with poetry
 
 4. Create a branch for local development::
 
@@ -77,10 +77,8 @@ Ready to contribute? Here's how to set up `morelia` for local development.
 
 5. When you're done making changes, check that your changes pass static analysis and the tests, including testing other Python versions with tox::
 
-    $ poetry shell                 # spawns shell within virtualenv
-    $ export PS1="(morelia) $PS1"  # adds marks so we know we are in virtualenv
-    $ pytest                       # runs tests for given environment
-    $ make tox-ci                  # runs tests for every supported environment
+    $ make test         # runs tests for development environment
+    $ make test-all     # runs tests for every supported environment with tox
 
 6. Commit your changes and push your branch to GitHub::
 

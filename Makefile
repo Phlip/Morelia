@@ -14,6 +14,23 @@ export PRINT_HELP_PYSCRIPT
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
+ci: dist install develop test docs
+
+dist: clean ## builds source and wheel package
+	poetry build
+	ls -l dist
+
+install:
+	pip install -U dist/*.whl
+
+develop:  ## create virtualenv and install dependencies
+	poetry install
+
+test: ## run tests quickly with the default Python
+	poetry run pytest
+
+test-all: clean tox docs ## test every Python version with tox
+
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 	rm -fr .tox/
 
@@ -35,26 +52,12 @@ clean-test: ## remove test and coverage artifacts
 	rm -f coverage.xml
 	rm -fr htmlcov/
 
-release: ## package and upload a release
-	poetry publish
-
-dist: clean-build clean-pyc clean-test ## builds source and wheel package
-	poetry build
-	ls -l dist
-
-install: ## install the package to the active Python's site-packages
-	pip install -U dist/*.whl
-
-test: ## run tests quickly with the default Python
-	pytest
+tox:
+	poetry run tox --skip-missing-interpreters
 
 docs: ## generate Sphinx HTML documentation
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
+	poetry run $(MAKE) -C docs clean
+	poetry run $(MAKE) -C docs html
 
-ci: dist install test docs ## run CI pipeline
-
-tox:
-	tox --skip-missing-interpreters
-
-tox-ci: clean tox docs ## run CI with tox testing every python version
+release: ## package and upload a release
+	poetry publish
